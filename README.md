@@ -23,6 +23,7 @@
 ## 2) CONFIGURATION
 
   Some settings may support appending postfix to CVAR; such as `"scr_mm_spawnprotection_<MAP or GAMETYPE> <value>"` resulting in `"scr_mm_spawnprotection_dm <value>" or "scr_mm_spawnprotection_mp_brecourt <value>"`.
+  
   See `CoDaM_MiscMod.cfg` file for CVAR documentation
 
 ## 3) COMMANDS
@@ -115,7 +116,7 @@
   - Some 'fun' admin commands based on Cheese's admin commands
   - Some 'fun' admin commands based on PowerServer's commands
   - BEL menus based on, in some parts on code by Indy's endless menu
-  - CVAR scr_mm_scoreboard_text uses code from Defected (dftd)
+  - CVAR `scr_mm_scoreboard_text` uses code from Defected (dftd)
 
 ## 6) CHANGELOG
 
