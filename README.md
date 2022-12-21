@@ -117,44 +117,73 @@
 
 ## 6) CHANGELOG
 
-  2.7.1
-  * Fixes bug with current working directory, default is now set to `fs_basepath` + `"/main/"`
-  * New CVAR to specify a different working directory or share the same directory
+  3.0.9
+  * Fixed a problem with global `level.bans` when no users/groups set in MiscMod. (Thanks Cheese, for discovering this)
 
-  2.7.2
-  * Added option for rifles only to `!rifles` command
-  * Fixes problem with instantkill and damagemarker enabled at the same time (negative value)
-  * Minor code cleanup
+  3.0.8
+  * Added new command `!teambalance <on|off|force>`
+  * Added new command `!swapteams`
+  * Fixes a bug in meleefight where people can drop their weapons right before the fight starts and pick it up again
+  * Added new command `!freeze <on|off> <num|all>`
+  * Corrected CVAR `scr_mm_msg1` and `2`, in `MiscMod.cfg`, to `scr_mm_msgb1` and `scr_mm_msgb2`
+  * Added CVAR `scr_mm_emptymap`. When server is empty, switch to this map
+  * Added CVAR `scr_mm_rename` and `scr_mm_renameto` which will rename a connecting player to a fixed name based on keywords
+  * Added CVAR `scr_mm_removemaps_playercount`
+  * Fix bug where a `!command <num>` would cause crash in some cases, discoverd by Frisky, reported and tested by AJ
 
-  2.7.3
+  3.0.7
+  * Adjusted `!pistols` command to include "chamber" or "clip" in case you want it to reload or not on spawn (`set scr_mm_allow_pistols_ammotype ""`)
+  * Added new CVAR `scr_mm_meleekill_ignore` (values: `bolt`, `secondary`, `primary`, `grenade`). Requested by AJ
+  * Improved `!mute` command with "list", to see muted players. (e.g `!mute list`)
+  * Fixes bug with `!mute` command where some player ID was name causing some of the mutes not to be saved across maps
+  * Fixes a typo in `!wmap` description and also fixes banned player display "Disconnected" instead of "Banned" when banned
+  * Added new command `!teleport <player> (<player>|<x> <y> <z>)`
+  * Fixes players getting stuck when spawning/moving to a player position, revamp of old code used to fix blocked spawnpoints etc
+
+  3.0.6
+  * Fixes rare race condition introduced in 3.0.5 for `!unban` command
+  * Added new command `!wmap` to adjust CoDaM's weapon_map feature
+  * Improvements to `!pistols` command, new arguments: `"on"`, `"empty"`, `"disable" `or a number of bullets in the chamber (e.g `!pistols 3, for 3 bullets`)
+  * Minor adjustment to some commands code
+  * Improvements to `validate_number()` function
+  * Adjustments to BEL menu code
+  * Workaround for CoDaM's weapon map code that force noMap under some conditions (`set scr_mm_wmap_force "1"` to enable) (the code is very hacky, don't use if you don't have to). Requested by TheGreatGatsby the ungrateful
+  * Added new command `!meleekill <on|off>` to change instant kill on melee
+
+  3.0.5
+  * Need latest version of `codextended.so`: https://github.com/xtnded/codextended/blob/stable/bin/codextended.so
+  * Cleanup some unused and commented code
+  * Improvements to ban detection, banfile loading and `!ban`/`!unban` commands
+  * Added dftd's `serverName()` function (e.g `scr_mm_scoreboard_text "^2My Server"` or change to `"namefix"` to remove squares and illegal chars)
+
+  3.0.4
+  * Added chat anti-spam. Requested by TheGreatGatsby
+  * Fixes a bug with `!unban` command
+
+  3.0.3
+  * Updated `!who` and playerlist (when multiple matches found) to be more readable like `!status`
+  * Fixes spawncamper headicon not displaying properly
+  * Added `scr_mm_meleekill` for instant kill on melee
+
+  3.0.2
+  * Added `!respawn` command. This command will not respawn the player in full, just move the player to a new fresh spawnpoint (e.g to free stuck players)
+  * Updated output of `!status` command to be more readable
+  * Updated `!weapon` command to support partial names, grenades and pistols (e.g `!weapon 5 nagant_sniper`). Requested by hehu
+  * Improved spawn protection with new code from funmod
+  * Fixes server crash on player disconnect using some of Cheese's commands
+
+  3.0.1
+  * Added additional cvars to `scr_mm_cmd_maps`, you can now append 1, 2, 3, etc at end for more maps (e.g `"scr_mm_cmd_maps1"`)
+  * Optimized `namefix()` function
+
+  2.7.9
   * Commands have new numbers, permissions must be updated
-  * Added `!who` command to display who is logged in
-  * Added `!pm` command
-  * Added `!re` command
-  * Added 999 kicker based on timer
-
-  2.7.4
-  * Spawn protection
-  * RCM compatibility
-
-  2.7.5
-  * Added 1 shot kill pistol option
-  * Added `!psk` command
-  * Added optional show IP in !status command
-  * Integrated Endless Menu into MiscMod per requests
-  * Changed the bottom MiscMod version text
-  * Added `!belmenu` command
-
-  2.7.6
-  * Fixes issue when `scr_mm_nnn` is set to 0 and instant drop client. When set to 0, it will now disable the 999 check.
-  * Fixes issue with bel menu not working when having rcon tool in game client
-  * Fixes issue with instantkill and pistolkill instantly kill people using melee
-  * Fixes issues with !help displaying more than 60 commands
-  * Added `!ban <num|name|ip> <reason> [<specify this argument to enable IP ban>]` to old `!ban` command
-
-  2.7.7
-  * Added logging to `!login` command, now server admin can see who is using the `!login` command
-  * Added server messages that can be broadcast to console, center or obituary
+  * Fixes issue with 999 kicker and clients download maps (999 kicker auto disables)
+  * Fixes bug in `strTok` function that causes a crash on double, tripple delimiters, etc
+  * Recoded `msgBroadcast` to follow a queue of messages regardless or round/map changes
+  * Added `!pcvar` command
+  * Removed `!fps` command (can be used with `!pcvar` instead, e.g `!pcvar <num> fps 125`)
+  * Fixes `!help` command booting client after 85+ commands
 
   2.7.8
   * Fixes bug regarding banfile (does not happen in normal mode, only developer)
@@ -169,70 +198,41 @@
   * Added `!plist` command, it does the same as momo74's `!num` command, which does the same as `!status` command without IP address
   * Added logging to `!unban` and commands (to console/logfile)
 
-  2.7.9
+  2.7.7
+  * Added logging to `!login` command, now server admin can see who is using the `!login` command
+  * Added server messages that can be broadcast to console, center or obituary
+
+  2.7.6
+  * Fixes issue when `scr_mm_nnn` is set to 0 and instant drop client. When set to 0, it will now disable the 999 check.
+  * Fixes issue with bel menu not working when having rcon tool in game client
+  * Fixes issue with instantkill and pistolkill instantly kill people using melee
+  * Fixes issues with !help displaying more than 60 commands
+  * Added `!ban <num|name|ip> <reason> [<specify this argument to enable IP ban>]` to old `!ban` command
+
+  2.7.5
+  * Added 1 shot kill pistol option
+  * Added `!psk` command
+  * Added optional show IP in !status command
+  * Integrated Endless Menu into MiscMod per requests
+  * Changed the bottom MiscMod version text
+  * Added `!belmenu` command
+
+  2.7.4
+  * Spawn protection
+  * RCM compatibility
+
+  2.7.3
   * Commands have new numbers, permissions must be updated
-  * Fixes issue with 999 kicker and clients download maps (999 kicker auto disables)
-  * Fixes bug in `strTok` function that causes a crash on double, tripple delimiters, etc
-  * Recoded `msgBroadcast` to follow a queue of messages regardless or round/map changes
-  * Added `!pcvar` command
-  * Removed `!fps` command (can be used with `!pcvar` instead, e.g `!pcvar <num> fps 125`)
-  * Fixes `!help` command booting client after 85+ commands
+  * Added `!who` command to display who is logged in
+  * Added `!pm` command
+  * Added `!re` command
+  * Added 999 kicker based on timer
 
-  3.0.1
-  * Added additional cvars to `scr_mm_cmd_maps`, you can now append 1, 2, 3, etc at end for more maps (e.g `"scr_mm_cmd_maps1"`)
-  * Optimized `namefix()` function
+  2.7.2
+  * Added option for rifles only to `!rifles` command
+  * Fixes problem with instantkill and damagemarker enabled at the same time (negative value)
+  * Minor code cleanup
 
-  3.0.2
-  * Added `!respawn` command. This command will not respawn the player in full, just move the player to a new fresh spawnpoint (e.g to free stuck players)
-  * Updated output of `!status` command to be more readable
-  * Updated `!weapon` command to support partial names, grenades and pistols (e.g `!weapon 5 nagant_sniper`). Requested by hehu
-  * Improved spawn protection with new code from funmod
-  * Fixes server crash on player disconnect using some of Cheese's commands
-
-  3.0.3
-  * Updated `!who` and playerlist (when multiple matches found) to be more readable like `!status`
-  * Fixes spawncamper headicon not displaying properly
-  * Added `scr_mm_meleekill` for instant kill on melee
-
-  3.0.4
-  * Added chat anti-spam. Requested by TheGreatGatsby
-  * Fixes a bug with `!unban` command
-
-  3.0.5
-  * Need latest version of `codextended.so`: https://github.com/xtnded/codextended/blob/stable/bin/codextended.so
-  * Cleanup some unused and commented code
-  * Improvements to ban detection, banfile loading and `!ban`/`!unban` commands
-  * Added dftd's `serverName()` function (e.g `scr_mm_scoreboard_text "^2My Server"` or change to `"namefix"` to remove squares and illegal chars)
-
-  3.0.6
-  * Fixes rare race condition introduced in 3.0.5 for `!unban` command
-  * Added new command `!wmap` to adjust CoDaM's weapon_map feature
-  * Improvements to `!pistols` command, new arguments: `"on"`, `"empty"`, `"disable" `or a number of bullets in the chamber (e.g `!pistols 3, for 3 bullets`)
-  * Minor adjustment to some commands code
-  * Improvements to `validate_number()` function
-  * Adjustments to BEL menu code
-  * Workaround for CoDaM's weapon map code that force noMap under some conditions (`set scr_mm_wmap_force "1"` to enable) (the code is very hacky, don't use if you don't have to). Requested by TheGreatGatsby the ungrateful
-  * Added new command `!meleekill <on|off>` to change instant kill on melee
-
-  3.0.7
-  * Adjusted `!pistols` command to include "chamber" or "clip" in case you want it to reload or not on spawn (`set scr_mm_allow_pistols_ammotype ""`)
-  * Added new CVAR `scr_mm_meleekill_ignore` (values: `bolt`, `secondary`, `primary`, `grenade`). Requested by AJ
-  * Improved `!mute` command with "list", to see muted players. (e.g `!mute list`)
-  * Fixes bug with `!mute` command where some player ID was name causing some of the mutes not to be saved across maps
-  * Fixes a typo in `!wmap` description and also fixes banned player display "Disconnected" instead of "Banned" when banned
-  * Added new command `!teleport <player> (<player>|<x> <y> <z>)`
-  * Fixes players getting stuck when spawning/moving to a player position, revamp of old code used to fix blocked spawnpoints etc
-
-  3.0.8
-  * Added new command `!teambalance <on|off|force>`
-  * Added new command `!swapteams`
-  * Fixes a bug in meleefight where people can drop their weapons right before the fight starts and pick it up again
-  * Added new command `!freeze <on|off> <num|all>`
-  * Corrected CVAR `scr_mm_msg1` and `2`, in `MiscMod.cfg`, to `scr_mm_msgb1` and `scr_mm_msgb2`
-  * Added CVAR `scr_mm_emptymap`. When server is empty, switch to this map
-  * Added CVAR `scr_mm_rename` and `scr_mm_renameto` which will rename a connecting player to a fixed name based on keywords
-  * Added CVAR `scr_mm_removemaps_playercount`
-  * Fix bug where a `!command <num>` would cause crash in some cases, discoverd by Frisky, reported and tested by AJ
-
-  3.0.9
-  * Fixed a problem with global `level.bans` when no users/groups set in MiscMod. (Thanks Cheese, for discovering this)
+  2.7.1
+  * Fixes bug with current working directory, default is now set to `fs_basepath` + `"/main/"`
+  * New CVAR to specify a different working directory or share the same director
