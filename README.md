@@ -17,6 +17,8 @@
 
   NOTE:  Must be loaded before CoDaM_HamGoodies due to conflicting takeover (or any other mod for that matter).
   This mod is not made compatible with other mods and only compatible with CoDExtended as is by php.
+  
+  A full guide on how to configure and setup MiscMod can be found [here](https://cod.pm/guide/d0da8d/installing-and-configuring-codam-miscmod).
 
 ## 2) CONFIGURATION
 
