@@ -1,51 +1,6 @@
 /*
  * Misc Mod Misc Mod Misc (mm_mmm)
  */
-// fixes names for linux servers so they don't crash
-// 22-10-2021 just thinking about this code and realize the redundant code this should be recoded and optimized
-/*namefix(normalName)
-{
-	if(!isDefined(normalName))
-		return "";
-
-	allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!'#/&()=?+`^~*-.,;<>|$�@:[]{}_ ";
-
-	badName = false;
-
-	for(i = 0; i < normalName.size; i++) {
-		matchFound = false;
-
-		for(z = 0; z < allowedChars.size; z++) {
-			if(normalName[i] == allowedChars[z]) {
-				matchFound = true;
-				break;
-			}
-		}
-
-		if(!matchFound) {
-			badName = true;
-			break;
-		}
-	}
-
-	if(badName) {
-		fixedName = "";
-
-		for(i = 0; i < normalName.size; i++) {
-			for(z = 0; z < allowedChars.size; z++) {
-				if(normalName[i] == allowedChars[z]) {
-					fixedName += normalName[i];
-					break;
-				}
-			}
-		}
-
-		//self setClientCvar("name", fixedName);
-		return fixedName;
-	}
-
-	return normalName;
-}*/
 
 // 22-10-2021: new namefix() function
 namefix(playername)
@@ -199,25 +154,6 @@ strTok(text, separator) // new attemt to fix double, tripple delimiter, etc
 
 	return tokens;
 }
-
-/*strTok(longStr, separator)
-{
-	sepcount = 0; // seperations count, -1 is default
-	string = [];
-	longStr += ""; // turn it into a string if it isn't already
-	for(i = 0; i < longStr.size; i++) {
-		if(longStr[i] == separator)
-			sepcount++;
-		else {
-			if(!isDefined(string[sepcount]))
-				string[sepcount] = "";
-
-			string[sepcount] += longStr[i];
-		}
-	}
-
-	return string;
-}*/
 
 strTru(str, len, ind)
 {
@@ -486,37 +422,6 @@ deletePlacedEntity(sEntityType)
 		eEntities[i] delete();
 }
 
-// _newspawn(position, angles, recursive)
-// {
-// 	newspawn = [];
-//
-// 	// doublecheck and recode...
-// 	for(i = 0; i < 360; i += 36) {
-// 		angle = (0, i, 0);
-//
-// 		trace = bulletTrace(position, position + maps\mp\_utility::vectorscale(anglesToForward(angle), 48), true, self); // vectorscale change from 40 to 42
-// 		if(trace["fraction"] == 1 && !positionWouldTelefrag(trace["position"]) && _canspawnat(trace["position"])) {
-// 			self spawn(trace["position"], angles);
-// 			return trace["position"];
-// 		}
-//
-// 		newspawn[newspawn.size] = trace["position"];
-// 		wait 0.05;
-// 	}
-//
-// 	// doublecheck and recode...
-// 	if(!isDefined(recursive)) {
-// 		for(j = 0; j < newspawn.size; j++) {
-// 			if(isDefined(newspawn[j]))
-// 				self thread _newspawn(newspawn[j], angles, true);
-// 		}
-//
-// 		wait 3;
-//
-// 		return position; // giving up, push anyways
-// 	}
-// }
-
 _newspawn(position, angles, recursive) // 2022 code: threads for recursive?
 {
 	newspawn = [];
@@ -543,23 +448,6 @@ _newspawn(position, angles, recursive) // 2022 code: threads for recursive?
 		return position; // giving up, push anyways
 	}
 }
-
-// _canspawnat(position)
-// {
-// 	position = position + (-32, -32, 0);
-//
-// 	trace = [];
-// 	for(x = 0; x < 32; x++) {
-// 		for(y = 0; y < 32; y++) {
-// 			trace[y] = bulletTrace(position + (x, y, 0), position + (x, y, 72), true, self);
-//
-// 			if(trace[y]["fraction"] != 1)
-// 				return false;
-// 		}
-// 	}
-//
-// 	return true;
-// }
 
 _canspawnat(position) // 2022 code: this fixes bug introduced by original coder, like 12+ years ago...
 {
@@ -724,39 +612,6 @@ mmlog(msg)
 	}
 
 	level.mmlogactive = undefined;
-}*/
-
-/*getPlayerByNameOrNum(input) // not in use currently
-{
-	if(validate_number(input)) {
-		player = GetEntByNum(input);
-		if(!isDefined(player))
-			message_player("^1ERROR: ^7No matches for numeric argument '" + input + "'.");
-		return player;
-	}
-
-	players = getPlayersByName(input);
-
-	if(players.size == 1)
-		return players[0];
-
-	if(players.size == 0) {
-		message_player("^1ERROR: ^7No matches for string argument '" + input + "'.");
-	} else {
-		message_player("^1ERROR: ^7Too many matches for string argument '" + input + "'.");
-		message_player("-------------------- --------------------------------");
-		for(i = 0; i < players.size; i++) {
-			if(i < 9) spaces = "   ";
-			else spaces = "  ";
-
-			for(s = spaces.size; s < 20; s++)
-				spaces += " ";
-
-			message_player(players[i] getEntityNumber() + ":" + spaces + namefix(players[i].name) + " ^1[^7Score: " + players[i].score + " | Ping: " + players[i] getping() + "^1]^7");
-		}
-	}
-
-	return undefined;
 }*/
 
 message_player(msg, player)
