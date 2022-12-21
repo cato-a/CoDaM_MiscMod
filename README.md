@@ -1,5 +1,9 @@
 # CoDaM MiscMod 3.0.x
 
+## 0) DOWNLOAD
+
+[CoDaM_MiscMod_v3.0.8_for_codextended](https://de.dvotx.org/dump/cod1/CoDaM_MiscMod_v3.0.8_for_codextended.zip)
+ 
 ## 1) HOW TO INSTALL
 
   codam\modlist.gsc:
