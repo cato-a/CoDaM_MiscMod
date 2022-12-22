@@ -6,7 +6,7 @@
  
 ## 1) HOW TO INSTALL
 
-  codam\modlist.gsc:
+  Edit `codam\modlist.gsc`:
   ```gsc
   level.topText = &"<your text>";
   [[ register ]]( "Cato's MiscMod", codam\miscmod::main );
@@ -15,7 +15,7 @@
   File `miscmod_bans.dat` must be created in the main folder and writeable by the server (or it will crash).
   The ban capabilities is low level and intended only for small servers or single standalone servers.
 
-  NOTE:  Must be loaded before CoDaM_HamGoodies due to conflicting takeover (or any other mod for that matter).
+  **NOTE:** Must be loaded before CoDaM_HamGoodies due to conflicting takeover (or any other mod for that matter).
   This mod is not made compatible with other mods and only compatible with CoDExtended as is by php.
   
   A full guide on how to configure and setup MiscMod can be found [here](https://cod.pm/guide/d0da8d/installing-and-configuring-codam-miscmod).
@@ -28,80 +28,80 @@
 
 ## 3) COMMANDS
 
-  NOTE: `<num>` can be replaced with a string and a player number will be matched based on the string.
+  NOTE: `<num>` can be replaced with text (e.g a playername) and a player number will be matched based on the string.
 
 ```plaintext
-  Command:                              Description:                                                Permission ID:
+Command:                              Description:                                                Permission ID:
 
-  !login <user> <pass>                  Login to access commands.                                   0 - always default
-  !help                                 Display this help.                                          1 - default
-  !version                              Display MiscMod version.                                    2 - default
-  !name <new name>                      Change name.                                                3 - default
-  !fov <value>                          Set field of view.                                          4 - default
-  !rename <num> <new name>              Change name of a player.                                    5
-  !logout                               Logout.                                                     6
-  !say <message>                        Say a message with group as prefix.                         7
-  !saym <message>                       Print a message in the middle of the screen.                8
-  !sayo <message>                       Print a message in the obituary.                            9
-  !kick <reason>                        Kick a player.                                              10
-  !reload                               Reload MiscMod commands and settings.                       11
-  !restart (*)                          Restart map (soft).                                         12
-  !endmap                               End the map.                                                13
-  !map <mapname> (gametype)             Change map and gametype.                                    14
-  !status                               List players.                                               15
-  !mute <num>                           Mute player.                                                16
-  !unmute <num>                         Unmute player.                                              17
-  !warn <num> <message>                 Warn player.                                                18
-  !kill <num>                           Kill player.                                                19
-  !weapon <num> <weapon>                Give weapon to player.                                      20
-  !heal <num>                           Heal player.                                                21
-  !invisible <on|off>                   Become invisible.                                           22
-  !ban <num>                            Ban player.                                                 23
-  !unban <ip>                           Unban player.                                               24
-  !pm <player> <message>                Private message a player.                                   25
-  !re <message>                         Respond to private message.                                 26
-  !who                                  Display logged in users.                                    27
+!login <user> <pass>                  Login to access commands.                                   0 - always default
+!help                                 Display this help.                                          1 - default
+!version                              Display MiscMod version.                                    2 - default
+!name <new name>                      Change name.                                                3 - default
+!fov <value>                          Set field of view.                                          4 - default
+!rename <num> <new name>              Change name of a player.                                    5
+!logout                               Logout.                                                     6
+!say <message>                        Say a message with group as prefix.                         7
+!saym <message>                       Print a message in the middle of the screen.                8
+!sayo <message>                       Print a message in the obituary.                            9
+!kick <reason>                        Kick a player.                                              10
+!reload                               Reload MiscMod commands and settings.                       11
+!restart (*)                          Restart map (soft).                                         12
+!endmap                               End the map.                                                13
+!map <mapname> (gametype)             Change map and gametype.                                    14
+!status                               List players.                                               15
+!mute <num>                           Mute player.                                                16
+!unmute <num>                         Unmute player.                                              17
+!warn <num> <message>                 Warn player.                                                18
+!kill <num>                           Kill player.                                                19
+!weapon <num> <weapon>                Give weapon to player.                                      20
+!heal <num>                           Heal player.                                                21
+!invisible <on|off>                   Become invisible.                                           22
+!ban <num>                            Ban player.                                                 23
+!unban <ip>                           Unban player.                                               24
+!pm <player> <message>                Private message a player.                                   25
+!re <message>                         Respond to private message.                                 26
+!who                                  Display logged in users.                                    27
 
-  !drop <num> <height>                  Drop a player.                                              28
-  !spank <num> <time>                   Spank a player.                                             29
-  !slap <num> <damage>                  Slap a player.                                              30
-  !blind <num> <time>                   Blind a player.                                             31
-  !runover <num>                        Run over a player.                                          32
-  !squash <num>                         Squash a player.                                            33
-  !rape <num>                           Rape a player.                                              34
-  !toilet <num>                         Turn player into a toilet.                                  35
+!drop <num> <height>                  Drop a player.                                              28
+!spank <num> <time>                   Spank a player.                                             29
+!slap <num> <damage>                  Slap a player.                                              30
+!blind <num> <time>                   Blind a player.                                             31
+!runover <num>                        Run over a player.                                          32
+!squash <num>                         Squash a player.                                            33
+!rape <num>                           Rape a player.                                              34
+!toilet <num>                         Turn player into a toilet.                                  35
 
-  !explode <num>                        Explode a player.                                           36
-  !force <axis|allies|spectator> <num|all> (...)  Force players to team.                            37
-  !mortar <num>                         Mortar a player.                                            38
-  !matrix                               Matrix.                                                     39
-  !burn <num>                           Burn a player.                                              40
-  !cow <num>                            BBQ a player.                                               41
-  !disarm <num>                         Disarm a player.                                            42
+!explode <num>                        Explode a player.                                           36
+!force <axis|allies|spectator> <num|all> (...)  Force players to team.                            37
+!mortar <num>                         Mortar a player.                                            38
+!matrix                               Matrix.                                                     39
+!burn <num>                           Burn a player.                                              40
+!cow <num>                            BBQ a player.                                               41
+!disarm <num>                         Disarm a player.                                            42
 
-  !os                                   Snipers only.                                               43
-  !aw (*)                               All weapons (1 sniper).                                     44
-  !omp                                  Only machine guns.                                          45
-  !rifles <on|off|only>                 Rifle settings.                                             46
-  !health <off|0|1|2|3>                 Health settings.                                            47
-  !grenade <off|0|1|2|3|reset>          Grenade settings.                                           48
-  !pistols <on|off|reset>               Pistol settings.                                            49
-  !1sk <on|off>                         Enable or disable instant kill.                             50
-  !roundlength <time>                   Set roundlength. (sd|re)                                    51
-  !psk <on|off>                         Enable or disabl instant kill on pistols.                   52
-  !belmenu <on|off>                     Enable BEL menu instead of normal menu.                     53
-  !report <on|off>                      Report a player.                                            54
-  !plist                                List players without IP.                                    55
-  !rs                                   Reset your scores in the scoreboard.                        56
-  !optimize                             Change a players connection settings.                       57
-  !pcvar <num> <cmd> <value>            Change client cvars.                                        58
-  !respawn <num> <sd|dm|tdm>            Move player to a new spawnpoint.                            59
-  !wmap <wapon=map>                     Change CoDaM's weapon_map setting.                          60
-  !meleekill <on|off>                   Enable or disable scr_mm_meleekill.                         61
-  !teleport <num> (<num>|<x> <y> <z>)   Teleport a player to a player or (x, y, z) coordinates.     62
-  !teambalance <on|off|force>           Adjust team balance settings or force a team balance.       63
-  !swapteams                            Swap teams.                                                 64
-  !freeze <on|off> <num|all>            Freeze certain players (on the map).                        65
+!os                                   Snipers only.                                               43
+!aw (*)                               All weapons (1 sniper).                                     44
+!omp                                  Only machine guns.                                          45
+!rifles <on|off|only>                 Rifle settings.                                             46
+!health <off|0|1|2|3>                 Health settings.                                            47
+!grenade <off|0|1|2|3|reset>          Grenade settings.                                           48
+!pistols <on|off|reset>               Pistol settings.                                            49
+!1sk <on|off>                         Enable or disable instant kill.                             50
+!roundlength <time>                   Set roundlength. (sd|re)                                    51
+!psk <on|off>                         Enable or disabl instant kill on pistols.                   52
+!belmenu <on|off>                     Enable BEL menu instead of normal menu.                     53
+!report <on|off>                      Report a player.                                            54
+!plist                                List players without IP.                                    55
+!rs                                   Reset your scores in the scoreboard.                        56
+!optimize                             Change a players connection settings.                       57
+!pcvar <num> <cmd> <value>            Change client cvars.                                        58
+!respawn <num> <sd|dm|tdm>            Move player to a new spawnpoint.                            59
+!wmap <wapon=map>                     Change CoDaM's weapon_map setting.                          60
+!meleekill <on|off>                   Enable or disable scr_mm_meleekill.                         61
+!teleport <num> (<num>|<x> <y> <z>)   Teleport a player to a player or (x, y, z) coordinates.     62
+!teambalance <on|off|force>           Adjust team balance settings or force a team balance.       63
+!swapteams                            Swap teams.                                                 64
+!freeze <on|off> <num|all>            Freeze certain players (on the map).                        65
 ```
 
 ## 4) ABOUT
