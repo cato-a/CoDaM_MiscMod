@@ -183,7 +183,7 @@
   * Commands have new numbers, permissions must be updated
   * Fixes issue with 999 kicker and clients download maps (999 kicker auto disables)
   * Fixes bug in `strTok` function that causes a crash on double, tripple delimiters, etc
-  * Recoded `msgBroadcast` to follow a queue of messages regardless or round/map changes
+  * Recoded `msgBroadcast` function to follow a queue of messages regardless or round/map changes
   * Added `!pcvar` command
   * Removed `!fps` command (can be used with `!pcvar` instead, e.g `!pcvar <num> fps 125`)
   * Fixes `!help` command booting client after 85+ commands
@@ -192,7 +192,7 @@
   * Fixes bug regarding banfile (does not happen in normal mode, only developer)
   * Fixes bug with localized string, hud, freezing on menu
   * Added an extra check to `!re` command
-  * Added !report that writes to miscmod_reports.dat (copy from momo74 code, which is basically my code)
+  * Added `!report` that writes to `miscmod_reports.dat` (copy from momo74 code, which is basically my code)
   * Fixes bug with BEL menu
   * Added `scr_mm_badwords<1,2,...>` CVAR and badwords - requested by ImNoob
   * Added `scr_mm_badwords_checknames` to check if also names contain badwords
@@ -215,7 +215,7 @@
   2.7.5
   * Added 1 shot kill pistol option
   * Added `!psk` command
-  * Added optional show IP in !status command
+  * Added optional show IP in `!status` command
   * Integrated Endless Menu into MiscMod per requests
   * Changed the bottom MiscMod version text
   * Added `!belmenu` command
