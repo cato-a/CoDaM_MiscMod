@@ -145,8 +145,8 @@ Command:                              Description:                              
 
   3.0.6
   * Fixes rare race condition introduced in 3.0.5 for `!unban` command
-  * Added new command `!wmap` to adjust CoDaM's weapon_map feature
-  * Improvements to `!pistols` command, new arguments: `"on"`, `"empty"`, `"disable" `or a number of bullets in the chamber (e.g `!pistols 3, for 3 bullets`)
+  * Added new command `!wmap` to adjust CoDaM's weaponmap feature
+  * Improvements to `!pistols` command, new arguments: `"on"`, `"empty"`, `"disable" `or a number of bullets in the chamber (e.g `!pistols 3`, for 3 bullets)
   * Minor adjustment to some commands code
   * Improvements to `validate_number()` function
   * Adjustments to BEL menu code
@@ -238,4 +238,4 @@ Command:                              Description:                              
 
   2.7.1
   * Fixes bug with current working directory, default is now set to `fs_basepath` + `"/main/"`
-  * New CVAR to specify a different working directory or share the same director
+  * New CVAR to specify a different working directory or share the same directory
