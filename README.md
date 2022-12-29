@@ -122,6 +122,7 @@ Command:                              Description:                              
 
   3.0.9
   * Fixed a problem with global `level.bans` when no users/groups set in MiscMod. (Thanks Cheese, for discovering this)
+  * Minor adjustments to some messages in `_mm_commands.gsc`
 
   3.0.8
   * Added new command `!teambalance <on|off|force>`

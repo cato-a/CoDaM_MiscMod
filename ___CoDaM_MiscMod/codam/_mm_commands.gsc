@@ -1248,7 +1248,7 @@ cmd_kill(args)
 	if(isAlive(player)) {
 		player suicide();
 		message_player("^5INFO: ^7You killed " + codam\_mm_mmm::namefix(player.name) + "^7.");
-		message_player("^5INFO: You were killed by " + codam\_mm_mmm::namefix(self.name) + "^7.", player);
+		message_player("^5INFO: ^7You were killed by " + codam\_mm_mmm::namefix(self.name) + "^7.", player);
 	} else
 		message_player("^1ERROR: ^7Player must be alive.");
 }
@@ -3265,7 +3265,7 @@ cmd_optimize(args)
 	player setClientCvar("snaps", 40);
 
 	message_player("^5INFO: ^7Player " + codam\_mm_mmm::namefix(player.name) + " ^7connection settings optimized.");
-	message_player("^5INFO: " + codam\_mm_mmm::namefix(self.name) + " ^7modifed your 'rate', 'snaps' and 'cl_maxpackets' to optimal values.", player);
+	message_player("^5INFO: ^7" + codam\_mm_mmm::namefix(self.name) + " ^7modifed your 'rate', 'snaps' and 'cl_maxpackets' to optimal values.", player);
 }
 
 cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
@@ -3358,7 +3358,7 @@ cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
 	player setClientCvar(cvar, cval);
 
 	message_player("^5INFO: ^7" + cvar + " set with value " + cval + " on player " + codam\_mm_mmm::namefix(player.name) + "^7.");
-	message_player("^5INFO: " + codam\_mm_mmm::namefix(self.name) + " ^7changed your client cvar " + cvar + " to " + cval + ".", player);
+	message_player("^5INFO: ^7" + codam\_mm_mmm::namefix(self.name) + " ^7changed your client cvar " + cvar + " to " + cval + ".", player);
 }
 
 cmd_respawn(args)
