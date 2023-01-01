@@ -3440,6 +3440,100 @@ cmd_respawn(args)
 		message_player("^1ERROR: ^7Problem with new spawnpoint, run command again.");
 }
 
+// cmd_teleport(args)
+// {
+// 	if(args.size == 1) { // from MiscMod command uuma
+// 		self iPrintLn("^5Origin: ^1" + self.origin[0] + ", ^2" + self.origin[1] + ", ^3" + self.origin[2]);
+// 		self iPrintLn("^6Angles: ^1" + self.angles[0] + ", ^2" + self.angles[1] + ", ^3" + self.angles[2]);
+// 		return;
+// 	}
+
+// 	if(args.size == 2) {
+// 		message_player("^1ERROR: ^7Invalid number of arguments, should be none, two or five.");
+// 		return;
+// 	}
+
+// 	args1 = args[1]; // num | string
+// 	if(codam\_mm_mmm::validate_number(args1)) {
+// 		player1 = codam\_mm_mmm::playerByNum(args1);
+// 		if(!isDefined(player1)) {
+// 			message_player("^1ERROR: ^7No such player (" +  args1 + ").");
+// 			return;
+// 		}
+// 	} else {
+// 		player1 = playerByName(args1);
+// 		if(!isDefined(player1)) return;
+// 	}
+
+// 	if(args.size == 3) {
+// 		args2 = args[2]; // num | string
+// 		if(codam\_mm_mmm::validate_number(args2)) {
+// 			player2 = codam\_mm_mmm::playerByNum(args2);
+// 			if(!isDefined(player2)) {
+// 				message_player("^1ERROR: ^7No such player (" +  args2 + ").");
+// 				return;
+// 			}
+// 		} else {
+// 			player2 = playerByName(args2);
+// 			if(!isDefined(player2)) return;
+// 		}
+
+// 		self endon("spawned");
+// 		self endon("disconnect");
+
+// 		toplayerorigin = player2.origin;
+// 		for(i = 0; i < 360; i += 36) {
+// 			angle = (0, i, 0);
+
+// 			trace = bulletTrace(toplayerorigin, toplayerorigin + maps\mp\_utility::vectorscale(anglesToForward(angle), 48), true, self);
+// 			if(trace["fraction"] == 1 && !positionWouldTelefrag(trace["position"]) && codam\_mm_mmm::_canspawnat(trace["position"])) {
+// 				player1 setPlayerAngles(self.angles);
+// 				player1 setOrigin(trace["position"]);
+// 				message_player("^5INFO: ^7You were teleported to player: " + codam\_mm_mmm::namefix(player2.name) + "^7.", player1);
+// 				return;
+// 			}
+
+// 			wait 0.05;
+// 		}
+
+// 		message_player("^1ERROR: ^7Unable to teleport to player: " + codam\_mm_mmm::namefix(player2.name) + "^7.");
+// 		return;
+// 	}
+
+// 	if(args.size != 5) {
+// 		message_player("^1ERROR: ^7Invalid number of arguments, should be none, two or five.");
+// 		return;
+// 	}
+
+// 	if(codam\_mm_mmm::validate_number(args[2], true)
+// 		&& codam\_mm_mmm::validate_number(args[3], true)
+// 		&& codam\_mm_mmm::validate_number(args[4], true)) {
+// 		x = (float)args[2];
+// 		if(x == 0)
+// 			x = self.origin[0];
+
+// 		y = (float)args[3];
+// 		if(y == 0)
+// 			y = self.origin[1];
+
+// 		z = (float)args[4];
+// 		if(z == 0)
+// 			z = self.origin[2];
+// 	} else {
+// 		message_player("^1ERROR: ^7x, y and/or z is not a number.");
+// 		return;
+// 	}
+
+// 	if(player1 != self) {
+// 		message_player("^5INFO: ^7You teleported to coordinates (" + x + ", " + y + ", " + z + ") player " + codam\_mm_mmm::namefix(player1.name) + "^7.");
+// 		message_player("^5INFO: ^7You were teleported to coordinates (" + x + ", " + y + ", " + z + ") by " + codam\_mm_mmm::namefix(self.name) + "^7.", player1);
+// 	} else
+// 		message_player("^5INFO: ^7You teleported yourself to coordinates (" + x + ", " + y + ", " + z + ").");
+
+// 	player1 setPlayerAngles(self.angles);
+// 	player1 setOrigin((x, y, z));
+// }
+
 cmd_teleport(args)
 {
 	if(args.size == 1) { // from MiscMod command uuma
@@ -3489,14 +3583,21 @@ cmd_teleport(args)
 			if(trace["fraction"] == 1 && !positionWouldTelefrag(trace["position"]) && codam\_mm_mmm::_canspawnat(trace["position"])) {
 				player1 setPlayerAngles(self.angles);
 				player1 setOrigin(trace["position"]);
-				message_player("^5INFO: ^7You were teleported to player: " + codam\_mm_mmm::namefix(player2.name) + "^7.", player1);
+				if(player1 != self) {
+					if(player2 != self)
+						message_player("^5INFO: ^7You teleported " + codam\_mm_mmm::namefix(player1.name) + " to player " + codam\_mm_mmm::namefix(player2.name) + "^7.");
+					else
+						message_player("^5INFO: ^7You teleported " + codam\_mm_mmm::namefix(player1.name) + " to yourself.");
+					message_player("^5INFO: ^7You were teleported to player " + codam\_mm_mmm::namefix(player2.name) + "^7.", player1);
+				} else
+					message_player("^5INFO: ^7You teleported yourself to player " + codam\_mm_mmm::namefix(player2.name) + "^7.");
 				return;
 			}
 
 			wait 0.05;
 		}
 
-		message_player("^1ERROR: ^7Unable to teleport to player: " + codam\_mm_mmm::namefix(player2.name) + "^7.");
+		message_player("^1ERROR: ^7Unable to teleport to player " + codam\_mm_mmm::namefix(player2.name) + "^7.");
 		return;
 	}
 
