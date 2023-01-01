@@ -177,9 +177,6 @@ _load()
 
 	// BEL menu
 	if(codam\utils::getVar("scr_mm", "bel_menu", "bool", 0, false)) {
-		//game["menu_team"] = "team_" + game["allies"] + game["axis"];
-		//precacheMenu(game["menu_team"]);
-
 		game["menu_weapon_all"] = "weapon_" + game["allies"] + game["axis"];
 		precacheMenu(game["menu_weapon_all"]);
 
@@ -377,15 +374,8 @@ _finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWea
 				return; // showdown immunize
 		}
 
-		//if(isDefined(eAttacker.fastfire) && (codam\_mm_mmm::isBoltWeapon(sWeapon) && sMeansOfDeath != "MOD_MELEE"))
-		//	return;
-
 		if(codam\utils::getVar("scr_mm", "headshots", "bool", 1|2, false) && sHitLoc != "head")
 			return;
-
-		// showdown immunize
-		//if(isDefined(level.showdownactive) && sMeansOfDeath != "MOD_MELEE")
-		//	return;
 
 		if(isDefined(self.spawnprotected) && self.spawnprotected)
 			return;

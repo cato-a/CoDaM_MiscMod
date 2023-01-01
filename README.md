@@ -88,13 +88,14 @@ Command:                              Description:                              
 !pistols <on|off|reset>               Pistol settings.                                            49
 !1sk <on|off>                         Enable or disable instant kill.                             50
 !roundlength <time>                   Set roundlength. (sd|re)                                    51
+
 !psk <on|off>                         Enable or disabl instant kill on pistols.                   52
 !belmenu <on|off>                     Enable BEL menu instead of normal menu.                     53
 !report <on|off>                      Report a player.                                            54
 !plist                                List players without IP.                                    55
 !rs                                   Reset your scores in the scoreboard.                        56
 !optimize                             Change a players connection settings.                       57
-!pcvar <num> <cmd> <value>            Change client cvars.                                        58
+!pcvar <num> <cmd> <value>            Set/modify a client CVAR.                                   58
 !respawn <num> <sd|dm|tdm>            Move player to a new spawnpoint.                            59
 !wmap <wapon=map>                     Change CoDaM's weapon_map setting.                          60
 !meleekill <on|off>                   Enable or disable scr_mm_meleekill.                         61
@@ -103,7 +104,7 @@ Command:                              Description:                              
 !swapteams                            Swap teams.                                                 64
 !freeze <on|off> <num|all>            Freeze certain players (on the map).                        65
 !move <num> <u|d|l|r|f|b> <units>     Move player in specified direction by specified units.      66
-!scvar <cvar> <value>                 Set a server CVAR.                                          67
+!scvar <cvar> <value>                 Set/modify a server CVAR.                                   67
 ```
 
 ## 4) ABOUT
@@ -123,15 +124,8 @@ Command:                              Description:                              
 ## 6) CHANGELOG
 
   3.0.9
+  * **Going forward check git commit history for changes**
   * Fixed a problem with global `level.bans` when no users/groups set in MiscMod. (Thanks Cheese, for discovering this)
-  * Minor adjustments to some messages in `_mm_commands.gsc`
-  * Improved `!teleport` command
-  * Added new command `!move`
-  * Added new command `!scvar`
-  * Login username is now case-insensitive
-  * Improved `!help` command
-  * Improved `command()` function log to include name, ip, args in server console
-  * Improved `command()` function console messages in game
 
   3.0.8
   * Added new command `!teambalance <on|off|force>`

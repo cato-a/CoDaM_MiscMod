@@ -29,16 +29,10 @@ array_shuffle(arr)
 		return undefined;
 
 	for(i = 0; i < arr.size; i++) {
-		// Store the current array element in a variable
-		_tmp = arr[i];
-
-		// Generate a random number
-		rN = randomInt(arr.size);
-
-		// Replace the current with the random
-		arr[i] = arr[rN];
-		// Replace the random with the current
-		arr[rN] = _tmp;
+		_tmp = arr[i]; // Store the current array element in a variable
+		rN = randomInt(arr.size); // Generate a random number
+		arr[i] = arr[rN]; // Replace the current with the random
+		arr[rN] = _tmp; // Replace the random with the current
 	}
 
 	return arr;
@@ -310,40 +304,7 @@ getPlayersByName(n1)
 	return a;
 }
 
-/*contains(sString, sOtherString) // from Cheese
-{
-	// loop through the string to check
-	for(i = 0; i < sString.size; i++) {
-		x = 0;
-		tmp = "";
-
-		// string to check against
-		for(j = 0; j < sOtherString.size; j++) {
-				cur = sOtherString[j];
-
-				if((i + j) > sString.size)
-					break;
-
-				next = sString[i + j];
-
-				if(cur == next) {
-					tmp += cur;
-					x++;
-					continue;
-				}
-
-				break;
-		}
-
-		// looped through entire string, found it
-		if(x == sOtherString.size && tmp == sOtherString)
-			return true;
-	}
-
-	return false;
-}*/
-
-pmatch(s, p) // my attempt! Cheeses crashes out of index !!!! Should it be: if((i + j) >= sString.size -1) ????
+pmatch(s, p)
 {
 	if(p.size > s.size)
 		return false;
@@ -580,39 +541,6 @@ mmlog(msg)
 	printconsole(msg + "\n");
 	logPrint(msg + "\n");
 }
-
-/*mmlogfile(data, type) // data = str,arr | type = "str","arr"
-{
-	if(!isDefined(data))
-		return;
-
-	if(isDefined(level.mmlogfile))
-		level waittil("mmlogactive");
-
-	if(!isDefined(type))
-		type = "str";
-
-	if(!isDefined(level.mmlogfile))
-		level.mmlogfile = "miscmod_cmdlog.dat"; // ident: <log data> e.g login: username - password
-
-	level.mmlogactive = true;
-	filename = level.workingdir + level.mmlogfile;
-	if(fexists(filename)) {
-		file = fopen(filename, "a"); // append
-		if(file != -1) {
-			if(type == "str")
-				fwrite(data, file);
-			else {
-				for(i = 0; i < data.size; i++)
-					fwrite(data[i], file);
-			}
-		}
-
-		fclose(file);
-	}
-
-	level.mmlogactive = undefined;
-}*/
 
 message_player(msg, player)
 {
