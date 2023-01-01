@@ -120,6 +120,7 @@ init()
 	/*64*/commands(level.prefix + "swapteams",		::cmd_swapteams	, "Swap teams. [" + level.prefix + "swapteams]");
 	/*65*/commands(level.prefix + "freeze",		::cmd_freeze	, "Freeze player(s). [" + level.prefix + "freeze <on|off> <num|all>]");
 	/*66*/commands(level.prefix + "move"		, ::cmd_move		, "Move a player up, down, left, right, forward or backward by specified units. [" + level.prefix + "move <num> <up|down|left|right|forward|backward> <units>]");
+	/*67*/commands(level.prefix + "scvar"		, ::cmd_scvar		, "Set a server CVAR. [" + level.prefix + "scvar <cvar> <value>]");
 
 	level.tmp_mm_weapon_map = getCvar("tmp_mm_weapon_map");
 	if(level.tmp_mm_weapon_map == "") { // cmd_wmap
@@ -177,7 +178,8 @@ command(str)
 		return;
 	}
 
-	if(level.maxmessages > 0 && !isDefined(self.pers["mm_group"])) {
+	isloggedin = (bool)isDefined(self.pers["mm_group"]);
+	if(level.maxmessages > 0 && !isloggedin) {
 		penaltytime = level.penaltytime;
 		if(self.pers["mm_chatmessages"] > level.maxmessages)
 			penaltytime += self.pers["mm_chatmessages"] - level.maxmessages;
@@ -199,7 +201,6 @@ command(str)
 	}
 
 	if(str.size == 1) return; // just 1 letter, ignore
-
 	if(str[0] != level.prefix) { // string index 0 out of range (fixed above)
 		if(isDefined(level.badwords)) {
 			//print message to console with cleaned string say or sayt
@@ -222,29 +223,53 @@ command(str)
 	creturn(); // return in codextended.so
 
 	cmd = codam\_mm_mmm::strTok(str, " "); // is a command with level.prefix
-
 	if(isDefined(level.commands[cmd[0]])) {
-		if(isDefined(self.pers["mm_group"])) { // permissions granted with !login
-			if(permissions(level.perms[self.pers["mm_group"]], level.commands[cmd[0]]["id"]) || level.commands[cmd[0]]["id"] == 0) {
-				codam\_mm_mmm::mmlog("command;" + self.pers["mm_user"] + ";" + self.pers["mm_group"] + ";" + cmd[0]);
-				thread [[ level.commands[cmd[0]]["func"] ]](cmd);
-			} else
-				message_player("^1ERROR: ^7Access denied.");
-		} else {
-			if(permissions(level.perms["default"], level.commands[cmd[0]]["id"], true) || level.commands[cmd[0]]["id"] == 0)
-				thread [[ level.commands[cmd[0]]["func"] ]](cmd);
+		perms = level.perms["default"];
+
+		cmduser = "none";
+		cmdgroup = cmduser;
+
+		if(isloggedin) {
+			cmduser = self.pers["mm_user"];
+			cmdgroup = self.pers["mm_group"];
+			perms = codam\_mm_mmm::array_join(perms, level.perms[cmdgroup]);
 		}
+
+		command = cmd[0]; // !something
+		if(command != "!login") {
+			commandargs = "";
+			for(i = 1; i < cmd.size; i++) {
+				if(i > 1)
+					commandargs += " ";
+				commandargs += cmd[i];
+			}
+
+			if(commandargs == "")
+				commandargs = "none";
+
+			codam\_mm_mmm::mmlog("command;" + self getip() + ";" + codam\_mm_mmm::namefix(self.name) + ";" + cmduser + ";" + cmdgroup + ";" + command + ";" + commandargs);
+		}
+
+		commandid = level.commands[command]["id"]; // permission id
+		if(commandid == 0 || permissions(perms, commandid))
+			thread [[ level.commands[command]["func"] ]](cmd);
+		else if(isloggedin)
+			message_player("^1ERROR: ^7Access denied.");
+		else
+			message_player("^1ERROR: ^7No such command. Check your spelling.");
 	} else {
 		if(getCvarInt("scr_mm_rcm_compatibility") > 0) { // RCM compatibility
 			logmessage = "";
 			for(i = 0; i < cmd.size; i++) {
-				logmessage += cmd[i];
-				if(i != cmd.size - 1)
+				if(i > 0)
 					logmessage += " ";
+
+				logmessage += cmd[i];
 			}
 
-			codam\_mm_mmm::mmlog("say;" + self.name + ";" + logmessage);
-		}
+			codam\_mm_mmm::mmlog("say;" + codam\_mm_mmm::namefix(self.name) + ";" + logmessage);
+		} else
+			message_player("^1ERROR: ^7No such command. Check your spelling.");
 	}
 }
 
@@ -296,11 +321,8 @@ badwords_mute(str) // str - mute
 	return cleanstr;
 }*/
 
-permissions(perms, id, def) // "*:<id>:<id1>-<id2>:!<id>" :P
+permissions(perms, id) // "*:<id>:<id1>-<id2>:!<id>" :P
 {
-	if(!isDefined(def))
-		perms = codam\_mm_mmm::array_join(perms, level.perms["default"]); // always allow default permissions if they're not overridden
-
 	wildcard = false;
 	for(i = 0; i < perms.size; i++) {
 		if(perms[i] == "*")
@@ -340,7 +362,7 @@ permissions(perms, id, def) // "*:<id>:<id1>-<id2>:!<id>" :P
 cmd_login(args)
 {
 	if(args.size != 3) {
-		message_player("^1ERROR: ^7Invalid number of arguments.");
+		message_player("^1ERROR: ^7Invalid number of arguments. Use " + args[0] + " <username> <password>");
 		return;
 	}
 
@@ -351,65 +373,64 @@ cmd_login(args)
 
 	loginis = "unsuccessful";
 
-	username = args[1];
-	password = args[2];
+	username = codam\_mm_mmm::namefix(args[1]);
+	password = codam\_mm_mmm::namefix(args[2]);
 
-	if(isDefined(username) && isDefined(password)) {
-		loggedin = getCvar("tmp_mm_loggedin");
-		if(loggedin != "") {
-			loggedin = codam\_mm_mmm::strTok(loggedin, ";");
-			for(i = 0; i < loggedin.size; i++) {
-				user = codam\_mm_mmm::strTok(loggedin[i], "|");
-				if(user[0] == username) {
-					player = codam\_mm_mmm::playerByNum(user[2]);
-					loginis = "loggedin";
-					codam\_mm_mmm::mmlog("login;" + self.name + ";" + loginis + ";" + self getip() + ";" + username + ";" + password);
-					message_player("^5INFO: ^7" + codam\_mm_mmm::namefix(self.name) + " ^7tried to login with your username.", player);
-					message_player("^1ERROR: ^7You shall not pass!");
-					return;
-				}
+	if(username.size < 1 || password.size < 1) {
+		message_player("^1ERROR: ^7You must specify a username and a password.");
+		return;
+	}
+
+	username = tolower(username);
+	loggedin = getCvar("tmp_mm_loggedin");
+	if(loggedin != "") {
+		loggedin = codam\_mm_mmm::strTok(loggedin, ";");
+		for(i = 0; i < loggedin.size; i++) {
+			user = codam\_mm_mmm::strTok(loggedin[i], "|");
+			if(tolower(user[0]) == username) {
+				player = codam\_mm_mmm::playerByNum(user[2]);
+				loginis = "loggedin";
+				codam\_mm_mmm::mmlog("login;" + self.name + ";" + loginis + ";" + self getip() + ";" + username + ";" + password);
+				message_player("^5INFO: ^7" + codam\_mm_mmm::namefix(self.name) + " ^7tried to login with your username.", player);
+				message_player("^1ERROR: ^7You shall not pass!");
+				return;
 			}
 		}
+	}
 
-		for(i = 0; i < level.groups.size; i++) {
-			group = level.groups[i];
-			if(isDefined(group) && isDefined(level.users[group])) {
-				users = level.users[group];
-				for(u = 0; u < users.size; u++) {
-					user = codam\_mm_mmm::strTok(users[u], ":");
-					if(user.size == 2) {
-						if(username == user[0] && password == user[1]) {
-							message_player("You are logged in.");
-							message_player("Group: " + group);
+	for(i = 0; i < level.groups.size; i++) {
+		group = level.groups[i];
+		if(isDefined(group) && isDefined(level.users[group])) {
+			users = level.users[group];
+			for(u = 0; u < users.size; u++) {
+				user = codam\_mm_mmm::strTok(users[u], ":");
+				if(user.size == 2) {
+					if(username == tolower(user[0]) && password == user[1]) {
+						message_player("You are logged in.");
+						message_player("Group: " + group);
 
-							loginis = "successful";
-							codam\_mm_mmm::mmlog("login;" + self.name + ";" + loginis + ";" + self getip() + ";" + username + ";" + password);
+						loginis = "successful";
+						codam\_mm_mmm::mmlog("login;" + self.name + ";" + loginis + ";" + self getip() + ";" + username + ";" + password);
 
-							self.pers["mm_group"]	= group;
-							self.pers["mm_user"]	= username;
+						self.pers["mm_group"] = group;
+						self.pers["mm_user"] = user[0]; // username - as defined in config
 
-							rSTR = "";
-							if(getCvar("tmp_mm_loggedin") != "")
-								rSTR += getCvar("tmp_mm_loggedin");
+						rSTR = "";
+						if(getCvar("tmp_mm_loggedin") != "")
+							rSTR += getCvar("tmp_mm_loggedin");
 
-							rSTR += self.pers["mm_user"];
-							rSTR += "|" + self.pers["mm_group"];
-							rSTR += "|" + self getEntityNumber();
-							rSTR += ";";
+						rSTR += self.pers["mm_user"];
+						rSTR += "|" + self.pers["mm_group"];
+						rSTR += "|" + self getEntityNumber();
+						rSTR += ";";
 
-							setCvar("tmp_mm_loggedin", rSTR);
-							return;
-						}
+						setCvar("tmp_mm_loggedin", rSTR);
+						return;
 					}
 				}
 			}
 		}
 	}
-
-	if(!isDefined(username)) // quickfix -- fixed in strTok, but I guess can never be tooo careful
-		username = "_UNDEFINED_";
-	if(!isDefined(password))
-		password = "_UNDEFINED_";
 
 	codam\_mm_mmm::mmlog("login;" + self.name + ";" + loginis + ";" + self getip() + ";" + username + ";" + password);
 	message_player("^1ERROR: ^7You shall not pass!");
@@ -532,26 +553,24 @@ cmd_help(args)
 
 	message_player("Here is a list of available commands.");
 
+	isloggedin = (bool)isDefined(self.pers["mm_group"]);
+	perms = level.perms["default"];
+	if(isloggedin) {
+		cmdgroup = self.pers["mm_group"];
+		perms = codam\_mm_mmm::array_join(perms, level.perms[cmdgroup]);
+	}
+
 	for(i = 0; i < level.help.size; i++) {
-		if(i == 0 && isDefined(self.pers["mm_group"]))
+		if(i == 0 && isloggedin)
 			continue;
 
 		if(!isDefined(level.help[i]))
 			continue;
 
-		cmd = level.help[i]["cmd"];
-		spaces = "";
-		if(cmd.size < 20)
-			for(s = cmd.size; s < 20; s++)
-				spaces += " ";
-
-		if(isDefined(self.pers["mm_group"])) {
-			if(permissions(level.perms[self.pers["mm_group"]], level.commands[cmd]["id"]))
-				message_player(cmd + spaces + level.commands[cmd]["desc"]);
-		} else {
-			if(permissions(level.perms["default"], level.commands[cmd]["id"], true))
-				message_player(cmd + spaces + level.commands[cmd]["desc"]);
-		}
+ 		cmd = level.help[i]["cmd"];
+		spc = spaces(20 - cmd.size);
+		if(permissions(perms, level.commands[cmd]["id"]))
+			message_player(cmd + spc + level.commands[cmd]["desc"]);
 
 		if(!(i % 15))
 			wait 0.10;
@@ -3887,4 +3906,45 @@ cmd_move(args)
 		player setOrigin(player.origin + dirv);
 	} else
 		message_player("^1ERROR: ^7Player must be alive.");
+}
+
+cmd_scvar(args)
+{
+	if(args.size != 3) {
+		message_player("^1ERROR: ^7Invalid number of arguments.");
+		return;
+	}
+
+	bannedcvars[0] = "rconpassword";
+	bannedcvars[1] = "cl_allowdownload";
+
+	if(!codam\_mm_mmm::in_array(bannedcvars, tolower(cvar))) {
+		cvar = args[1];
+		cval = args[2];
+
+		setCvar(cvar, cval);
+		message_player("^5INFO: ^7Server " + cvar + " set with value " + cval + ".");
+	} else
+		message_player("^1ERROR: ^7This CVAR is not allowed to change.");
+}
+
+cmd_scvar(args)
+{
+	if(args.size != 3) {
+		message_player("^1ERROR: ^7Invalid number of arguments.");
+		return;
+	}
+
+	bannedcvars[0] = "rconpassword";
+	bannedcvars[1] = "cl_allowdownload";
+	bannedcvars[2] = "sv_hostname";
+
+	cvar = codam\_mm_mmm::namefix(args[1]);
+	if(!codam\_mm_mmm::in_array(bannedcvars, tolower(cvar))) {
+		cval = codam\_mm_mmm::namefix(args[2]);
+
+		setCvar(cvar, cval);
+		message_player("^5INFO: ^7Server " + cvar + " set with value " + cval + ".");
+	} else
+		message_player("^1ERROR: ^7This CVAR is not allowed to change.");
 }
