@@ -46,79 +46,80 @@ init()
 	level.commands = [];
 
 	// MiscMod commands
-	commands(level.prefix + "login"	, 	::cmd_login		, "Login to access commands. [" + level.prefix + "login <user> <pass>]");
-	commands(level.prefix + "help"	, 	::cmd_help		, "Display this help. [" + level.prefix + "help]");
-	commands(level.prefix + "version",	::cmd_version		, "Display MiscMod version. [" + level.prefix + "version]");
-	commands(level.prefix + "name"	, 	::cmd_name		, "Change name. [" + level.prefix + "name <new name>]");
-	commands(level.prefix + "fov"	, 	::cmd_fov		, "Set field of view. [" + level.prefix + "fov <value>]");//commands(level.prefix + "test"	, 	::cmd_test		, "Test function. [" + level.prefix + "test]");
-	commands(level.prefix + "rename", 	::cmd_rename		, "Change name of a player. [" + level.prefix + "rename <num> <new name>]");
-	commands(level.prefix + "logout", 	::cmd_logout		, "Logout. [" + level.prefix + "logout]");
-	commands(level.prefix + "say",		::cmd_say		, "Say a message with group as prefix. [" + level.prefix + "say <message>]");
-	commands(level.prefix + "saym",		::cmd_saym		, "Print a message in the middle of the screen. [" + level.prefix + "saym <message>]");
-	commands(level.prefix + "sayo",		::cmd_sayo		, "Print a message in the obituary. [" + level.prefix + "saym <message>]");
-	commands(level.prefix + "kick",		::cmd_kick		, "Kick a player. [" + level.prefix + "kick <num> <reason>]");
-	commands(level.prefix + "reload",	::cmd_reload		, "Reload MiscMod commands. [" + level.prefix + "reload]");
-	commands(level.prefix + "restart",	::cmd_restart		, "Restart map (soft). [" + level.prefix + "restart (*)]");
-	commands(level.prefix + "endmap",	::cmd_endmap		, "End the map. [" + level.prefix + "endmap]");
-	commands(level.prefix + "map",		::cmd_map		, "Change map and gametype. [" + level.prefix + "map <map> (gametype)]");
-	commands(level.prefix + "status",	::cmd_status		, "List players. [" + level.prefix + "status]");
-	commands(level.prefix + "mute",		::cmd_mute		, "Mute player. [" + level.prefix + "mute <num|list>]");
-	commands(level.prefix + "unmute",	::cmd_unmute		, "Unmute player. [" + level.prefix + "unmute <num>]");
-	commands(level.prefix + "warn",		::cmd_warn		, "Warn player. [" + level.prefix + "warn <num> <message>]");
-	commands(level.prefix + "kill",		::cmd_kill		, "Kill a player. [" + level.prefix + "kill <num>]");
-	commands(level.prefix + "weapon",	::cmd_weapon		, "Give weapon to player. [" + level.prefix + "weapon <num> <weapon>]");
-	commands(level.prefix + "heal",		::cmd_heal		, "Heal player. [" + level.prefix + "heal <num>]");
-	commands(level.prefix + "invisible",	::cmd_invisible		, "Become invisible. [" + level.prefix + "invisible <on|off>]");
-	commands(level.prefix + "ban",		::cmd_ban		, "Ban player. [" + level.prefix + "ban <num> <reason>]");
-	commands(level.prefix + "unban",	::cmd_unban		, "Unban player. [" + level.prefix + "unban <ip>]");
-	commands(level.prefix + "pm",		::cmd_pm		, "Private message a player. [" + level.prefix + "pm <player> <message>]");
-	commands(level.prefix + "re",		::cmd_re		, "Respond to private message. [" + level.prefix + "re <message>]");
-	commands(level.prefix + "who",		::cmd_who		, "Display logged in users. [" + level.prefix + "who]");
+	/*00*/commands(level.prefix + "login"	, 	::cmd_login		, "Login to access commands. [" + level.prefix + "login <user> <pass>]");
+	/*01*/commands(level.prefix + "help"	, 	::cmd_help		, "Display this help. [" + level.prefix + "help]");
+	/*02*/commands(level.prefix + "version",	::cmd_version		, "Display MiscMod version. [" + level.prefix + "version]");
+	/*03*/commands(level.prefix + "name"	, 	::cmd_name		, "Change name. [" + level.prefix + "name <new name>]");
+	/*04*/commands(level.prefix + "fov"	, 	::cmd_fov		, "Set field of view. [" + level.prefix + "fov <value>]");//commands(level.prefix + "test"	, 	::cmd_test		, "Test function. [" + level.prefix + "test]");
+	/*05*/commands(level.prefix + "rename", 	::cmd_rename		, "Change name of a player. [" + level.prefix + "rename <num> <new name>]");
+	/*06*/commands(level.prefix + "logout", 	::cmd_logout		, "Logout. [" + level.prefix + "logout]");
+	/*07*/commands(level.prefix + "say",		::cmd_say		, "Say a message with group as prefix. [" + level.prefix + "say <message>]");
+	/*08*/commands(level.prefix + "saym",		::cmd_saym		, "Print a message in the middle of the screen. [" + level.prefix + "saym <message>]");
+	/*09*/commands(level.prefix + "sayo",		::cmd_sayo		, "Print a message in the obituary. [" + level.prefix + "saym <message>]");
+	/*10*/commands(level.prefix + "kick",		::cmd_kick		, "Kick a player. [" + level.prefix + "kick <num> <reason>]");
+	/*11*/commands(level.prefix + "reload",	::cmd_reload		, "Reload MiscMod commands. [" + level.prefix + "reload]");
+	/*12*/commands(level.prefix + "restart",	::cmd_restart		, "Restart map (soft). [" + level.prefix + "restart (*)]");
+	/*13*/commands(level.prefix + "endmap",	::cmd_endmap		, "End the map. [" + level.prefix + "endmap]");
+	/*14*/commands(level.prefix + "map",		::cmd_map		, "Change map and gametype. [" + level.prefix + "map <map> (gametype)]");
+	/*15*/commands(level.prefix + "status",	::cmd_status		, "List players. [" + level.prefix + "status]");
+	/*16*/commands(level.prefix + "mute",		::cmd_mute		, "Mute player. [" + level.prefix + "mute <num|list>]");
+	/*17*/commands(level.prefix + "unmute",	::cmd_unmute		, "Unmute player. [" + level.prefix + "unmute <num>]");
+	/*18*/commands(level.prefix + "warn",		::cmd_warn		, "Warn player. [" + level.prefix + "warn <num> <message>]");
+	/*19*/commands(level.prefix + "kill",		::cmd_kill		, "Kill a player. [" + level.prefix + "kill <num>]");
+	/*20*/commands(level.prefix + "weapon",	::cmd_weapon		, "Give weapon to player. [" + level.prefix + "weapon <num> <weapon>]");
+	/*21*/commands(level.prefix + "heal",		::cmd_heal		, "Heal player. [" + level.prefix + "heal <num>]");
+	/*22*/commands(level.prefix + "invisible",	::cmd_invisible		, "Become invisible. [" + level.prefix + "invisible <on|off>]");
+	/*23*/commands(level.prefix + "ban",		::cmd_ban		, "Ban player. [" + level.prefix + "ban <num> <reason>]");
+	/*24*/commands(level.prefix + "unban",	::cmd_unban		, "Unban player. [" + level.prefix + "unban <ip>]");
+	/*25*/commands(level.prefix + "pm",		::cmd_pm		, "Private message a player. [" + level.prefix + "pm <player> <message>]");
+	/*26*/commands(level.prefix + "re",		::cmd_re		, "Respond to private message. [" + level.prefix + "re <message>]");
+	/*27*/commands(level.prefix + "who",		::cmd_who		, "Display logged in users. [" + level.prefix + "who]");
 	// Cheese commands
-	commands(level.prefix + "drop",		::cmd_drop		, "Drop a player. [" + level.prefix + "drop <num> <height>]");
-	commands(level.prefix + "spank",	::cmd_spank		, "Spank a player. [" + level.prefix + "spank <num> <time>]");
-	commands(level.prefix + "slap",		::cmd_slap		, "Slap a player. [" + level.prefix + "slap <num> <damage>]");
-	commands(level.prefix + "blind",	::cmd_blind		, "Blind a player. [" + level.prefix + "blind <num> <time>]");
-	commands(level.prefix + "runover",	::cmd_runover		, "Run over a player. [" + level.prefix + "runover <num>]");
-	commands(level.prefix + "squash",	::cmd_squash		, "Squash a player. [" + level.prefix + "squash <num>]");
-	commands(level.prefix + "rape",		::cmd_rape		, "Rape a player. [" + level.prefix + "rape <num>]");
-	commands(level.prefix + "toilet",	::cmd_toilet		, "Turn player into a toilet. [" + level.prefix + "toilet <num>]");
+	/*28*/commands(level.prefix + "drop",		::cmd_drop		, "Drop a player. [" + level.prefix + "drop <num> <height>]");
+	/*29*/commands(level.prefix + "spank",	::cmd_spank		, "Spank a player. [" + level.prefix + "spank <num> <time>]");
+	/*30*/commands(level.prefix + "slap",		::cmd_slap		, "Slap a player. [" + level.prefix + "slap <num> <damage>]");
+	/*31*/commands(level.prefix + "blind",	::cmd_blind		, "Blind a player. [" + level.prefix + "blind <num> <time>]");
+	/*32*/commands(level.prefix + "runover",	::cmd_runover		, "Run over a player. [" + level.prefix + "runover <num>]");
+	/*33*/commands(level.prefix + "squash",	::cmd_squash		, "Squash a player. [" + level.prefix + "squash <num>]");
+	/*34*/commands(level.prefix + "rape",		::cmd_rape		, "Rape a player. [" + level.prefix + "rape <num>]");
+	/*35*/commands(level.prefix + "toilet",	::cmd_toilet		, "Turn player into a toilet. [" + level.prefix + "toilet <num>]");
 	// PowerServer
-	commands(level.prefix + "explode",	::cmd_explode		, "Explode a player. [" + level.prefix + "explode <num>]");
-	commands(level.prefix + "force",	::cmd_force		, "Force players to team. [" + level.prefix + "<axis|allies|spectator> <num|all> (...)]");
-	commands(level.prefix + "mortar",	::cmd_mortar		, "Mortar a player. [" + level.prefix + "mortar <num>]");
-	commands(level.prefix + "matrix",	::cmd_matrix		, "Matrix. [" + level.prefix + "matrix]");
-	commands(level.prefix + "burn",		::cmd_burn		, "Burn a player. [" + level.prefix + "burn <num>]");
-	commands(level.prefix + "cow",		::cmd_cow		, "BBQ a player. [" + level.prefix + "cow <num>]");
-	commands(level.prefix + "disarm",	::cmd_disarm		, "Disarm a player. [" + level.prefix + "disarm <num>]");
+	/*36*/commands(level.prefix + "explode",	::cmd_explode		, "Explode a player. [" + level.prefix + "explode <num>]");
+	/*37*/commands(level.prefix + "force",	::cmd_force		, "Force players to team. [" + level.prefix + "<axis|allies|spectator> <num|all> (...)]");
+	/*38*/commands(level.prefix + "mortar",	::cmd_mortar		, "Mortar a player. [" + level.prefix + "mortar <num>]");
+	/*39*/commands(level.prefix + "matrix",	::cmd_matrix		, "Matrix. [" + level.prefix + "matrix]");
+	/*40*/commands(level.prefix + "burn",		::cmd_burn		, "Burn a player. [" + level.prefix + "burn <num>]");
+	/*41*/commands(level.prefix + "cow",		::cmd_cow		, "BBQ a player. [" + level.prefix + "cow <num>]");
+	/*42*/commands(level.prefix + "disarm",	::cmd_disarm		, "Disarm a player. [" + level.prefix + "disarm <num>]");
 	// War commands
-	commands(level.prefix + "os",		::cmd_wos		, "Snipers only. [" + level.prefix + "os]");
-	commands(level.prefix + "aw",		::cmd_waw		, "All weapons (1 sniper). [" + level.prefix + "aw (*)]");
-	commands(level.prefix + "omp",		::cmd_womp		, "Only machine guns. [" + level.prefix + "omp]");
-	commands(level.prefix + "rifles",	::cmd_wrifles		, "Rifle settings. [" + level.prefix + "rifles <on|off|only>]");
-	commands(level.prefix + "health",	::cmd_whealth		, "Health settings. [" + level.prefix + "health <off|0|1|2|3>]");
-	commands(level.prefix + "grenade",	::cmd_wgrenade		, "Grenade settings. [" + level.prefix + "grenades <off|0|1|2|3|reset>]");
-	commands(level.prefix + "pistols",	::cmd_wpistols		, "Pistol settings. [" + level.prefix + "pistols <on|empty|disable|bullets> (<chamber|clip>)]");
-	commands(level.prefix + "1sk",		::cmd_w1sk		, "Instant kill. [" + level.prefix + "1sk <on|off>]");
-	commands(level.prefix + "roundlength",	::cmd_wroundlength	, "Set roundlegth. [" + level.prefix + "roundlength <time>]");
-	commands(level.prefix + "psk",		::cmd_wpsk		, "Instant kill on pistols. [" + level.prefix + "psk <on|off>]");
+	/*43*/commands(level.prefix + "os",		::cmd_wos		, "Snipers only. [" + level.prefix + "os]");
+	/*44*/commands(level.prefix + "aw",		::cmd_waw		, "All weapons (1 sniper). [" + level.prefix + "aw (*)]");
+	/*45*/commands(level.prefix + "omp",		::cmd_womp		, "Only machine guns. [" + level.prefix + "omp]");
+	/*46*/commands(level.prefix + "rifles",	::cmd_wrifles		, "Rifle settings. [" + level.prefix + "rifles <on|off|only>]");
+	/*47*/commands(level.prefix + "health",	::cmd_whealth		, "Health settings. [" + level.prefix + "health <off|0|1|2|3>]");
+	/*48*/commands(level.prefix + "grenade",	::cmd_wgrenade		, "Grenade settings. [" + level.prefix + "grenades <off|0|1|2|3|reset>]");
+	/*49*/commands(level.prefix + "pistols",	::cmd_wpistols		, "Pistol settings. [" + level.prefix + "pistols <on|empty|disable|bullets> (<chamber|clip>)]");
+	/*50*/commands(level.prefix + "1sk",		::cmd_w1sk		, "Instant kill. [" + level.prefix + "1sk <on|off>]");
+	/*51*/commands(level.prefix + "roundlength",	::cmd_wroundlength	, "Set roundlegth. [" + level.prefix + "roundlength <time>]");
+	/*52*/commands(level.prefix + "psk",		::cmd_wpsk		, "Instant kill on pistols. [" + level.prefix + "psk <on|off>]");
 	// Extra commands
-	commands(level.prefix + "belmenu",	::cmd_belmenu		, "Enable BEL menu instead of normal menu. [" + level.prefix + "belmenu <on|off>]");
-	commands(level.prefix + "report",	::cmd_report		, "Report a player. [" + level.prefix + "report <num> <reason>]");
-	commands(level.prefix + "plist",		::cmd_status		, "List players and their <num> values. [" + level.prefix + "list]");
+	/*53*/commands(level.prefix + "belmenu",	::cmd_belmenu		, "Enable BEL menu instead of normal menu. [" + level.prefix + "belmenu <on|off>]");
+	/*54*/commands(level.prefix + "report",	::cmd_report		, "Report a player. [" + level.prefix + "report <num> <reason>]");
+	/*55*/commands(level.prefix + "plist",		::cmd_status		, "List players and their <num> values. [" + level.prefix + "list]");
 	// momo74 commands
-	commands(level.prefix + "rs",		::cmd_rs		, "Reset your scores in the scoreboard. [" + level.prefix + "rs ]");
-	commands(level.prefix + "optimize",	::cmd_optimize		, "Set optimal connection settings for a player. [" + level.prefix + "optimize <num>]");
+	/*56*/commands(level.prefix + "rs",		::cmd_rs		, "Reset your scores in the scoreboard. [" + level.prefix + "rs ]");
+	/*57*/commands(level.prefix + "optimize",	::cmd_optimize		, "Set optimal connection settings for a player. [" + level.prefix + "optimize <num>]");
 	// Client CVAR commands
-	commands(level.prefix + "pcvar",		::cmd_pcvar		, "Set a player CVAR (e.g fps, rate, etc). [" + level.prefix + "pcvar <num> <cvar> <value>]");
-	commands(level.prefix + "respawn",		::cmd_respawn		, "Reload a player spawnpoint. [" + level.prefix + "respawn <num> <sd|dm|tdm>]");
+	/*58*/commands(level.prefix + "pcvar",		::cmd_pcvar		, "Set a player CVAR (e.g fps, rate, etc). [" + level.prefix + "pcvar <num> <cvar> <value>]");
+	/*59*/commands(level.prefix + "respawn",		::cmd_respawn		, "Reload a player spawnpoint. [" + level.prefix + "respawn <num> <sd|dm|tdm>]");
 	// More commands
-	commands(level.prefix + "wmap",		::cmd_wmap	, "Change CoDaM weapon_map settings. [" + level.prefix + "wmap <weapon=map|codam|reset>]");
-	commands(level.prefix + "meleekill",		::cmd_wmeleekill	, "Instant kill on melee. [" + level.prefix + "meleekill <on|off>]");
-	commands(level.prefix + "teleport",		::cmd_teleport	, "Teleport a player to a player or (x, y, z) coordinates. [" + level.prefix + "teleport <num> (<num>|<x> <y> <z>)]");
-	commands(level.prefix + "teambalance",		::cmd_teambalance	, "Enable/disable teambalance or rebalance teams. [" + level.prefix + "teambalance <on|off|force>]");
-	commands(level.prefix + "swapteams",		::cmd_swapteams	, "Swap teams. [" + level.prefix + "swapteams]");
-	commands(level.prefix + "freeze",		::cmd_freeze	, "Freeze player(s). [" + level.prefix + "freeze <on|off> <num|all>]");
+	/*60*/commands(level.prefix + "wmap",		::cmd_wmap	, "Change CoDaM weapon_map settings. [" + level.prefix + "wmap <weapon=map|codam|reset>]");
+	/*61*/commands(level.prefix + "meleekill",		::cmd_wmeleekill	, "Instant kill on melee. [" + level.prefix + "meleekill <on|off>]");
+	/*62*/commands(level.prefix + "teleport",		::cmd_teleport	, "Teleport a player to a player or (x, y, z) coordinates. [" + level.prefix + "teleport <num> (<num>|<x> <y> <z>)]");
+	/*63*/commands(level.prefix + "teambalance",		::cmd_teambalance	, "Enable/disable teambalance or rebalance teams. [" + level.prefix + "teambalance <on|off|force>]");
+	/*64*/commands(level.prefix + "swapteams",		::cmd_swapteams	, "Swap teams. [" + level.prefix + "swapteams]");
+	/*65*/commands(level.prefix + "freeze",		::cmd_freeze	, "Freeze player(s). [" + level.prefix + "freeze <on|off> <num|all>]");
+	/*66*/commands(level.prefix + "move"		, ::cmd_move		, "Move a player up, down, left, right, forward or backward by specified units. [" + level.prefix + "move <num> <up|down|left|right|forward|backward> <units>]");
 
 	level.tmp_mm_weapon_map = getCvar("tmp_mm_weapon_map");
 	if(level.tmp_mm_weapon_map == "") { // cmd_wmap
@@ -3798,4 +3799,92 @@ cmd_freeze(args)
 		else
 			message_player("^5INFO: ^7You unfroze all the frozen players.");
 	}
+}
+
+cmd_move(args)
+{
+	if(args.size != 4) {
+		message_player("^1ERROR: ^7Invalid number of arguments, should be 3: !move <num> <up|down|left|right|forward|backward> <units>.");
+		return;
+	}
+
+	units = args[3];
+	if(!codam\_mm_mmm::validate_number(units)) {
+		message_player("^1ERROR: ^7Invalid argument <units>. Units must be a number.");
+		return;
+	}
+	units = (float)units;
+
+	args1 = args[1]; // num | string
+	if(codam\_mm_mmm::validate_number(args1)) {
+		player = codam\_mm_mmm::playerByNum(args1);
+		if(!isDefined(player)) {
+			message_player("^1ERROR: ^7No such player (" +  args1 + ").");
+			return;
+		}
+	} else {
+		player = playerByName(args1);
+		if(!isDefined(player)) return;
+	}
+
+	if(isAlive(player)) {
+		direction = args[2];
+		if(direction.size == 1) {
+			directions["u"] = "up";
+			directions["d"] = "down";
+			directions["l"] = "left";
+			directions["r"] = "right";
+			directions["f"] = "forward";
+			directions["b"] = "backward";
+
+			if(isDefined(directions[direction]))
+				direction = directions[direction];
+		}
+			
+		switch(direction) {
+			case "up":
+				dirv = (0, 0, units);
+			break;
+
+			case "down":
+				dirv = (0, 0, units * -1);
+			break;
+
+			case "left":
+				dirv = anglesToRight(player.angles);
+				dirv = maps\mp\_utility::vectorScale(dirv, units * - 1);
+			break;
+
+			case "right":
+				dirv = anglesToRight(player.angles);
+				dirv = maps\mp\_utility::vectorScale(dirv, units);
+			break;
+
+			case "forward":
+				dirv = anglesToForward(player.angles);
+				dirv = maps\mp\_utility::vectorScale(dirv, units);
+			break;
+
+			case "backward":
+				dirv = anglesToForward(player.angles);
+				dirv = maps\mp\_utility::vectorScale(dirv, units * -1);
+			break;
+
+			default:
+				message_player("^1ERROR: ^7Direction must be <up|down|left|right|forward|backward> or in abbreviated form <u|d|l|r|f|b>.");
+			return;
+		}
+
+		if(direction == "left" || direction == "right")
+			direction = "to the " + direction;
+
+		if(player != self) {
+			message_player("^5INFO: ^7Moving player " + codam\_mm_mmm::namefix(player.name) + "^7 " + units + " units " + direction + ".");
+			message_player("^5INFO: ^7You were moved by " + codam\_mm_mmm::namefix(self.name) + "^7 " + units + " units " + direction + ".", player);
+		} else
+			message_player("^5INFO: ^7You moved yourself " + units + " units " + direction + ".");
+
+		player setOrigin(player.origin + dirv);
+	} else
+		message_player("^1ERROR: ^7Player must be alive.");
 }

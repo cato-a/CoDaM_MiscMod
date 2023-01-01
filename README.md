@@ -102,6 +102,7 @@ Command:                              Description:                              
 !teambalance <on|off|force>           Adjust team balance settings or force a team balance.       63
 !swapteams                            Swap teams.                                                 64
 !freeze <on|off> <num|all>            Freeze certain players (on the map).                        65
+!move <num> <u|d|l|r|f|b> <units>]    Move player in specified direction by specified units.      66
 ```
 
 ## 4) ABOUT
@@ -124,6 +125,7 @@ Command:                              Description:                              
   * Fixed a problem with global `level.bans` when no users/groups set in MiscMod. (Thanks Cheese, for discovering this)
   * Minor adjustments to some messages in `_mm_commands.gsc`
   * Improve `!teleport` command
+  * Added new command `!move`
 
   3.0.8
   * Added new command `!teambalance <on|off|force>`
