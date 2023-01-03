@@ -3608,7 +3608,7 @@ cmd_teambalance(args)
 
             message_player("^5INFO: ^7Moving " + movecount + " player(s) to " + toteam + ".");
             iPrintLn("Balancing teams...");
-            [[level.gtd_call]]("switchTeam", _players, toteam, false);
+            [[ level.gtd_call ]]("switchTeam", _players, toteam, false);
         break;
         default:
             message_player("^1ERROR: ^7Invalid argument. Should be 'on', 'off' or 'force'.");
@@ -3628,8 +3628,8 @@ cmd_swapteams(args)
     message_player("^5INFO: ^7Swapping teams.");
     iPrintLn("Swapping teams...");
 
-    [[level.gtd_call]]("switchTeam", _allies, "axis", true);
-    [[level.gtd_call]]("switchTeam", _axis, "allies", true);
+    [[ level.gtd_call ]]("switchTeam", _allies, "axis", true);
+    [[ level.gtd_call ]]("switchTeam", _axis, "allies", true);
 }
 
 cmd_freeze(args)
