@@ -6,7 +6,7 @@
  
 ## 1) HOW TO INSTALL
 
-  Edit `codam\modlist.gsc`:
+  Edit `codam/modlist.gsc`:
   ```gsc
   level.topText = &"<your text>";
   [[ register ]]( "Cato's MiscMod", codam\miscmod::main );
@@ -16,7 +16,7 @@
   The ban capabilities is low level and intended only for small servers or single standalone servers.
 
   **NOTE:** Must be loaded before CoDaM_HamGoodies due to conflicting takeover (or any other mod for that matter).
-  This mod is not made compatible with other mods and only compatible with CoDExtended as is by php.
+  This mod is not made compatible with other mods and only compatible with the latest [CoDExtended](https://github.com/xtnded/codextended).
   
   A full guide on how to configure and setup MiscMod can be found [here](https://cod.pm/guide/d0da8d/installing-and-configuring-codam-miscmod).
 
@@ -24,7 +24,7 @@
 
   Some settings may support appending postfix to CVAR; such as `"scr_mm_spawnprotection_<MAP or GAMETYPE> <value>"` resulting in `"scr_mm_spawnprotection_dm <value>" or "scr_mm_spawnprotection_mp_brecourt <value>"`.
   
-  See `CoDaM_MiscMod.cfg` file for CVAR documentation
+  See `CoDaM_MiscMod.cfg` file for CVAR documentation.
 
 ## 3) COMMANDS
 
@@ -89,7 +89,7 @@ Command:                              Description:                              
 !1sk <on|off>                         Enable or disable instant kill.                             50
 !roundlength <time>                   Set roundlength. (sd|re)                                    51
 
-!psk <on|off>                         Enable or disabl instant kill on pistols.                   52
+!psk <on|off>                         Enable or disable instant kill on pistols.                  52
 !belmenu <on|off>                     Enable BEL menu instead of normal menu.                     53
 !report <on|off>                      Report a player.                                            54
 !plist                                List players without IP.                                    55
