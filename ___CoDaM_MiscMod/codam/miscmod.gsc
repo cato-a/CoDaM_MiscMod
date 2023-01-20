@@ -89,6 +89,9 @@ _init(register)
     // 999 kicker
     [[ register ]]("PlayerConnect",	::nnn, "thread");
 
+    // Fix spawnIntermission from CoDaM
+    [[ register ]]("gt_spawnIntermission", ::spawnIntermission, "takeover");
+
     level.ingamecommands = codam\utils::getVar("scr_mm", "commands", "bool", 0, false);
     if(level.ingamecommands) {
         [[ register ]]("PlayerDisconnect", codam\_mm_commands::_delete, "thread");
@@ -595,7 +598,7 @@ endMap(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
                 player [[ level.gtd_call ]]("gt_spawnIntermission");
             }
         } else
-            codam\GameTypes\_tdm::_endMap(level.ham_g_gametype); // multi teams? ugh
+            codam\GameTypes\_tdm::_endMap(level.mmgametype); // replace level.ham_g_gametype with level.mmgametype
 
         wait 7;
 
@@ -689,7 +692,7 @@ _spawner(spClass, method)
     if(!isDefined(method))
         method = "spawn_default";
 
-    spawnpoints = getentarray(spClass, "classname");
+    spawnpoints = getEntArray(spClass, "classname");
 
     spawnpoint = [[ level.gtd_call ]](method, spawnpoints);
 
@@ -1692,6 +1695,33 @@ badnames(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7,
 
         wait level.badnametime;
     }
+}
+
+// ##########
+
+// ########## Fix spawnIntermission from CoDaM
+spawnIntermission(spClass, method, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9)
+{
+    switch (level.mmgametype) {
+        case "sd":
+            spClass = "mp_searchanddestroy_intermission";
+        break;
+        case "re":
+            spClass = "mp_retrieval_intermission";
+        break;
+        case "dm":
+            spClass = "mp_deathmatch_intermission";
+        break;
+        case "tdm":
+            spClass = "mp_teamdeathmatch_intermission";
+        break;
+        default:
+            if(!isDefined(spClass))
+                spClass = "mp_teamdeathmatch_intermission";
+        break;
+    }
+
+    self [[ level.gtd_call ]]("spawnIntermission", spClass, method);
 }
 
 // ##########
