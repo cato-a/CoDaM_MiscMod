@@ -1702,7 +1702,7 @@ badnames(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7,
 // ########## Fix spawnIntermission from CoDaM
 spawnIntermission(spClass, method, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9)
 {
-    switch (level.mmgametype) {
+    switch(level.mmgametype) {
         case "sd":
             spClass = "mp_searchanddestroy_intermission";
         break;
@@ -1717,7 +1717,7 @@ spawnIntermission(spClass, method, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b
         break;
         default:
             if(!isDefined(spClass))
-                spClass = "mp_teamdeathmatch_intermission";
+                spClass = "mp_deathmatch_intermission";
         break;
     }
 
