@@ -188,10 +188,17 @@ command(str)
         if(getTime() - self.pers["mm_chattimer"] >= penaltytime) {
             self.pers["mm_chattimer"] = getTime();
             self.pers["mm_chatmessages"] = 1;
-        }	else {
+        } else {
             self.pers["mm_chatmessages"]++;
-            if(self.pers["mm_chatmessages"] > level.maxmessages)
-                message_player("You are currently muted for " + (float)(penaltytime / 1000) + " second(s).");
+            if(self.pers["mm_chatmessages"] > level.maxmessages) {
+                if(self.pers["mm_chatmessages"] > 21) // 20 seconds max wait
+                    self.pers["mm_chatmessages"] = 21; // 20 seconds max wait
+                
+                unit = "seconds";
+                if(penaltytime == 1000) // 1 second
+                    unit = "second";
+                message_player("You are currently muted for " + (penaltytime / 1000.0) + " " + unit + ".");
+            }
         }
     }
 
