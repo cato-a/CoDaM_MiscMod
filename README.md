@@ -1,10 +1,12 @@
-# CoDaM MiscMod 3.0.x
+# CoDaM MiscMod
 
-## 0) DOWNLOAD
+MiscMod is a CoDaM PowerServer replacement aimed at improving stability and adding some different kind of features to CoDaM.
+
+## DOWNLOAD
 
 [CoDaM_MiscMod_v3.0.8_for_codextended](https://de.dvotx.org/dump/cod1/CoDaM_MiscMod_v3.0.8_for_codextended.zip)
  
-## 1) HOW TO INSTALL
+## HOW TO INSTALL
 
   Edit `codam/modlist.gsc`:
   ```gsc
@@ -12,21 +14,21 @@
   [[ register ]]( "Cato's MiscMod", codam\miscmod::main );
   ```
 
-  File `miscmod_bans.dat` must be created in the main folder and writeable by the server (or it will crash).
+  File `miscmod_bans.dat` and `miscmods_reports.dat` must be created in the main folder and writeable by the server (or it will crash).
   The ban capabilities is low level and intended only for small servers or single standalone servers.
 
   **NOTE:** Must be loaded before CoDaM_HamGoodies due to conflicting takeover (or any other mod for that matter).
   This mod is not made compatible with other mods and only compatible with the latest [CoDExtended](https://github.com/xtnded/codextended).
   
-  A full guide on how to configure and setup MiscMod can be found [here](https://cod.pm/guide/d0da8d/installing-and-configuring-codam-miscmod).
+  A full guide on how to configure and setup MiscMod can be found on [cod.pm](https://cod.pm/guide/d0da8d/installing-and-configuring-codam-miscmod).
 
-## 2) CONFIGURATION
+## CONFIGURATION
 
-  Some settings may support appending postfix to CVAR; such as `"scr_mm_spawnprotection_<MAP or GAMETYPE> <value>"` resulting in `"scr_mm_spawnprotection_dm <value>" or "scr_mm_spawnprotection_mp_brecourt <value>"`.
+  Some settings may support appending postfix to CVAR; such as `"scr_mm_spawnprotection_<MAP/GAMETYPE> <value>"` resulting in `"scr_mm_spawnprotection_dm <value>" or "scr_mm_spawnprotection_mp_brecourt <value>"`.
   
   See `CoDaM_MiscMod.cfg` file for CVAR documentation.
 
-## 3) COMMANDS
+## COMMANDS
 
   NOTE: `<num>` can be replaced with text (e.g a playername) and a player number will be matched based on the string.
 
@@ -107,11 +109,7 @@ Command:                              Description:                              
 !scvar <cvar> <value>                 Set/modify a server CVAR.                                   67
 ```
 
-## 4) ABOUT
-
-  This is a CoDaM PowerServer replacement aimed at improving stability and adding some different kind of features to CoDaM.
-
-## 5) CREDITS
+## CREDITS
 
   - MiscMod made by Cato
   - Mapvote based on DaMoLe's mapvote for CoD2
@@ -121,11 +119,10 @@ Command:                              Description:                              
   - BEL menus based on, in some parts on code by Indy's endless menu
   - CVAR `scr_mm_scoreboard_text` uses code from Defected (dftd)
 
-## 6) CHANGELOG
+## CHANGELOG
 
-  3.0.9
-  * **Going forward check git commit history for changes**
-  * Fixed a problem with global `level.bans` when no users/groups set in MiscMod. (Thanks Cheese, for discovering this)
+  3.0.9+
+  * **Going forward check git commit history/releases for changes**
 
   3.0.8
   * Added new command `!teambalance <on|off|force>`
