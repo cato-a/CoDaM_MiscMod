@@ -9,7 +9,7 @@ MiscMod is a CoDaM PowerServer replacement aimed at improving stability and addi
 ## HOW TO INSTALL
 
   Edit `codam/modlist.gsc`:
-  ```gsc
+  ```
   level.topText = &"<your text>";
   [[ register ]]( "Cato's MiscMod", codam\miscmod::main );
   ```
