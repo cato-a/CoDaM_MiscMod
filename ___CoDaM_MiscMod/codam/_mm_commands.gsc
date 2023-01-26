@@ -376,8 +376,6 @@ cmd_login(args)
         return;
     }
 
-    loginis = "unsuccessful";
-
     username = codam\_mm_mmm::namefix(args[1]);
     password = codam\_mm_mmm::namefix(args[2]);
 
@@ -437,6 +435,7 @@ cmd_login(args)
         }
     }
 
+    loginis = "unsuccessful";
     codam\_mm_mmm::mmlog("login;" + codam\_mm_mmm::namefix(self.name) + ";" + loginis + ";" + self getip() + ";" + username + ";" + password);
     message_player("^1ERROR: ^7You shall not pass!");
 }
@@ -1326,7 +1325,7 @@ cmd_weapon(args) // without the _mp at end of filename
             else {
                 switch(weapontypes[i]) {
                     case "primary":
-                        weapons = codam\_mm_mmm::strTok("mosin_nagant_sniper ppsh42 bar bren enfield fg42 kar98k kar98k_sniper m1carbine m1garand mosin_nagant mp40 mp44 panzerfaust ppsh springfield sten thompson", " ");
+                        weapons = codam\_mm_mmm::strTok("bar bren enfield fg42 kar98k kar98k_sniper m1carbine m1garand mosin_nagant mosin_nagant_sniper mp40 mp44 panzerfaust ppsh springfield sten thompson", " ");
                     break;
 
                     case "secondary":
@@ -1349,30 +1348,33 @@ cmd_weapon(args) // without the _mp at end of filename
             }
 
             if(codam\_mm_mmm::in_array(weapons, weapon)) {
+                wovel = codam\_mm_mmm::aAn(weapon);
+
                 if(player != self) {
-                    message_player("^5INFO: ^7You gave " + codam\_mm_mmm::namefix(player.name) + " ^7a/an " + weapon + "^7.");
-                    message_player("You were given a/an " + weapon + " by " + codam\_mm_mmm::namefix(self.name) + "^7.", player);
+                    message_player("^5INFO: ^7You gave " + codam\_mm_mmm::namefix(player.name) + " ^7" + wovel + " " + weapon + "^7.");
+                    message_player("You were given " + wovel + " " + weapon + " by " + codam\_mm_mmm::namefix(self.name) + "^7.", player);
                 } else
-                    message_player("^5INFO: ^7You gave yourself a/an " + weapon + "^7.");
+                    message_player("^5INFO: ^7You gave yourself " + wovel + " " + weapon + "^7.");
 
                 switch(weapontypes[i]) {
                     case "primary":
                         playerweapon = player getWeaponSlotWeapon("primaryb");
-                        if(isDefined(playerweapon))
-                            player takeWeapon(player getWeaponSlotWeapon("primaryb"));
+                        if(player getWeaponSlotWeapon("primary") == "none")
+                            primarynone = true;
                     break;
 
                     case "secondary":
                         playerweapon = player getWeaponSlotWeapon("pistol");
-                        if(isDefined(playerweapon))
-                            player takeWeapon(player getWeaponSlotWeapon("pistol"));
                     break;
 
                     case "grenade":
                         playerweapon = player getWeaponSlotWeapon("grenade");
-                        if(isDefined(playerweapon))
-                            player takeWeapon(player getWeaponSlotWeapon("grenade"));
                     break;
+                }
+
+                if(playerweapon != "none" && !isDefined(primarynone)) {
+                    player takeWeapon(playerweapon);
+                    wait 0;
                 }
 
                 weapon = weapon + "_mp";
@@ -1381,10 +1383,8 @@ cmd_weapon(args) // without the _mp at end of filename
                 player giveMaxAmmo(weapon);
                 player switchToWeapon(weapon);
                 break;
-            } else {
-                if(i == (weapontypes.size - 1))
-                    message_player("^1ERROR: ^7Unable to determine weapon.");
-            }
+            } else if(i == (weapontypes.size - 1))
+                message_player("^1ERROR: ^7Unable to determine weapon.");
         }
     } else
         message_player("^1ERROR: ^7Player must be alive.");

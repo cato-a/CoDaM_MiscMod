@@ -568,3 +568,28 @@ playerByNum(num)
 
     return undefined;
 }
+
+aAn(word, upper)
+{
+    if(word.size < 1)
+        return "";
+
+    if(!isDefined(upper))
+        upper = false;
+
+    if(upper) {
+        switch(word[0]) {
+            case "A": case "E": case "I": case "O": case "U":
+                return "An";
+        }
+
+        return "A";
+    } else {
+        switch(word[0]) {
+            case "a": case "e": case "i": case "o": case "u":
+                return "an";
+        }
+
+        return "a";
+    }
+}
