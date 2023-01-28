@@ -291,7 +291,7 @@ _showMiscModHuds()
 nnn(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9)
 {
     kickout = codam\utils::getVar("scr_mm", "nnn", "int", 1|2, 60);
-    if(kickout == 0) // client is -1 when downloading a map
+    if(kickout == 0 || getCvarInt("sv_allowDownload") > 0)
         return;
 
     secs = 0;
