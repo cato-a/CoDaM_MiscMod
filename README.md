@@ -14,7 +14,7 @@ MiscMod is a CoDaM PowerServer replacement aimed at improving stability and addi
   [[ register ]]( "Cato's MiscMod", codam\miscmod::main );
   ```
 
-  File `miscmod_bans.dat` and `miscmods_reports.dat` must be created in the main folder and writeable by the server (or it will crash).
+  File `miscmod_bans.dat` and `miscmod_reports.dat` must be created in the main folder and writeable by the server (or it will crash).
   The ban capabilities is low level and intended only for small servers or single standalone servers.
 
   **NOTE:** Must be loaded before CoDaM_HamGoodies due to conflicting takeover (or any other mod for that matter).
