@@ -191,8 +191,8 @@ command(str)
         } else {
             self.pers["mm_chatmessages"]++;
             if(self.pers["mm_chatmessages"] > level.maxmessages) {
-                if(self.pers["mm_chatmessages"] > 21) // 20 seconds max wait
-                    self.pers["mm_chatmessages"] = 21; // 20 seconds max wait
+                if(self.pers["mm_chatmessages"] > 19) // 20 seconds max wait
+                    self.pers["mm_chatmessages"] = 19; // 20 seconds max wait
                 
                 unit = "seconds";
                 if(penaltytime == 1000) // 1 second
@@ -3816,7 +3816,7 @@ cmd_move(args)
 
 cmd_scvar(args)
 {
-    if(args.size != 3) {
+    if(args.size > 3) {
         message_player("^1ERROR: ^7Invalid number of arguments.");
         return;
     }
@@ -3827,10 +3827,16 @@ cmd_scvar(args)
 
     cvar = codam\_mm_mmm::namefix(args[1]);
     if(!codam\_mm_mmm::in_array(bannedcvars, tolower(cvar))) {
-        cval = codam\_mm_mmm::namefix(args[2]);
+        if(args.size == 2 || args[2] == "none")
+            cval = "";
+        else
+            cval = codam\_mm_mmm::namefix(args[2]);
 
         setCvar(cvar, cval);
-        message_player("^5INFO: ^7Server " + cvar + " set with value " + cval + ".");
+
+        if(cval == "" || cval == "none")
+            cval = "empty";
+        message_player("^5INFO: ^7Server CVAR " + cvar + " set to " + cval + ".");
     } else
         message_player("^1ERROR: ^7This CVAR is not allowed to change.");
 }
