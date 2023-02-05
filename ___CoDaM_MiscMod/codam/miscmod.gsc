@@ -122,9 +122,9 @@ _load()
     // pair has unmatching types 'localized string' and 'localized string'
     // Reported by ImNoob
     if(!isDefined(level.topText))
-        level.topText = &"^1MiscMod ^3v3.0.9";
+        level.topText = &"^1MiscMod ^3v3.1.1";
 
-    level.originalBottomText = &"^1+ ^5MiscMod ^3v3.0.9";
+    level.originalBottomText = &"^1+ ^5MiscMod ^3v3.1.1";
 
     if(!isDefined(game["gamestarted"])) {
         precacheString(level.topText);
@@ -283,7 +283,7 @@ _showMiscModHuds()
         bottomText setText(level.bottomText);
     }
 
-    level.miscmodversion = "^5MiscMod ^3v3.0.9";
+    level.miscmodversion = "^5MiscMod ^3v3.1.1";
 }
 // ##########
 
