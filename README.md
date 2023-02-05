@@ -1,10 +1,6 @@
 # CoDaM MiscMod
 
 MiscMod is a CoDaM PowerServer replacement aimed at improving stability and adding some different kind of features to CoDaM.
-
-## DOWNLOAD
-
-[CoDaM_MiscMod_v3.0.8_for_codextended](https://de.dvotx.org/dump/cod1/CoDaM_MiscMod_v3.0.8_for_codextended.zip)
  
 ## HOW TO INSTALL
 
