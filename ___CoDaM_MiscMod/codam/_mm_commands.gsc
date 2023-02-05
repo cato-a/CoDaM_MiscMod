@@ -3816,7 +3816,7 @@ cmd_move(args)
 
 cmd_scvar(args)
 {
-    if(args.size > 3) {
+    if(args.size == 1 || args.size > 3) {
         message_player("^1ERROR: ^7Invalid number of arguments.");
         return;
     }
