@@ -193,6 +193,10 @@ _load()
     precacheMenu(game["menu_weapon_allies"]);
     precacheMenu(game["menu_weapon_axis"]);
 
+    // Enable weapon settings per map or gametype
+    if(codam\utils::getVar("scr_mm", "weaponsmapgt", "bool", 0, false))
+        weaponsPerMapGt();
+
     return;
 }
 
@@ -1722,6 +1726,58 @@ spawnIntermission(spClass, method, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b
     }
 
     self [[ level.gtd_call ]]("spawnIntermission", spClass, method);
+}
+
+// ##########
+
+// ########## Enable weapon settings per map or gametype
+weaponsPerMapGt()
+{
+    weapons = [];
+    weapons[weapons.size] = "m1carbine";
+    weapons[weapons.size] = "m1garand";
+    weapons[weapons.size] = "thompson";
+    weapons[weapons.size] = "bar";
+    weapons[weapons.size] = "springfield";
+    weapons[weapons.size] = "enfield";
+    weapons[weapons.size] = "sten";
+    weapons[weapons.size] = "bren";
+    weapons[weapons.size] = "nagant";
+    weapons[weapons.size] = "ppsh";
+    weapons[weapons.size] = "nagantsniper";
+    weapons[weapons.size] = "kar98k";
+    weapons[weapons.size] = "mp40";
+    weapons[weapons.size] = "mp44";
+    weapons[weapons.size] = "kar98ksniper";
+    weapons[weapons.size] = "panzerfaust";
+    weapons[weapons.size] = "fg42";
+    weapons[weapons.size] = "mg42";
+
+    cvar_prefix = "scr_allow_";
+    for(i = 0; i < weapons.size; i++) {
+        tmpcvar = "tmp_" + cvar_prefix + weapons[i];
+        if(getCvar(tmpcvar) == "")
+            setCvar(tmpcvar, getCvar(cvar_prefix + weapons[i]));
+
+        // scr_allow_<weapon>_<gametype>
+        _cvar1 = getCvar(cvar_prefix + weapons[i] + "_" + level.mmgametype);
+        if(_cvar1 == "1")
+            setCvar(cvar_prefix + weapons[i], "1");
+        else if(_cvar1 == "0")
+            setCvar(cvar_prefix + weapons[i], "0");
+
+        // scr_allow_<weapon>_<mapname>
+        _cvar2 = getCvar(cvar_prefix + weapons[i] + "_" + level.mmmapname );
+        if(_cvar2 == "1")
+            setCvar(cvar_prefix + weapons[i], "1");
+        else if(_cvar2 == "0")
+            setCvar(cvar_prefix + weapons[i], "0");
+
+        if(_cvar1 == "" && _cvar2 == "")
+            setCvar(cvar_prefix + weapons[i], getCvar(tmpcvar));
+    }
+
+    codam\weapon::_initWeaponAssign(); // reload the CoDaM weapon assign
 }
 
 // ##########
