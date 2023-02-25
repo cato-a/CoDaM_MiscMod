@@ -10,7 +10,7 @@ MiscMod is a CoDaM PowerServer replacement aimed at improving stability and addi
   [[ register ]]( "Cato's MiscMod", codam\miscmod::main );
   ```
 
-  File `miscmod_bans.dat` and `miscmod_reports.dat` must be created in the main folder and writeable by the server (or it will crash).
+  Files `miscmod_bans.dat` and `miscmod_reports.dat` must be created in the main folder and writeable by the server (or it will crash).
   The ban capabilities is low level and intended only for small servers or single standalone servers.
 
   **NOTE:** Must be loaded before CoDaM_HamGoodies due to conflicting takeover (or any other mod for that matter).
@@ -136,18 +136,19 @@ Command:                              Description:                              
   * Added new CVAR `scr_mm_meleekill_ignore` (values: `bolt`, `secondary`, `primary`, `grenade`). Requested by AJ
   * Improved `!mute` command with "list", to see muted players. (e.g `!mute list`)
   * Fixes bug with `!mute` command where some player ID was name causing some of the mutes not to be saved across maps
-  * Fixes a typo in `!wmap` description and also fixes banned player display "Disconnected" instead of "Banned" when banned
+  * Fixes a typo in `!wmap` description
+  * Fixes banned player display "Disconnected" instead of "Banned" when banned
   * Added new command `!teleport <player> (<player>|<x> <y> <z>)`
   * Fixes players getting stuck when spawning/moving to a player position, revamp of old code used to fix blocked spawnpoints etc
 
   3.0.6
   * Fixes rare race condition introduced in 3.0.5 for `!unban` command
   * Added new command `!wmap` to adjust CoDaM's weaponmap feature
-  * Improvements to `!pistols` command, new arguments: `"on"`, `"empty"`, `"disable" `or a number of bullets in the chamber (e.g `!pistols 3`, for 3 bullets)
+  * Improvements to `!pistols` command, new arguments: `on`, `empty`, `disable` or a number of bullets in the chamber (e.g `!pistols 3`, for 3 bullets)
   * Minor adjustment to some commands code
   * Improvements to `validate_number()` function
   * Adjustments to BEL menu code
-  * Workaround for CoDaM's weapon map code that force noMap under some conditions (`set scr_mm_wmap_force "1"` to enable) (the code is very hacky, don't use if you don't have to). Requested by TheGreatGatsby the ungrateful
+  * Workaround for CoDaM's weapon map code that force `noMap` under some conditions (`set scr_mm_wmap_force "1"` to enable) (the code is very hacky, don't use if you don't have to). Requested by TheGreatGatsby the ungrateful
   * Added new command `!meleekill <on|off>` to change instant kill on melee
 
   3.0.5
