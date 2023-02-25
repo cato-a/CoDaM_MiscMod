@@ -3079,12 +3079,18 @@ cmd_whealth(args)
         case "0": case "1": case "2": case "3":
             message("^5INFO: ^7" + args1 + "x healthpack enabled.");
             setCvar("ham_xpacks", args1);
-            setCvar("scr_nohealthdrop", "1");
+            setCvar("scr_nohealthdrop", "0"); // 0 = drop
+
+            if(getCvar("scr_" + level.mmgametype + "_nohealthdrop") != "")
+                setCvar("scr_" + level.mmgametype + "_nohealthdrop", "0");
         break;
         case "off":
             message("^5INFO: ^7Healthpacks disabled.");
             setCvar("ham_xpacks", "0");
-            setCvar("scr_nohealthdrop", "0");
+            setCvar("scr_nohealthdrop", "1"); // 1 = no drop
+
+            if(getCvar("scr_" + level.mmgametype + "_nohealthdrop") != "")
+                setCvar("scr_" + level.mmgametype + "_nohealthdrop", "1");
         break;
         default:
             message_player("^1ERROR: ^7Invalid argument.");
