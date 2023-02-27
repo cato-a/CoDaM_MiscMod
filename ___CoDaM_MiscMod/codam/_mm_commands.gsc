@@ -3418,7 +3418,9 @@ cmd_respawn(args)
 
     stype = args[2]; // dm | tdm | sd
     if(!isDefined(stype))
-        stype = tolower(getCvar("g_gametype"));
+        stype = getCvar("g_gametype");
+
+    stype = tolower(stype);
 
     if(!codam\_mm_mmm::in_array(g_gametype, stype)) {
         message_player("^1ERROR: ^7Unknown gametype, specify with !respawn <num> <sd|dm|tdm>.");
@@ -3462,7 +3464,7 @@ cmd_respawn(args)
 
         player setPlayerAngles(spawnpoint.angles);
         player setOrigin(spawnpoint.origin);
-    }	else
+    } else
         message_player("^1ERROR: ^7Problem with new spawnpoint, run command again.");
 }
 
