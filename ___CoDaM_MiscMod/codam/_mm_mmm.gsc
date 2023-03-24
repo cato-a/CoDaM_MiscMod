@@ -196,36 +196,29 @@ PlaySoundAtLocation(sound, location, iTime)
     return;
 }
 
-compassdb(id) // -1 on no id available
+compassdb(id)
 {
     if(!isDefined(level.compassdb)) {
         level.compassdb = [];
-        for(i = 0; i < 15; i++)
+        for(i = 0; i <= 15; i++) // 16 objects
             level.compassdb[i] = -1;
     }
 
-    if(!isDefined(id))
-        id = 0;
-
-    if(id == 0) {
-        compassid = -1;
-        for(i = 3; i < level.compassdb.size; i++) { // bomb zones
+    if(!isDefined(id)) { // generate an ID
+        for(i = 2; i < level.compassdb.size; i++) { // bomb zones
             if(level.compassdb[i] == -1) {
                 level.compassdb[i] = i;
-                compassid = level.compassdb[i];
-                break;
+                return i;
             }
         }
-
-        return compassid;
-    } else if(id > 0) {
+    } else if(id >= 0) { // delete ID
         level.compassdb[id] = -1;
-    } else if(id == -1) {
-        for(i = 0; i < 15; i++)
+    } else if(id == -1) { // clear "database"
+        for(i = 0; i <= 15; i++) // 16 objects
             level.compassdb[i] = -1;
     }
 
-    return;
+    return -1; // -1 on no ID available
 }
 
 weaponremoval() // from Cheese
