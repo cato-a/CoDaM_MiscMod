@@ -547,7 +547,7 @@ _meleeFightSpawn(team)
 
 _meleeCompass(id)
 {
-    if(id < 3)
+    if(id < 0)
         return;
 
     objective_add(id, "current", self.origin, "gfx/hud/objective.tga");
