@@ -235,28 +235,31 @@ _timerStuck() // tip by Jona
         players = getEntArray("player", "classname");
         if(players.size == 0) {
             emptymap = codam\utils::getVar("scr_mm", "emptymap", "string", 0, "");
-            if(emptymap != "" && emptymap != level.mmmapname) {
-                setCvar("sv_mapRotationCurrent", "gametype " + level.mmgametype + " map " + emptymap);
-                wait 1;
-                exitLevel(false);
-            }
-
-            if(game["maprestarts"] > 7) {
-                if(emptymap != "" && emptymap == level.mmmapname)
+            if(emptymap != "") {
+                if(emptymap != level.mmmapname) {
+                    setCvar("sv_mapRotationCurrent", "gametype " + level.mmgametype + " map " + emptymap);
+                    wait 1;
+                    level.mapended = true;
+                    game["state"] = "intermission";
+                    level notify("intermission");
+                    [[ level.gtd_call ]]("exitLevel", false);
+                } else
                     [[ level.gtd_call ]]("map_restart", false);
-                else
+            } else {
+                if(game["maprestarts"] > 7) {
                     level notify("end_map"); // idea is to just rotate the map
-                return;
-            }
+                    return;
+                }
 
-            game["maprestarts"]++;
-            [[ level.gtd_call ]]("map_restart", true); // true playerinfo retained
-        } else
+                game["maprestarts"]++;
+                [[ level.gtd_call ]]("map_restart", true); // true playerinfo retained
+            }
+        } else {
             if(game["maprestarts"] != 0)
                 game["maprestarts"] = 0;
+        }
     }
 }
-// ##########
 
 // ########## MiscMod huds
 _showMiscModHuds()
