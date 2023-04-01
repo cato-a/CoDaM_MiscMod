@@ -82,9 +82,6 @@ _init(register)
 
     // weapon32
     [[ register ]]("spawnPlayer", ::weapon32, "thread");
-    
-    // Make sure loading fov after map change
-    [[ register ]]("gt_spawnSpectator", ::loadFOV, "thread");
 
     // MiscMod keys
     [[ register ]]("PlayerConnect",	::mmKeys, "thread");
@@ -1155,14 +1152,6 @@ weapon32(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7,
     wait 1;
 
     self setClientCvar("weapon", 0);
-}
-// ##########
-
-// ########## Make sure loading fov after map change
-loadFOV(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9)
-{
-    if(isDefined(self.pers["mm_fov"]))
-        self setClientCvar("cg_fov", self.pers["mm_fov"]);
 }
 // ##########
 
