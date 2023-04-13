@@ -1,7 +1,13 @@
 # CoDaM MiscMod
 
-MiscMod is a CoDaM PowerServer replacement aimed at improving stability and adding some different kind of features to CoDaM.
- 
+  MiscMod is a CoDaM PowerServer replacement aimed at improving stability and adding some different kind of features to CoDaM.
+
+## DONATE
+
+  <img src="https://raw.githubusercontent.com/cato-a/CoDaM_MiscMod/main/MiscMod-donation+xmr.png" title="XMR donation to support MiscMod" alt="XMR donation to support MiscMod">
+
+  `monero:86SoU8D73vhSxbwRsHFMvYjcVcW21VBxSRazt9RD6eHkWYXvqjoWPJ3JPSmT7VKp93KG3Zy7k4NtgiHjxXrL7u7BM1gnEeW`
+
 ## HOW TO INSTALL
 
   Edit `codam/modlist.gsc`:
