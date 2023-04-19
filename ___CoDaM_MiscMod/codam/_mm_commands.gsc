@@ -122,6 +122,8 @@ init()
     /*65*/commands(level.prefix + "freeze"      , ::cmd_freeze       , "Freeze player(s). [" + level.prefix + "freeze <on|off> <num|all>]");
     /*66*/commands(level.prefix + "move"        , ::cmd_move         , "Move a player up, down, left, right, forward or backward by specified units. [" + level.prefix + "move <num> <up|down|left|right|forward|backward> <units>]");
     /*67*/commands(level.prefix + "scvar"       , ::cmd_scvar        , "Set/modify a server CVAR. [" + level.prefix + "scvar <cvar> <value>]");
+    /*68*/commands(level.prefix + "bansearch"   , ::cmd_bansearch    , "Search for bans in the banlist. [" + level.prefix + "bansearch <query>]");
+    /*69*/commands(level.prefix + "banlist"     , ::cmd_banlist      , "List most recent bans. [" + level.prefix + "banlist]");
 
     level.tmp_mm_weapon_map = getCvar("tmp_mm_weapon_map");
     if(level.tmp_mm_weapon_map == "") { // cmd_wmap
@@ -567,7 +569,7 @@ cmd_help(args)
         if(!isDefined(level.help[i]))
             continue;
 
-         cmd = level.help[i]["cmd"];
+        cmd = level.help[i]["cmd"];
         spc = spaces(20 - cmd.size);
         if(permissions(perms, level.commands[cmd]["id"]))
             message_player(cmd + spc + level.commands[cmd]["desc"]);
@@ -3954,4 +3956,117 @@ cmd_scvar(args)
         message_player("^5INFO: ^7Server CVAR " + cvar + " set to " + cval + ".");
     } else
         message_player("^1ERROR: ^7This CVAR is not allowed to change.");
+}
+
+cmd_bansearch(args)
+{
+    if(args.size != 2) {
+        message_player("^1ERROR: ^7Invalid number of arguments. Expects: !bansearch <query>");
+        return;
+    }
+
+    query = args[1]; // query
+    results = [];
+    if(level.bans.size > 0) {
+        for(i = 0; i < level.bans.size; i++) {
+            ip = level.bans[i]["ip"];
+            if(ip.size >= query.size) {
+                if(codam\_mm_mmm::pmatch(ip, query)) {
+                    results[results.size] = level.bans[i];
+                    continue;
+                }
+            }
+
+            name = level.bans[i]["name"];
+            name = codam\_mm_mmm::monotone(name);
+            name = codam\_mm_mmm::strip(name);
+            if(name.size >= query.size)
+                if(codam\_mm_mmm::pmatch(tolower(name), tolower(query)))
+                    results[results.size] = level.bans[i];
+        }
+
+        if(results.size > 0) {
+            limit = getCvarInt("scr_mm_bansearch_limit");
+            if(limit == 0)
+                limit = 90;
+
+            if(results.size < limit)
+                limit = results.size;
+
+            pdata = spawnStruct();
+            pdata.ip = 0;
+            pdata.by = 0;
+            pdata.reason = 0;
+
+            for(i = 0; i < limit; i++) {
+                if(results[i]["ip"].size > pdata.ip)
+                    pdata.ip = results[i]["ip"].size;
+
+                if(results[i]["by"].size > pdata.by)
+                    pdata.by = results[i]["by"].size;
+
+                if(results[i]["reason"].size > pdata.reason)
+                    pdata.reason = results[i]["reason"].size;
+            }
+
+            for(i = 0; i < limit; i++) {
+                message = "^1[^7IP: " + results[i]["ip"] + spaces(pdata.ip - results[i]["ip"].size);
+                message += " ^1|^7 By: " + results[i]["by"] + spaces(pdata.by - results[i]["by"].size);
+                message += " ^1|^7 Reason: " + results[i]["reason"] + spaces(pdata.reason - results[i]["reason"].size);
+                message += "^1]^3 -->^7 " + results[i]["name"];
+                message_player(message);
+                if(i % 15 == 0) // Prevent: SERVERCOMMAND OVERFLOW
+                    wait 0.25;
+            }
+
+            if(results.size > limit)
+                message_player("More than " + limit + " results from the banlist. Showing up to " + limit + " bans.");
+        } else
+            message_player("^1ERROR: ^7No bans found.");
+
+    } else
+        message_player("^1ERROR: ^7No bans in banlist.");
+}
+
+cmd_banlist(args)
+{ // [ip | bannedby | reason ] -> name
+    if(level.bans.size > 0) {
+        numbans = getCvarInt("scr_mm_banlist_limit");
+        if(numbans == 0)
+            numbans = 90;
+
+        offset = 0;
+        if(level.bans.size - numbans > 0)
+            offset = level.bans.size - numbans;
+
+        pdata = spawnStruct();
+        pdata.ip = 0;
+        pdata.by = 0;
+        pdata.reason = 0;
+
+        for(i = offset; i < level.bans.size; i++) {
+            if(level.bans[i]["ip"].size > pdata.ip)
+                pdata.ip = level.bans[i]["ip"].size;
+
+            if(level.bans[i]["by"].size > pdata.by)
+                pdata.by = level.bans[i]["by"].size;
+
+            if(level.bans[i]["reason"].size > pdata.reason)
+                pdata.reason = level.bans[i]["reason"].size;
+        }
+
+        for(i = offset; i < level.bans.size; i++) {
+            message = "^1[^7IP: " + level.bans[i]["ip"] + spaces(pdata.ip - level.bans[i]["ip"].size);
+            message += " ^1|^7 By: " + level.bans[i]["by"] + spaces(pdata.by - level.bans[i]["by"].size);
+            message += " ^1|^7 Reason: " + level.bans[i]["reason"] + spaces(pdata.reason - level.bans[i]["reason"].size);
+            message += "^1]^3 -->^7 " + level.bans[i]["name"];
+            message_player(message);
+            if(i % 15 == 0) // Prevent: SERVERCOMMAND OVERFLOW
+                wait 0.25;
+        }
+
+        if(offset > 0)
+            message_player("More than " + numbans + " bans in the banlist. Showing the " + numbans + " most recent bans.");
+    } else
+        message_player("^1ERROR: ^7No bans in banlist.");
 }
