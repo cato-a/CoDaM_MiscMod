@@ -84,7 +84,7 @@ Command:                              Description:                              
 !weapon <num> <weapon>                Give weapon to player.                                      20
 !heal <num>                           Heal player.                                                21
 !invisible <on|off>                   Become invisible.                                           22
-!ban <num>                            Ban player.                                                 23
+!ban <num> <time> <reason>            Ban player.                                                 23
 !unban <ip>                           Unban player.                                               24
 !pm <player> <message>                Private message a player.                                   25
 !re <message>                         Respond to private message.                                 26
@@ -133,6 +133,8 @@ Command:                              Description:                              
 !freeze <on|off> <num|all>            Freeze certain players (on the map).                        65
 !move <num> <u|d|l|r|f|b> <units>     Move player in specified direction by specified units.      66
 !scvar <cvar> <value>                 Set/modify a server CVAR.                                   67
+!bansearch <query>                    Search for bans in the banlist.                             68
+!banlist                              List most recent bans.                                      69
 ```
 
 ## CREDITS
