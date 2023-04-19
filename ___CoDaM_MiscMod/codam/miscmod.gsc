@@ -756,11 +756,40 @@ spawnProtection(spawnprotected)
 PlayerConnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5, b6, b7, b8, b9)
 {
     if(level.ingamecommands) {
-        checkbannedip = self getip();
-        banindex = codam\_mm_commands::isbanned(checkbannedip);
+        bannedip = self getip();
+        banindex = codam\_mm_commands::isbanned(bannedip);
         if(banindex != -1) {
-            self.isbanned = true; // flag for PlayerDisconnect
-            bannedreason = level.bans[banindex]["bannedreason"]; // to avoid race condition
+            bannedtime = level.bans[banindex]["time"];
+            if(bannedtime > 0) {
+                bannedsrvtime = level.bans[banindex]["srvtime"];
+                remaining = bannedtime - (getunixtime() - bannedsrvtime);
+                if(remaining > 0) {
+                    self.isbanned = true;
+                    bannedreason = "tempban remaining ";
+                    if(remaining >= 86400) {
+                        time = remaining / 60 / 60 / 24;
+                        bannedreason += time + " day";
+                    } else if(remaining >= 3600) {
+                        time = remaining / 60 / 60;
+                        bannedreason += time + " hour";
+                    } else if(remaining >= 60) {
+                        time = remaining / 60;
+                        bannedreason += time + " minute";
+                    } else {
+                        time = remaining;
+                        bannedreason += time + " second";
+                    }
+
+                    if(time != 1)
+                        bannedreason += "s";
+                }
+            } else {
+                self.isbanned = true;
+                bannedreason = level.bans[banindex]["reason"]; // to avoid race condition
+            }
+        }
+
+        if(isDefined(self.isbanned)) { // used in PlayerDisconnect
             self sendservercommand("w \"Player Banned: ^1" + bannedreason + "\"");
             self waittill("begin");
             wait 0.05; // server/script crashes without it

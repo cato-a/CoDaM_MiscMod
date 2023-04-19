@@ -29,6 +29,7 @@ init()
         level.workingdir = getCvar("scr_mm_cmd_path") + "/";
 
     level.banfile = "miscmod_bans.dat";
+    level.tempbanfile = "miscmod_tempbans.dat";
     level.reportfile = "miscmod_reports.dat";
 
     if(!isDefined(level.perms["default"]))
@@ -69,7 +70,7 @@ init()
     /*20*/commands(level.prefix + "weapon"      , ::cmd_weapon       , "Give weapon to player. [" + level.prefix + "weapon <num> <weapon>]");
     /*21*/commands(level.prefix + "heal"        , ::cmd_heal         , "Heal player. [" + level.prefix + "heal <num>]");
     /*22*/commands(level.prefix + "invisible"   , ::cmd_invisible    , "Become invisible. [" + level.prefix + "invisible <on|off>]");
-    /*23*/commands(level.prefix + "ban"         , ::cmd_ban          , "Ban player. [" + level.prefix + "ban <num> <reason>]");
+    /*23*/commands(level.prefix + "ban"         , ::cmd_ban          , "Ban player. [" + level.prefix + "ban <num> <time> <reason>]");
     /*24*/commands(level.prefix + "unban"       , ::cmd_unban        , "Unban player. [" + level.prefix + "unban <ip>]");
     /*25*/commands(level.prefix + "pm"          , ::cmd_pm           , "Private message a player. [" + level.prefix + "pm <player> <message>]");
     /*26*/commands(level.prefix + "re"          , ::cmd_re           , "Respond to private message. [" + level.prefix + "re <message>]");
@@ -1446,26 +1447,42 @@ valid_ip(ip)
     return validip;
 }
 
+// new miscmod_bans.dat file format: "<ip>%<bannedby>%<bannedname>%<duration>%<unix/servertime>%<reason>"
 cmd_ban(args)
-{
+{ // Thanks AJ and Raphael for testing
     if(args.size < 3) {
         message_player("^1ERROR: ^7Invalid number of arguments.");
         return;
     }
 
     args1 = args[1]; // num | string | IP
-    args2 = args[2]; // reason
+    duration = args[2]; // duration
+    if(!isDefined(duration) || duration == "-1" || duration == "0")
+        duration = "0s";
 
-    if(!isDefined(args1) || !isDefined(args2)) {
-        message_player("^1ERROR: ^7Invalid argument.");
+    if(duration.size < 2) {
+        message_player("^1ERROR: ^7Invalid time (" + duration + "). Expects <time><unit> format (e.g 1h) or 0/-1 for permanent ban.");
         return;
     }
 
-    validip = false;
-    if(isDefined(args[3]))
-        validip = valid_ip(args1);
+    time = "";
+    for(i = 0; i < duration.size - 1; i++)
+        time += duration[i];
 
-    if(!validip) {
+    if(!codam\_mm_mmm::validate_number(time)) {
+        message_player("^1ERROR: ^7Invalid time (" + time + "). Expects <time><unit> format (e.g 1h) or 0/-1 for permanent ban.");
+        return;
+    }
+
+    reason = args[3]; // reason
+    if(args.size > 3) {
+        for(a = 4; a < args.size; a++)
+            if(isDefined(args[a]))
+                reason += " " + args[a];
+    }
+
+    isipaddr = valid_ip(args1);
+    if(!isipaddr) {
         if(codam\_mm_mmm::validate_number(args1)) {
             if(args1 == self getEntityNumber()) {
                 message_player("^1ERROR: ^7You can't use this command on yourself.");
@@ -1492,45 +1509,103 @@ cmd_ban(args)
         message_player("^1ERROR: ^7Database is already in use. Try again.");
         return;
     }
+    
+    preunit = time;
+    time = (int)time;
+    if(time > 0) {
+        switch(duration[duration.size - 1]) {
+            case "s":
+                unit = "second";
+            break;
 
-    bannedreason = codam\_mm_mmm::namefix(args2); // To prevent malicious input
+            case "m":
+                unit = "minute";
+                time *= 60;
+            break;
+
+            case "h":
+                unit = "hour";
+                time *= 60 * 60;
+            break;
+
+            case "d":
+                unit = "day";
+                time *= 60 * 60 * 24;
+            break;
+
+            default:
+                message_player("^1ERROR: ^7Invalid time (" + duration + "). Expects <time><unit> format (e.g 10m) or 0/-1 for permanent ban.");
+            return;
+        }
+
+        if(preunit != "1")
+            unit += "s";
+    }
 
     level.banactive = true;
     filename = level.workingdir + level.banfile;
     if(fexists(filename)) {
-        if(validip) {
+        if(isipaddr) {
             bannedip = args1;
             bannedname = "^7An IP address";
         } else {
             bannedip = player getip();
             bannedname = codam\_mm_mmm::namefix(player.name);
-            kickmsg = "Player Banned: ^1" + bannedreason;
-            player dropclient(kickmsg);
         }
 
         bannedby = codam\_mm_mmm::namefix(self.pers["mm_user"]);
+        hasreason = (bool)isDefined(reason);
+        if(hasreason)
+            bannedreason = codam\_mm_mmm::namefix(reason); // to prevent malicious input
+        else
+            bannedreason = "N/A";
 
+        bannedsrvtime = getunixtime();
         file = fopen(filename, "a"); // append
         if(file != -1) {
             line = "";
             line += bannedip;
-            line += "%%" + bannedname;
-            line += "%%" + bannedreason;
             line += "%%" + bannedby;
+            line += "%%" + bannedname;
+            line += "%%" + time;
+            line += "%%" + bannedsrvtime;
+            line += "%%" + bannedreason;
             line += "\n";
             fwrite(line, file);
         }
-
         fclose(file);
 
-        message_player("^5INFO: ^7You banned IP: " + bannedip);
-        message(bannedname + " ^7was banned by " + codam\_mm_mmm::namefix(self.name) + " ^7for reason: " + bannedreason + ".");
-
         index = level.bans.size;
-        level.bans[index]["bannedip"] = bannedip;
-        level.bans[index]["bannedname"] = bannedname;
-        level.bans[index]["bannedreason"] = bannedreason;
-        level.bans[index]["bannedby"] = bannedby;
+        level.bans[index]["ip"] = bannedip;
+        level.bans[index]["by"] = bannedby;
+        level.bans[index]["name"] = bannedname;
+        level.bans[index]["time"] = time;
+        level.bans[index]["srvtime"] = bannedsrvtime;
+        level.bans[index]["reason"] = bannedreason;
+
+        message_player("^5INFO: ^7You banned IP: " + bannedip);
+        banmessage = bannedname + " ^7was ";
+        if(time > 0)
+            banmessage += "temporarily ";
+        else
+            banmessage += "permanently ";
+        banmessage += "banned by " + codam\_mm_mmm::namefix(self.name);
+        if(time > 0)
+            banmessage += "^7 for " + preunit + " " + unit;
+        if(hasreason)
+            banmessage += "^7 for reason: " + bannedreason;
+        banmessage += ".";
+        message(banmessage);
+
+        if(!isipaddr) {
+            if(time > 0)
+                kickmsg = "Temp banned (^3" + preunit + " " + unit + "^7)";
+            else
+                kickmsg = "Perm banned";
+            if(hasreason)
+                kickmsg += ": ^1" + bannedreason;
+            player dropclient(kickmsg);
+        }
     } else
         message_player("^1ERROR: ^7Ban database file doesn't exist.");
 
@@ -1604,10 +1679,10 @@ cmd_report(args)
     level.reportactive = false;
 }
 
-isbanned(bannedip)
+isbanned(ip)
 {
     for(b = 0; b < level.bans.size; b++) {
-        if(isDefined(level.bans[b]) && level.bans[b]["bannedip"] == bannedip)
+        if(level.bans[b]["ip"] == ip)
             return b;
     }
 
@@ -1640,24 +1715,25 @@ cmd_unban(args)
     banindex = isbanned(bannedip);
     if(banindex != -1) {
         message_player("^5INFO: ^7You unbanned IP: " + bannedip);
-        message(level.bans[banindex]["bannedname"] + " ^7got unbanned by " + codam\_mm_mmm::namefix(self.name) + "^7.");
-        codam\_mm_mmm::mmlog("unban;" + bannedip + ";" + level.bans[banindex]["bannedname"] + ";" + level.bans[banindex]["bannedreason"] + ";" + level.bans[banindex]["bannedby"] + ";" + codam\_mm_mmm::namefix(self.name));
-        level.bans[banindex] = undefined;
+        message(level.bans[banindex]["name"] + " ^7got unbanned by " + codam\_mm_mmm::namefix(self.name) + "^7.");
+        codam\_mm_mmm::mmlog("unban;" + bannedip + ";" + level.bans[banindex]["name"] + ";" + level.bans[banindex]["time"] + ";" + level.bans[banindex]["srvtime"] + ";" + level.bans[banindex]["by"] + ";" + codam\_mm_mmm::namefix(self.name));
+        level.bans[banindex]["ip"] = "unbanned";
 
         level.banactive = true;
         filename = level.workingdir + level.banfile;
-        if(fexists(filename)) { // may not be needed as "w" created a new file
+        if(fexists(filename)) {
             file = fopen(filename, "w");
             if(file != -1) {
                 for(i = 0; i < level.bans.size; i++) {
-                    if(!isDefined(level.bans[i])) // if(i == banindex)
+                    if(level.bans[i]["ip"] == "unbanned")
                         continue;
-
                     line = "";
-                    line += level.bans[i]["bannedip"];
-                    line += "%%" + level.bans[i]["bannedname"];
-                    line += "%%" + level.bans[i]["bannedreason"];
-                    line += "%%" + level.bans[i]["bannedby"];
+                    line += level.bans[i]["ip"];
+                    line += "%%" + level.bans[i]["by"];
+                    line += "%%" + level.bans[i]["name"];
+                    line += "%%" + level.bans[i]["time"];
+                    line += "%%" + level.bans[i]["srvtime"];
+                    line += "%%" + level.bans[i]["reason"];
                     line += "\n";
                     fwrite(line, file);
                 }
@@ -1733,45 +1809,76 @@ _loadBans()
 {
     filename = level.workingdir + level.banfile;
     if(fexists(filename)) {
+        datasize = 0;
         file = fopen(filename, "r");
-        if(file != -1) {
+        if(file != -1)
             data = fread(0, file); // codextended.so bug?
-            if(isDefined(data)) {
-                data = codam\_mm_mmm::strTok(data, "\n");
-                for(i = 0; i < data.size; i++) {
-                    if(!isDefined(data[i])) // crashed here for some odd reason? this should never happen
-                        continue; // crashed here for some odd reason? this should never happen
+        fclose(file); // all-in-one chunk
 
-                    line = codam\_mm_mmm::strTok(data[i], "%"); // crashed here for some odd reason? this should never happen
-                    if(line.size != 4) // Reported by ImNoob
-                        continue;
+        if(isDefined(data)) {
+            numbans = 0;
+            unixtime = getunixtime();
+            data = codam\_mm_mmm::strTok(data, "\n");
+            for(i = 0; i < data.size; i++) {
+                if(!isDefined(data[i])) // crashed here for some odd reason? this should never happen
+                    continue; // crashed here for some odd reason? this should never happen
 
-                    banfile_error = false;
-                    for(l = 0; l < line.size; l++) {
-                        if(!isDefined(line[l])) {
-                            banfile_error = true;
-                            break;
-                        }
+                line = codam\_mm_mmm::strTok(data[i], "%"); // crashed here for some odd reason? this should never happen
+                if(line.size != 6) // Reported by ImNoob AKA Gatsby
+                    continue;
+
+                banfile_error = false;
+                for(l = 0; l < line.size; l++) {
+                    if(!isDefined(line[l])) {
+                        banfile_error = true;
+                        break;
                     }
-
-                    if(banfile_error)
-                        continue;// Reported by ImNoob
-
-                    bannedip = line[0];
-                    bannedname = codam\_mm_mmm::namefix(line[1]);
-                    bannedreason = codam\_mm_mmm::namefix(line[2]);
-                    bannedby = codam\_mm_mmm::namefix(line[3]);
-
-                    index = level.bans.size;
-                    level.bans[index]["bannedip"] = bannedip;
-                    level.bans[index]["bannedname"] = bannedname;
-                    level.bans[index]["bannedreason"] = bannedreason;
-                    level.bans[index]["bannedby"] = bannedby;
                 }
+
+                if(banfile_error)
+                    continue;// Reported by ImNoob AKA Gatsby
+
+                numbans++;
+                bannedtime = (int)line[3];
+                bannedsrvtime = (int)line[4];
+                if(bannedtime > 0) { // tempban
+                    remaining = bannedtime - (unixtime - bannedsrvtime);
+                    if(remaining <= 0) // player unbanned
+                        continue;
+                }
+
+                bannedip = line[0];
+                bannedby = line[1];
+                bannedname = line[2];
+                bannedreason = line[5];
+
+                index = level.bans.size;
+                level.bans[index]["ip"] = bannedip;
+                level.bans[index]["by"] = bannedby;
+                level.bans[index]["name"] = bannedname;
+                level.bans[index]["time"] = bannedtime;
+                level.bans[index]["srvtime"] = bannedsrvtime;
+                level.bans[index]["reason"] = bannedreason;
+            }
+
+            if(level.bans.size != numbans) { // banfile changed, update miscmod_bans.dat
+                file = fopen(filename, "w");
+                if(level.bans.size > 0) {
+                    for(i = 0; i < level.bans.size; i++) {
+                        line = "";
+                        line += level.bans[i]["ip"];
+                        line += "%%" + level.bans[i]["by"];
+                        line += "%%" + level.bans[i]["name"];
+                        line += "%%" + level.bans[i]["time"];
+                        line += "%%" + level.bans[i]["srvtime"];
+                        line += "%%" + level.bans[i]["reason"];
+                        line += "\n";
+                        fwrite(line, file);
+                    }
+                }
+                fclose(file);
             }
         }
-
-        fclose(file);
     }
 }
 
@@ -1918,7 +2025,7 @@ playerByName(str) // 2021 attempt
             if(pnum > pdata.num)
                 pdata.num = pnum;
 
-             ping = player getping();
+            ping = player getping();
             if(ping > pdata.ping)
                 pdata.ping = ping;
         }
