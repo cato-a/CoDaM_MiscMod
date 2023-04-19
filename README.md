@@ -1,38 +1,62 @@
 # CoDaM MiscMod
 
-  MiscMod is a CoDaM PowerServer replacement aimed at improving stability and adding some different kind of features to CoDaM.
+MiscMod is a CoDaM PowerServer replacement aimed at improving stability and adding some different kind of features to CoDaM.
 
 ## DONATE
 
-  <img src="https://raw.githubusercontent.com/cato-a/CoDaM_MiscMod/main/MiscMod-donation+xmr.png" title="XMR donation to support MiscMod" alt="XMR donation to support MiscMod">
+<img src="https://raw.githubusercontent.com/cato-a/CoDaM_MiscMod/main/MiscMod-donation+xmr.png" title="XMR donation to support MiscMod" alt="XMR donation to support MiscMod">
 
-  `monero:86SoU8D73vhSxbwRsHFMvYjcVcW21VBxSRazt9RD6eHkWYXvqjoWPJ3JPSmT7VKp93KG3Zy7k4NtgiHjxXrL7u7BM1gnEeW`
+`monero:86SoU8D73vhSxbwRsHFMvYjcVcW21VBxSRazt9RD6eHkWYXvqjoWPJ3JPSmT7VKp93KG3Zy7k4NtgiHjxXrL7u7BM1gnEeW`
 
 ## HOW TO INSTALL
 
-  Edit `codam/modlist.gsc`:
-  ```
-  level.topText = &"<your text>";
-  [[ register ]]( "Cato's MiscMod", codam\miscmod::main );
-  ```
+Edit `codam/modlist.gsc`:
+```
+level.topText = &"<your text>";
+[[ register ]]( "Cato's MiscMod", codam\miscmod::main );
+```
 
-  Files `miscmod_bans.dat` and `miscmod_reports.dat` must be created in the main folder and writeable by the server (or it will crash).
-  The ban capabilities is low level and intended only for small servers or single standalone servers.
+Files `miscmod_bans.dat` and `miscmod_reports.dat` must be created in the main folder and writeable by the server (or it will crash).
+The ban capabilities is low level and intended only for small servers or single standalone servers.
 
-  **NOTE:** Must be loaded before CoDaM_HamGoodies due to conflicting takeover (or any other mod for that matter).
-  This mod is not made compatible with other mods and only compatible with the latest [CoDExtended](https://github.com/xtnded/codextended).
-  
-  A full guide on how to configure and setup MiscMod can be found on [cod.pm](https://cod.pm/guide/d0da8d/installing-and-configuring-codam-miscmod).
+**NOTE:** Must be loaded before CoDaM_HamGoodies due to conflicting takeover (or any other mod for that matter).
+This mod is not made compatible with other mods and only compatible with the latest [CoDExtended](https://github.com/xtnded/codextended).
+
+A full guide on how to configure and setup MiscMod can be found on [cod.pm](https://cod.pm/guide/d0da8d/installing-and-configuring-codam-miscmod).
 
 ## CONFIGURATION
 
-  Some settings may support appending postfix to CVAR; such as `"scr_mm_spawnprotection_<MAP/GAMETYPE> <value>"` resulting in `"scr_mm_spawnprotection_dm <value>" or "scr_mm_spawnprotection_mp_brecourt <value>"`.
-  
-  See `CoDaM_MiscMod.cfg` file for CVAR documentation.
+Some settings may support appending postfix to CVAR; such as `"scr_mm_spawnprotection_<MAP/GAMETYPE> <value>"` resulting in `"scr_mm_spawnprotection_dm <value>" or "scr_mm_spawnprotection_mp_brecourt <value>"`.
+
+See `CoDaM_MiscMod.cfg` file for CVAR documentation.
+
+## MISCMOD_BANS.DAT
+
+Before running the below command make a backup of your `miscmod_bans.dat` file:
+
+```bash
+mv miscmod_bans.dat miscmod_bans.backup.dat
+```
+
+### Upgrade `miscmod_bans.dat` file from MiscMod 3.0.9 to newer MiscMod
+
+This command upgrades the `miscmod_bans.dat` to the new format and also remove duplicate and invalid IP's.
+
+```bash
+awk 'BEGIN {FS="%";OFS=FS} NF==4&&$1~/^[0-9]+\./&&!ip[$1]++{print $1,$4,$2,0,0,$3}' miscmod_bans.backup.dat > miscmod_bans.dat
+```
+
+### Remove duplicate bans and invalid IP's from `miscmod_bans.dat` file
+
+This command remove duplicate and invalid IP's from both the old and the new `miscmod_bans.dat` file.
+
+```bash
+awk '$1~/^[0-9]+\./&&!ip[$1]++{print $0}' miscmod_bans.backup.dat > miscmod_bans.dat
+```
 
 ## COMMANDS
 
-  NOTE: `<num>` can be replaced with text (e.g a playername) and a player number will be matched based on the string.
+NOTE: `<num>` can be replaced with text (e.g a playername) and a player number will be matched based on the string.
 
 ```plaintext
 Command:                              Description:                                                Permission ID:
@@ -113,133 +137,133 @@ Command:                              Description:                              
 
 ## CREDITS
 
-  - MiscMod made by Cato
-  - Mapvote based on DaMoLe's mapvote for CoD2
-  - Spawnfix based on LaZy's spawnfix for jump server
-  - Some 'fun' admin commands based on Cheese's admin commands
-  - Some 'fun' admin commands based on PowerServer's commands
-  - BEL menus based on, in some parts on code by Indy's endless menu
-  - CVAR `scr_mm_scoreboard_text` uses code from Defected (dftd)
+- MiscMod made by Cato
+- Mapvote based on DaMoLe's mapvote for CoD2
+- Spawnfix based on LaZy's spawnfix for jump server
+- Some 'fun' admin commands based on Cheese's admin commands
+- Some 'fun' admin commands based on PowerServer's commands
+- BEL menus based on, in some parts on code by Indy's endless menu
+- CVAR `scr_mm_scoreboard_text` uses code from Defected (dftd)
 
 ## CHANGELOG
 
-  3.0.9+
-  * **Going forward check git commit history/releases for changes**
+3.0.9+
+* **Going forward check git commit history/releases for changes**
 
-  3.0.8
-  * Added new command `!teambalance <on|off|force>`
-  * Added new command `!swapteams`
-  * Fixes a bug in meleefight where people can drop their weapons right before the fight starts and pick it up again
-  * Added new command `!freeze <on|off> <num|all>`
-  * Corrected CVAR `scr_mm_msg1` and `2`, in `MiscMod.cfg`, to `scr_mm_msgb1` and `scr_mm_msgb2`
-  * Added CVAR `scr_mm_emptymap`. When server is empty, switch to this map
-  * Added CVAR `scr_mm_rename` and `scr_mm_renameto` which will rename a connecting player to a fixed name based on keywords
-  * Added CVAR `scr_mm_removemaps_playercount`
-  * Fix bug where a `!command <num>` would cause crash in some cases, discoverd by Frisky, reported and tested by AJ
+3.0.8
+* Added new command `!teambalance <on|off|force>`
+* Added new command `!swapteams`
+* Fixes a bug in meleefight where people can drop their weapons right before the fight starts and pick it up again
+* Added new command `!freeze <on|off> <num|all>`
+* Corrected CVAR `scr_mm_msg1` and `2`, in `MiscMod.cfg`, to `scr_mm_msgb1` and `scr_mm_msgb2`
+* Added CVAR `scr_mm_emptymap`. When server is empty, switch to this map
+* Added CVAR `scr_mm_rename` and `scr_mm_renameto` which will rename a connecting player to a fixed name based on keywords
+* Added CVAR `scr_mm_removemaps_playercount`
+* Fix bug where a `!command <num>` would cause crash in some cases, discoverd by Frisky, reported and tested by AJ
 
-  3.0.7
-  * Adjusted `!pistols` command to include "chamber" or "clip" in case you want it to reload or not on spawn (`set scr_mm_allow_pistols_ammotype ""`)
-  * Added new CVAR `scr_mm_meleekill_ignore` (values: `bolt`, `secondary`, `primary`, `grenade`). Requested by AJ
-  * Improved `!mute` command with "list", to see muted players. (e.g `!mute list`)
-  * Fixes bug with `!mute` command where some player ID was name causing some of the mutes not to be saved across maps
-  * Fixes a typo in `!wmap` description
-  * Fixes banned player display "Disconnected" instead of "Banned" when banned
-  * Added new command `!teleport <player> (<player>|<x> <y> <z>)`
-  * Fixes players getting stuck when spawning/moving to a player position, revamp of old code used to fix blocked spawnpoints etc
+3.0.7
+* Adjusted `!pistols` command to include "chamber" or "clip" in case you want it to reload or not on spawn (`set scr_mm_allow_pistols_ammotype ""`)
+* Added new CVAR `scr_mm_meleekill_ignore` (values: `bolt`, `secondary`, `primary`, `grenade`). Requested by AJ
+* Improved `!mute` command with "list", to see muted players. (e.g `!mute list`)
+* Fixes bug with `!mute` command where some player ID was name causing some of the mutes not to be saved across maps
+* Fixes a typo in `!wmap` description
+* Fixes banned player display "Disconnected" instead of "Banned" when banned
+* Added new command `!teleport <player> (<player>|<x> <y> <z>)`
+* Fixes players getting stuck when spawning/moving to a player position, revamp of old code used to fix blocked spawnpoints etc
 
-  3.0.6
-  * Fixes rare race condition introduced in 3.0.5 for `!unban` command
-  * Added new command `!wmap` to adjust CoDaM's weaponmap feature
-  * Improvements to `!pistols` command, new arguments: `on`, `empty`, `disable` or a number of bullets in the chamber (e.g `!pistols 3`, for 3 bullets)
-  * Minor adjustment to some commands code
-  * Improvements to `validate_number()` function
-  * Adjustments to BEL menu code
-  * Workaround for CoDaM's weapon map code that force `noMap` under some conditions (`set scr_mm_wmap_force "1"` to enable) (the code is very hacky, don't use if you don't have to). Requested by TheGreatGatsby the ungrateful
-  * Added new command `!meleekill <on|off>` to change instant kill on melee
+3.0.6
+* Fixes rare race condition introduced in 3.0.5 for `!unban` command
+* Added new command `!wmap` to adjust CoDaM's weaponmap feature
+* Improvements to `!pistols` command, new arguments: `on`, `empty`, `disable` or a number of bullets in the chamber (e.g `!pistols 3`, for 3 bullets)
+* Minor adjustment to some commands code
+* Improvements to `validate_number()` function
+* Adjustments to BEL menu code
+* Workaround for CoDaM's weapon map code that force `noMap` under some conditions (`set scr_mm_wmap_force "1"` to enable) (the code is very hacky, don't use if you don't have to). Requested by TheGreatGatsby the ungrateful
+* Added new command `!meleekill <on|off>` to change instant kill on melee
 
-  3.0.5
-  * Need latest version of `codextended.so`: https://github.com/xtnded/codextended/blob/stable/bin/codextended.so
-  * Cleanup some unused and commented code
-  * Improvements to ban detection, banfile loading and `!ban`/`!unban` commands
-  * Added dftd's `serverName()` function (e.g `scr_mm_scoreboard_text "^2My Server"` or change to `"namefix"` to remove squares and illegal chars)
+3.0.5
+* Need latest version of `codextended.so`: https://github.com/xtnded/codextended/blob/stable/bin/codextended.so
+* Cleanup some unused and commented code
+* Improvements to ban detection, banfile loading and `!ban`/`!unban` commands
+* Added dftd's `serverName()` function (e.g `scr_mm_scoreboard_text "^2My Server"` or change to `"namefix"` to remove squares and illegal chars)
 
-  3.0.4
-  * Added chat anti-spam. Requested by TheGreatGatsby
-  * Fixes a bug with `!unban` command
+3.0.4
+* Added chat anti-spam. Requested by TheGreatGatsby
+* Fixes a bug with `!unban` command
 
-  3.0.3
-  * Updated `!who` and playerlist (when multiple matches found) to be more readable like `!status`
-  * Fixes spawncamper headicon not displaying properly
-  * Added `scr_mm_meleekill` for instant kill on melee
+3.0.3
+* Updated `!who` and playerlist (when multiple matches found) to be more readable like `!status`
+* Fixes spawncamper headicon not displaying properly
+* Added `scr_mm_meleekill` for instant kill on melee
 
-  3.0.2
-  * Added `!respawn` command. This command will not respawn the player in full, just move the player to a new fresh spawnpoint (e.g to free stuck players)
-  * Updated output of `!status` command to be more readable
-  * Updated `!weapon` command to support partial names, grenades and pistols (e.g `!weapon 5 nagant_sniper`). Requested by hehu
-  * Improved spawn protection with new code from funmod
-  * Fixes server crash on player disconnect using some of Cheese's commands
+3.0.2
+* Added `!respawn` command. This command will not respawn the player in full, just move the player to a new fresh spawnpoint (e.g to free stuck players)
+* Updated output of `!status` command to be more readable
+* Updated `!weapon` command to support partial names, grenades and pistols (e.g `!weapon 5 nagant_sniper`). Requested by hehu
+* Improved spawn protection with new code from funmod
+* Fixes server crash on player disconnect using some of Cheese's commands
 
-  3.0.1
-  * Added additional cvars to `scr_mm_cmd_maps`, you can now append 1, 2, 3, etc at end for more maps (e.g `"scr_mm_cmd_maps1"`)
-  * Optimized `namefix()` function
+3.0.1
+* Added additional cvars to `scr_mm_cmd_maps`, you can now append 1, 2, 3, etc at end for more maps (e.g `"scr_mm_cmd_maps1"`)
+* Optimized `namefix()` function
 
-  2.7.9
-  * Commands have new numbers, permissions must be updated
-  * Fixes issue with 999 kicker and clients download maps (999 kicker auto disables)
-  * Fixes bug in `strTok` function that causes a crash on double, tripple delimiters, etc
-  * Recoded `msgBroadcast` function to follow a queue of messages regardless or round/map changes
-  * Added `!pcvar` command
-  * Removed `!fps` command (can be used with `!pcvar` instead, e.g `!pcvar <num> fps 125`)
-  * Fixes `!help` command booting client after 85+ commands
+2.7.9
+* Commands have new numbers, permissions must be updated
+* Fixes issue with 999 kicker and clients download maps (999 kicker auto disables)
+* Fixes bug in `strTok` function that causes a crash on double, tripple delimiters, etc
+* Recoded `msgBroadcast` function to follow a queue of messages regardless or round/map changes
+* Added `!pcvar` command
+* Removed `!fps` command (can be used with `!pcvar` instead, e.g `!pcvar <num> fps 125`)
+* Fixes `!help` command booting client after 85+ commands
 
-  2.7.8
-  * Fixes bug regarding banfile (does not happen in normal mode, only developer)
-  * Fixes bug with localized string, hud, freezing on menu
-  * Added an extra check to `!re` command
-  * Added `!report` that writes to `miscmod_reports.dat` (copy from momo74 code, which is basically my code)
-  * Fixes bug with BEL menu
-  * Added `scr_mm_badwords<1,2,...>` CVAR and badwords - requested by ImNoob
-  * Added `scr_mm_badwords_checknames` to check if also names contain badwords
-  * Added `!rs`, `!fps`, `!optimize` commands by momo74
-  * Added minor tweaks to INFO messages by momo74
-  * Added `!plist` command, it does the same as momo74's `!num` command, which does the same as `!status` command without IP address
-  * Added logging to `!unban` and commands (to console/logfile)
+2.7.8
+* Fixes bug regarding banfile (does not happen in normal mode, only developer)
+* Fixes bug with localized string, hud, freezing on menu
+* Added an extra check to `!re` command
+* Added `!report` that writes to `miscmod_reports.dat` (copy from momo74 code, which is basically my code)
+* Fixes bug with BEL menu
+* Added `scr_mm_badwords<1,2,...>` CVAR and badwords - requested by ImNoob
+* Added `scr_mm_badwords_checknames` to check if also names contain badwords
+* Added `!rs`, `!fps`, `!optimize` commands by momo74
+* Added minor tweaks to INFO messages by momo74
+* Added `!plist` command, it does the same as momo74's `!num` command, which does the same as `!status` command without IP address
+* Added logging to `!unban` and commands (to console/logfile)
 
-  2.7.7
-  * Added logging to `!login` command, now server admin can see who is using the `!login` command
-  * Added server messages that can be broadcast to console, center or obituary
+2.7.7
+* Added logging to `!login` command, now server admin can see who is using the `!login` command
+* Added server messages that can be broadcast to console, center or obituary
 
-  2.7.6
-  * Fixes issue when `scr_mm_nnn` is set to 0 and instant drop client. When set to 0, it will now disable the 999 check.
-  * Fixes issue with bel menu not working when having rcon tool in game client
-  * Fixes issue with instantkill and pistolkill instantly kill people using melee
-  * Fixes issues with !help displaying more than 60 commands
-  * Added `!ban <num|name|ip> <reason> [<specify this argument to enable IP ban>]` to old `!ban` command
+2.7.6
+* Fixes issue when `scr_mm_nnn` is set to 0 and instant drop client. When set to 0, it will now disable the 999 check.
+* Fixes issue with bel menu not working when having rcon tool in game client
+* Fixes issue with instantkill and pistolkill instantly kill people using melee
+* Fixes issues with !help displaying more than 60 commands
+* Added `!ban <num|name|ip> <reason> [<specify this argument to enable IP ban>]` to old `!ban` command
 
-  2.7.5
-  * Added 1 shot kill pistol option
-  * Added `!psk` command
-  * Added optional show IP in `!status` command
-  * Integrated Endless Menu into MiscMod per requests
-  * Changed the bottom MiscMod version text
-  * Added `!belmenu` command
+2.7.5
+* Added 1 shot kill pistol option
+* Added `!psk` command
+* Added optional show IP in `!status` command
+* Integrated Endless Menu into MiscMod per requests
+* Changed the bottom MiscMod version text
+* Added `!belmenu` command
 
-  2.7.4
-  * Spawn protection
-  * RCM compatibility
+2.7.4
+* Spawn protection
+* RCM compatibility
 
-  2.7.3
-  * Commands have new numbers, permissions must be updated
-  * Added `!who` command to display who is logged in
-  * Added `!pm` command
-  * Added `!re` command
-  * Added 999 kicker based on timer
+2.7.3
+* Commands have new numbers, permissions must be updated
+* Added `!who` command to display who is logged in
+* Added `!pm` command
+* Added `!re` command
+* Added 999 kicker based on timer
 
-  2.7.2
-  * Added option for rifles only to `!rifles` command
-  * Fixes problem with instantkill and damagemarker enabled at the same time (negative value)
-  * Minor code cleanup
+2.7.2
+* Added option for rifles only to `!rifles` command
+* Fixes problem with instantkill and damagemarker enabled at the same time (negative value)
+* Minor code cleanup
 
-  2.7.1
-  * Fixes bug with current working directory, default is now set to `fs_basepath` + `"/main/"`
-  * New CVAR to specify a different working directory or share the same directory
+2.7.1
+* Fixes bug with current working directory, default is now set to `fs_basepath` + `"/main/"`
+* New CVAR to specify a different working directory or share the same directory
