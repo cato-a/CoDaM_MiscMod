@@ -1620,6 +1620,19 @@ cmd_report(args)
         return;
     }
 
+    if(!isDefined(self.pers["reports"]))
+        self.pers["reports"] = 0;
+
+    reportlimit = getCvarInt("scr_mm_reportlimit_permap");
+    if(reportlimit == 0)
+        reportlimit = 2;
+    if(self.pers["reports"] >= reportlimit) {
+        message_player("^1ERROR: ^7Too many reports sent this map.");
+        return;
+    }
+
+    self.pers["reports"]++;
+
     args1 = args[1]; // num | string
     args2 = args[2]; // reason
 
