@@ -123,6 +123,7 @@ init()
     /*67*/commands(level.prefix + "scvar"       , ::cmd_scvar        , "Set/modify a server CVAR. [" + level.prefix + "scvar <cvar> <value>]");
     /*68*/commands(level.prefix + "bansearch"   , ::cmd_bansearch    , "Search for bans in the banlist. [" + level.prefix + "bansearch <query>]");
     /*69*/commands(level.prefix + "banlist"     , ::cmd_banlist      , "List most recent bans. [" + level.prefix + "banlist]");
+    /*70*/commands(level.prefix + "reportlist"  , ::cmd_reportlist   , "List most recent reports. [" + level.prefix + "reportlist]");
 
     level.tmp_mm_weapon_map = getCvar("tmp_mm_weapon_map");
     if(level.tmp_mm_weapon_map == "") { // cmd_wmap
@@ -1654,7 +1655,6 @@ cmd_report(args)
     }
 
     reportreason = codam\_mm_mmm::namefix(args2); // To prevent malicious input
-
     level.reportactive = true;
     filename = level.workingdir + level.reportfile;
     if(fexists(filename)) {
@@ -1801,7 +1801,6 @@ _loadBans()
 {
     filename = level.workingdir + level.banfile;
     if(fexists(filename)) {
-        datasize = 0;
         file = fopen(filename, "r");
         if(file != -1)
             data = fread(0, file); // codextended.so bug?
@@ -3991,10 +3990,8 @@ cmd_bansearch(args)
             for(i = 0; i < limit; i++) {
                 if(results[i]["ip"].size > pdata.ip)
                     pdata.ip = results[i]["ip"].size;
-
                 if(results[i]["by"].size > pdata.by)
                     pdata.by = results[i]["by"].size;
-
                 if(results[i]["reason"].size > pdata.reason)
                     pdata.reason = results[i]["reason"].size;
             }
@@ -4037,10 +4034,8 @@ cmd_banlist(args)
         for(i = offset; i < level.bans.size; i++) {
             if(level.bans[i]["ip"].size > pdata.ip)
                 pdata.ip = level.bans[i]["ip"].size;
-
             if(level.bans[i]["by"].size > pdata.by)
                 pdata.by = level.bans[i]["by"].size;
-
             if(level.bans[i]["reason"].size > pdata.reason)
                 pdata.reason = level.bans[i]["reason"].size;
         }
@@ -4059,4 +4054,100 @@ cmd_banlist(args)
             message_player("More than " + numbans + " bans in the banlist. Showing the " + numbans + " most recent bans.");
     } else
         message_player("^1ERROR: ^7No bans in banlist.");
+}
+
+cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<reported user IP>%<report message>
+{
+    filename = level.workingdir + level.reportfile;
+    if(fexists(filename)) {
+        file = fopen(filename, "r");
+        if(file != -1)
+            data = fread(0, file); // codextended.so bug?
+        fclose(file); // all-in-one chunk
+
+        if(isDefined(data)) {
+            reports = [];
+            data = codam\_mm_mmm::strTok(data, "\n");
+            for(i = 0; i < data.size; i++) {
+                if(!isDefined(data[i])) // crashed here for some odd reason? this should never happen
+                    continue; // crashed here for some odd reason? this should never happen
+
+                line = codam\_mm_mmm::strTok(data[i], "%"); // crashed here for some odd reason? this should never happen
+                if(line.size != 5)
+                    continue;
+
+                reportfile_error = false;
+                for(l = 0; l < line.size; l++) {
+                    if(!isDefined(line[l])) {
+                        reportfile_error = true;
+                        break;
+                    }
+                }
+
+                if(reportfile_error)
+                    continue;
+
+                reportedby = line[0];
+                reportedbyip = line[1];
+                reporteduser = codam\_mm_mmm::strip(line[2]);
+                reporteduserip = line[3];
+                reportedmessage = codam\_mm_mmm::strip(line[4]);
+
+
+                index = reports.size;
+                reports[index]["by"] = reportedby;
+                reports[index]["byip"] = reportedbyip;
+                reports[index]["user"] = reporteduser;
+                reports[index]["userip"] = reporteduserip;
+                reports[index]["message"] = reportedmessage;
+            }
+
+            if(reports.size > 0) {
+                limit = getCvarInt("scr_mm_reportlist_limit");
+                if(limit == 0)
+                    limit = 30;
+
+                offset = 0;
+                if(reports.size - limit > 0)
+                    offset = reports.size - limit;
+
+                pdata = spawnStruct();
+                pdata.by = 0;
+                pdata.byip = 0;
+                pdata.user = 0;
+                pdata.userip = 0;
+                pdata.message = 0;
+
+                for(i = offset; i < reports.size; i++) {
+                    if(reports[i]["by"].size > pdata.by)
+                        pdata.by = reports[i]["by"].size;
+                    if(reports[i]["byip"].size > pdata.byip)
+                        pdata.byip = reports[i]["byip"].size;
+                    if(reports[i]["user"].size > pdata.user)
+                        pdata.user = reports[i]["user"].size;
+                    if(reports[i]["userip"].size > pdata.userip)
+                        pdata.userip = reports[i]["userip"].size;
+                    if(reports[i]["message"].size > pdata.message)
+                        pdata.message = reports[i]["message"].size;
+                }
+
+                for(i = offset; i < reports.size; i++) {
+                    message = "^2[^7 " + reports[i]["byip"] + spaces(pdata.byip - reports[i]["byip"].size);
+                    message += " ^2|^7 " + reports[i]["by"] + spaces(pdata.by - reports[i]["by"].size) + "^2] ^7reported";
+                    message_player(message);
+                    message = "^1[^7 " + reports[i]["userip"] + spaces(pdata.userip - reports[i]["userip"].size);
+                    message += " ^1|^7 " + reports[i]["user"] + spaces(pdata.user - reports[i]["user"].size) + "^1] ^7for";
+                    message_player(message);
+                    message = "^3reason>^7 " + reports[i]["message"];
+                    message_player(message);
+                    if(i % 5 == 0) // Prevent: SERVERCOMMAND OVERFLOW
+                        wait 0.25;
+                }
+
+                if(offset > 0)
+                    message_player("More than " + limit + " reports in the reportlist. Showing the " + limit + " most recent reports.");
+            } else
+                message_player("^1ERROR: ^7No reports in reportlist.");
+        }
+    }
 }
