@@ -134,7 +134,6 @@ init()
     }
 
     thread _loadBans(); // reload bans from dat file every round
-    thread _loadFOV();
     thread _loadBadWords();
 }
 
@@ -1780,6 +1779,8 @@ _checkLoggedIn(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b
 
 _checkFOV(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9) // "fov|num;fov|num"
 {
+    self waittill("begin");
+
     fov = getCvar("tmp_mm_fov");
     if(fov != "") {
         fov = codam\_mm_mmm::strTok(fov, ";");
@@ -1794,16 +1795,6 @@ _checkFOV(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7
             }
         }
     }
-}
-
-_loadFOV()
-{
-    wait 1;
-
-    players = getEntArray("player", "classname");
-    for(i = 0; i < players.size; i++)
-        if(isDefined(players[i].pers["mm_fov"]))
-            players[i] setClientCvar("cg_fov", players[i].pers["mm_fov"]);
 }
 
 _loadBans()
