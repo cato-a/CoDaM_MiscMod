@@ -29,7 +29,6 @@ init()
         level.workingdir = getCvar("scr_mm_cmd_path") + "/";
 
     level.banfile = "miscmod_bans.dat";
-    level.tempbanfile = "miscmod_tempbans.dat";
     level.reportfile = "miscmod_reports.dat";
 
     if(!isDefined(level.perms["default"]))
@@ -106,7 +105,7 @@ init()
     // Extra commands
     /*53*/commands(level.prefix + "belmenu"     , ::cmd_belmenu      , "Enable BEL menu instead of normal menu. [" + level.prefix + "belmenu <on|off>]");
     /*54*/commands(level.prefix + "report"      , ::cmd_report       , "Report a player. [" + level.prefix + "report <num> <reason>]");
-    /*55*/commands(level.prefix + "plist"       , ::cmd_status       , "List players and their <num> values. [" + level.prefix + "list]");
+    /*55*/commands(level.prefix + "plist"       , ::cmd_status       , "List players and their <num> values. [" + level.prefix + "plist]");
     // momo74 commands
     /*56*/commands(level.prefix + "rs"          , ::cmd_rs           , "Reset your scores in the scoreboard. [" + level.prefix + "rs ]");
     /*57*/commands(level.prefix + "optimize"    , ::cmd_optimize     , "Set optimal connection settings for a player. [" + level.prefix + "optimize <num>]");
