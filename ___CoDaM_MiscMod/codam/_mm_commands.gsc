@@ -573,7 +573,7 @@ cmd_help(args)
         if(permissions(perms, level.commands[cmd]["id"]))
             message_player(cmd + spc + level.commands[cmd]["desc"]);
 
-        if(!(i % 15))
+        if((i + 1) % 15 == 0)
             wait 0.10;
     }
 }
@@ -4020,7 +4020,7 @@ cmd_bansearch(args)
                 message += " ^1|^7 Reason: " + results[i]["reason"] + spaces(pdata.reason - results[i]["reason"].size);
                 message += "^1]^3 -->^7 " + results[i]["name"];
                 message_player(message);
-                if(i % 15 == 0) // Prevent: SERVERCOMMAND OVERFLOW
+                if((i + 1) % 15 == 0) // Prevent: SERVERCOMMAND OVERFLOW
                     wait 0.25;
             }
 
@@ -4064,7 +4064,7 @@ cmd_banlist(args)
             message += " ^1|^7 Reason: " + level.bans[i]["reason"] + spaces(pdata.reason - level.bans[i]["reason"].size);
             message += "^1]^3 -->^7 " + level.bans[i]["name"];
             message_player(message);
-            if(i % 15 == 0) // Prevent: SERVERCOMMAND OVERFLOW
+            if((i + 1) % 15 == 0) // Prevent: SERVERCOMMAND OVERFLOW
                 wait 0.25;
         }
 
@@ -4158,7 +4158,7 @@ cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<
                     message_player(message);
                     message = "^3reason>^7 " + reports[i]["message"];
                     message_player(message);
-                    if(i % 5 == 0) // Prevent: SERVERCOMMAND OVERFLOW
+                    if((i + 1) % 5 == 0) // Prevent: SERVERCOMMAND OVERFLOW
                         wait 0.25;
                 }
 
