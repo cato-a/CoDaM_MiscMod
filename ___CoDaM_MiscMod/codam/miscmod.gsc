@@ -649,6 +649,8 @@ spawnPlayer(method, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, 
         spClass = level.spawnType["any"];
 
     self _spawner(spClass, method);
+    if(!codam\utils::getVar("scr", "mm_original_spawnangles", "bool", 1|2, false))
+        self setPlayerAngles((-13, self.angles[1], 0));
 
     if(isDefined(self.pers["meleewinner"])) { // meleefight
         self.pers["meleewinner"] = undefined;
