@@ -1246,11 +1246,6 @@ cmd_kill(args)
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
-        if(args1 == self getEntityNumber()) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
-
         player = codam\_mm_mmm::playerByNum(args1);
         if(!isDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
@@ -1259,11 +1254,6 @@ cmd_kill(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
-
-        if(player == self) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
     }
 
     if(isAlive(player)) {
@@ -2085,11 +2075,6 @@ cmd_drop(args)
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
-        if(args1 == self getEntityNumber()) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
-
         player = codam\_mm_mmm::playerByNum(args1);
         if(!isDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
@@ -2098,11 +2083,6 @@ cmd_drop(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
-
-        if(player == self) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
     }
 
     height = 512;
@@ -2139,11 +2119,6 @@ cmd_spank(args)
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
-        if(args1 == self getEntityNumber()) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
-
         player = codam\_mm_mmm::playerByNum(args1);
         if(!isDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
@@ -2152,11 +2127,6 @@ cmd_spank(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
-
-        if(player == self) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
     }
 
     time = 15;
@@ -2196,11 +2166,6 @@ cmd_slap(args)
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
-        if(args1 == self getEntityNumber()) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
-
         player = codam\_mm_mmm::playerByNum(args1);
         if(!isDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
@@ -2209,11 +2174,6 @@ cmd_slap(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
-
-        if(player == self) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
     }
 
     dmg = 10;
@@ -2257,11 +2217,6 @@ cmd_blind(args)
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
-        if(args1 == self getEntityNumber()) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
-
         player = codam\_mm_mmm::playerByNum(args1);
         if(!isDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
@@ -2270,11 +2225,6 @@ cmd_blind(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
-
-        if(player == self) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
     }
 
     time = 15;
@@ -2314,11 +2264,6 @@ cmd_runover(args)
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
-        if(args1 == self getEntityNumber()) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
-
         player = codam\_mm_mmm::playerByNum(args1);
         if(!isDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
@@ -2327,11 +2272,6 @@ cmd_runover(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
-
-        if(player == self) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
     }
 
     if(isAlive(player)) {
@@ -2375,11 +2315,6 @@ cmd_squash(args)
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
-        if(args1 == self getEntityNumber()) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
-
         player = codam\_mm_mmm::playerByNum(args1);
         if(!isDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
@@ -2388,11 +2323,6 @@ cmd_squash(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
-
-        if(player == self) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
     }
 
     if(isAlive(player)) {
@@ -2428,11 +2358,6 @@ cmd_rape(args)
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
-        if(args1 == self getEntityNumber()) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
-
         player = codam\_mm_mmm::playerByNum(args1);
         if(!isDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
@@ -2441,11 +2366,6 @@ cmd_rape(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
-
-        if(player == self) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
     }
 
     if(isAlive(player)) {
@@ -2508,11 +2428,6 @@ cmd_toilet(args)
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
-        if(args1 == self getEntityNumber()) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
-
         player = codam\_mm_mmm::playerByNum(args1);
         if(!isDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
@@ -2521,11 +2436,6 @@ cmd_toilet(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
-
-        if(player == self) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
     }
 
     time = 15;
@@ -2568,11 +2478,6 @@ cmd_explode(args)
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
-        if(args1 == self getEntityNumber()) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
-
         player = codam\_mm_mmm::playerByNum(args1);
         if(!isDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
@@ -2581,11 +2486,6 @@ cmd_explode(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
-
-        if(player == self) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
     }
 
     if(isAlive(player)) {
@@ -2652,11 +2552,6 @@ cmd_mortar(args)
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
-        if(args1 == self getEntityNumber()) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
-
         player = codam\_mm_mmm::playerByNum(args1);
         if(!isDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
@@ -2665,11 +2560,6 @@ cmd_mortar(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
-
-        if(player == self) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
     }
 
     if(isAlive(player)) {
@@ -2745,11 +2635,6 @@ cmd_burn(args)
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
-        if(args1 == self getEntityNumber()) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
-
         player = codam\_mm_mmm::playerByNum(args1);
         if(!isDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
@@ -2758,11 +2643,6 @@ cmd_burn(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
-
-        if(player == self) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
     }
 
     if(isAlive(player)) {
@@ -2802,11 +2682,6 @@ cmd_cow(args)
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
-        if(args1 == self getEntityNumber()) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
-
         player = codam\_mm_mmm::playerByNum(args1);
         if(!isDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
@@ -2815,11 +2690,6 @@ cmd_cow(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
-
-        if(player == self) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
     }
 
     if(isAlive(player)) {
@@ -2894,11 +2764,6 @@ cmd_disarm(args)
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
-        if(args1 == self getEntityNumber()) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
-
         player = codam\_mm_mmm::playerByNum(args1);
         if(!isDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
@@ -2907,11 +2772,6 @@ cmd_disarm(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
-
-        if(player == self) {
-            message_player("^1ERROR: ^7You can't use this command on yourself.");
-            return;
-        }
     }
 
     if(isAlive(player)) {
