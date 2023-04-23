@@ -164,8 +164,7 @@ commands(id, cmd, func, desc)
     level.commands[cmd]["func"] = func;
     level.commands[cmd]["desc"] = desc;
     level.commands[cmd]["id"]   = id; // :)
-
-    level.help[level.commands[cmd]["id"]]["cmd"] = cmd; // not the solution I wanted tho
+    level.help[level.help.size]["cmd"] = cmd;
 }
 
 command(str)
@@ -561,10 +560,7 @@ cmd_help(args)
     }
 
     for(i = 0; i < level.help.size; i++) {
-        if(i == 0 && isloggedin)
-            continue;
-
-        if(!isDefined(level.help[i]))
+        if((i == 0 && isloggedin) || !isDefined(level.help[i]))
             continue;
 
         cmd = level.help[i]["cmd"];
@@ -573,7 +569,7 @@ cmd_help(args)
             message_player(cmd + spc + level.commands[cmd]["desc"]);
 
         if((i + 1) % 15 == 0)
-            wait 0.10;
+            wait 0.25;
     }
 }
 
