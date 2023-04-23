@@ -32,13 +32,13 @@ See `CoDaM_MiscMod.cfg` file for CVAR documentation.
 
 ## MISCMOD_BANS.DAT
 
-Before running the below command make a backup of your `miscmod_bans.dat` file:
+Before running one of the below command make a backup of your `miscmod_bans.dat` file:
 
 ```bash
 mv miscmod_bans.dat miscmod_bans.backup.dat
 ```
 
-### Upgrade `miscmod_bans.dat` file from MiscMod 3.0.9 to newer MiscMod
+### Upgrade `miscmod_bans.dat` file format from MiscMod 3.0.9 to newer MiscMod
 
 This command upgrades the `miscmod_bans.dat` to the new format and also remove duplicate and invalid IP's.
 
@@ -135,6 +135,7 @@ Command:                              Description:                              
 !scvar <cvar> <value>                 Set/modify a server CVAR.                                   67
 !bansearch <query>                    Search for bans in the banlist.                             68
 !banlist                              List most recent bans.                                      69
+!reportlist                           List most recent reports.                                   70
 ```
 
 ## CREDITS
