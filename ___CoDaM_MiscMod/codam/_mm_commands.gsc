@@ -2614,8 +2614,8 @@ cmd_matrix(args)
 
     setCvar("timescale", "1");
     setCvar("g_gravity", "800");
-
-    wait 1;
+    
+    wait 0.05;
     for(i = 0; i < players.size; i++) {
         if(isDefined(players[i].pers["mm_fov"]))
             players[i] setClientCvar("cg_fov", players[i].pers["mm_fov"]);
