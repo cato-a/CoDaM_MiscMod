@@ -1664,6 +1664,7 @@ cmd_report(args)
             line += "%%" + codam\_mm_mmm::namefix(player.name);
             line += "%%" + player getip();
             line += "%%" + reportreason;
+            line += "%%" + getunixtime();
             line += "\n";
             fwrite(line, file);
         }
@@ -2614,7 +2615,7 @@ cmd_matrix(args)
 
     setCvar("timescale", "1");
     setCvar("g_gravity", "800");
-    
+
     wait 0.05;
     for(i = 0; i < players.size; i++) {
         if(isDefined(players[i].pers["mm_fov"]))
@@ -3935,7 +3936,7 @@ cmd_banlist(args)
         message_player("^1ERROR: ^7No bans in banlist.");
 }
 
-cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<reported user IP>%<report message>
+cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<reported user IP>%<report message>&<unixtime>
 {
     filename = level.workingdir + level.reportfile;
     if(fexists(filename)) {
@@ -3952,7 +3953,7 @@ cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<
                     continue; // crashed here for some odd reason? this should never happen
 
                 line = codam\_mm_mmm::strTok(data[i], "%"); // crashed here for some odd reason? this should never happen
-                if(line.size != 5)
+                if(line.size != 6)
                     continue;
 
                 reportfile_error = false;
@@ -3971,7 +3972,7 @@ cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<
                 reporteduser = codam\_mm_mmm::strip(line[2]);
                 reporteduserip = line[3];
                 reportedmessage = codam\_mm_mmm::strip(line[4]);
-
+                reportedunixtime = line[5];
 
                 index = reports.size;
                 reports[index]["by"] = reportedby;
@@ -3979,6 +3980,7 @@ cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<
                 reports[index]["user"] = reporteduser;
                 reports[index]["userip"] = reporteduserip;
                 reports[index]["message"] = reportedmessage;
+                reports[index]["unixtime"] = reportedunixtime;
             }
 
             if(reports.size > 0) {
