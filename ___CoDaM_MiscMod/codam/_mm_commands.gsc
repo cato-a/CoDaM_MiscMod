@@ -1546,7 +1546,7 @@ cmd_ban(args)
         else
             bannedreason = "N/A";
 
-        bannedsrvtime = getunixtime();
+        bannedsrvtime = seconds();
         file = fopen(filename, "a"); // append
         if(file != -1) {
             line = "";
@@ -1664,7 +1664,7 @@ cmd_report(args)
             line += "%%" + codam\_mm_mmm::namefix(player.name);
             line += "%%" + player getip();
             line += "%%" + reportreason;
-            line += "%%" + getunixtime();
+            line += "%%" + seconds();
             line += "\n";
             fwrite(line, file);
         }
@@ -1812,7 +1812,7 @@ _loadBans()
 
         if(isDefined(data)) {
             numbans = 0;
-            unixtime = getunixtime();
+            unixtime = seconds();
             data = codam\_mm_mmm::strTok(data, "\n");
             for(i = 0; i < data.size; i++) {
                 if(!isDefined(data[i])) // crashed here for some odd reason? this should never happen
@@ -2617,10 +2617,9 @@ cmd_matrix(args)
     setCvar("g_gravity", "800");
 
     wait 0.05;
-    for(i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++)
         if(isDefined(players[i].pers["mm_fov"]))
             players[i] setClientCvar("cg_fov", players[i].pers["mm_fov"]);
-    }
 }
 
 cmd_burn(args)
