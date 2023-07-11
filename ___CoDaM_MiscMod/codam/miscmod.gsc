@@ -1185,15 +1185,13 @@ weapon32(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7,
 
 // ########## MiscMod keys
 mmKeys(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9)
-{
+{ // u = useKey, m = meleeKey and a = attackKey
     self waittill("begin");
 
     if(!codam\utils::getVar("scr_mm", "mmkeys", "bool", 1|2, false))
         return;
 
-    // u = useKey, m = meleeKey and a = attackKey
-
-    keys = [];
+    keys = "";
     timer = 0;
 
     bombzone_A = getent("bombzone_A", "targetname");
@@ -1205,10 +1203,8 @@ mmKeys(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
 
         wait 0.05;
 
-        if(self.sessionstate != "playing")
-            continue;
-
-        if((isDefined(bombzone_A) && isDefined(bombzone_A.planting))
+        if(self.sessionstate != "playing"
+            || (isDefined(bombzone_A) && isDefined(bombzone_A.planting))
             || (isDefined(bombzone_B) && isDefined(bombzone_B.planting)))
             continue;
 
@@ -1216,32 +1212,27 @@ mmKeys(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
             while(self useButtonPressed())
                 wait 0.05;
 
-            keys[keys.size] = "u";
+            keys += "u";
          }
 
         if(keys.size > 0 && self attackButtonPressed()) {
             while(self attackButtonPressed())
                 wait 0.05;
 
-            keys[keys.size] = "a";
+            keys += "a";
          }
 
         if(self meleeButtonPressed()) {
             while(self meleeButtonPressed())
                 wait 0.05;
 
-            keys[keys.size] = "m";
+            keys += "m";
          }
 
         if(keys.size > 0) {
             timer += 0.05;
-
-            keycombo = "";
-            for(i = 0; i < keys.size; i++)
-                keycombo += keys[i];
-
             reset = false;
-            switch(keycombo) { // add your custom functions here for keycombos :)
+            switch(keys) { // add your custom functions here for keycombos :)
                 // umma = HamGoodies drop weapon
                 // mmmm = HamGoodies holster weapon
                 // uuum = HamGoodies drop health
@@ -1250,13 +1241,11 @@ mmKeys(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
                 case "uuuu":
                     if(level.meleefight)
                         self codam\_mm_meleefight::meleeFight();
-
                     reset = true;
                 break;
                 case "uuua":
                     if(codam\utils::getVar("scr_mm", "funcommands", "bool", 1|2, false))
                         iPrintLn(codam\_mm_mmm::namefix(self.name) + " ^7is cool.");
-
                     reset = true;
                 break;
                 case "uumm":
@@ -1272,16 +1261,13 @@ mmKeys(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
                 case "mamuu":
                     if(codam\utils::getVar("scr_mm", "funcommands", "bool", 1|2, false))
                         iPrintLnBold(codam\_mm_mmm::namefix(self.name) + " ^0is drinking Black Coffee.");
-
                     reset = true;
-                break;
-                default:
                 break;
             }
 
             if(timer > 1 || reset) {
                 timer = 0;
-                keys = [];
+                keys = "";
             }
         }
     }
