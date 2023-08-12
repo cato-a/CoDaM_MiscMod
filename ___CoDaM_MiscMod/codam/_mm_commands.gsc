@@ -3712,7 +3712,7 @@ cmd_freeze(args)
 }
 
 cmd_move(args)
-{
+{ // !move <num> <up|down|left|right|forward|backward> <units> -- abbreviate u d l r f b
     if(args.size != 4) {
         message_player("^1ERROR: ^7Invalid number of arguments, should be 3: !move <num> <up|down|left|right|forward|backward> <units>.");
         return;
@@ -3794,9 +3794,54 @@ cmd_move(args)
         } else
             message_player("^5INFO: ^7You moved yourself " + units + " units " + direction + ".");
 
+        if(isDefined(player.cmdmovepos))
+            player cmd_move_link(true); // unlink
+
         player setOrigin(player.origin + dirv);
+        if(!isDefined(player.cmdmovepos))
+            player thread cmd_move_freeze();
+        else
+            player cmd_move_link(); // link
     } else
         message_player("^1ERROR: ^7Player must be alive.");
+}
+
+cmd_move_freeze() // not a command :D
+{
+    self endon("disconnect");
+    self cmd_move_link(); // link
+
+    while(isAlive(self) && self.sessionstate == "playing"
+            && !(self meleeButtonPressed()
+            || self useButtonPressed()
+            || self attackButtonPressed()
+            || self backButtonPressed()
+            || self forwardButtonPressed()
+            || self leftButtonPressed()
+            || self rightButtonPressed()
+            || self moveupButtonPressed()
+            || self movedownButtonPressed()
+            || self aimButtonPressed()
+            || self reloadButtonPressed()
+            || self leanLeftButtonPressed()
+            || self leanRightButtonPressed())) {
+        wait 0.05;
+    }
+
+    self cmd_move_link(true); // unlink
+    self.cmdmovepos = undefined;
+}
+
+cmd_move_link(unlink) // not a command :)
+{
+    if(!isDefined(unlink)) {
+        self.cmdmovepos = spawn("script_origin", self.origin);
+        self linkTo(self.cmdmovepos);
+    } else {
+        self unlink();
+        if(isDefined(self.cmdmovepos))
+            self.cmdmovepos delete();
+    }
 }
 
 cmd_scvar(args)
