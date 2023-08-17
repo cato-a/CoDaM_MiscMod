@@ -117,7 +117,7 @@ init()
     commands(61, level.prefix + "meleekill"   , ::cmd_wmeleekill   , "Instant kill on melee. [" + level.prefix + "meleekill <on|off>]");
     commands(62, level.prefix + "teleport"    , ::cmd_teleport     , "Teleport a player to a player or (x, y, z) coordinates. [" + level.prefix + "teleport <num> (<num>|<x> <y> <z>)]");
     commands(63, level.prefix + "teambalance" , ::cmd_teambalance  , "Enable/disable teambalance or rebalance teams. [" + level.prefix + "teambalance <on|off|force>]");
-    commands(64, level.prefix + "swapteams"   , ::cmd_swapteams    , "Swap teams. [" + level.prefix + "swapteams]");
+    commands(64, level.prefix + "swapteams"   , ::cmd_swapteams    , "Swap teams (noreset). [" + level.prefix + "swapteams (*)]");
     commands(65, level.prefix + "freeze"      , ::cmd_freeze       , "Freeze player(s). [" + level.prefix + "freeze <on|off> <num|all>]");
     commands(66, level.prefix + "move"        , ::cmd_move         , "Move a player up, down, left, right, forward or backward by specified units. [" + level.prefix + "move <num> <up|down|left|right|forward|backward> <units>]");
     commands(67, level.prefix + "scvar"       , ::cmd_scvar        , "Set/modify a server CVAR. [" + level.prefix + "scvar <cvar> <value>]");
@@ -3622,6 +3622,12 @@ cmd_swapteams(args)
 
     [[ level.gtd_call ]]("switchTeam", _allies, "axis", true);
     [[ level.gtd_call ]]("switchTeam", _axis, "allies", true);
+
+    if(isDefined(args[1])) // Pass any argument to prevent reset
+        return; // Now reset by default
+
+    game["alliedscore"] = 0; // TheWikiFesh
+    game["axisscore"] = 0; // TheWikiFesh
 }
 
 cmd_freeze(args)
