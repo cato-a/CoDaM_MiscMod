@@ -124,6 +124,7 @@ init()
     commands(68, level.prefix + "bansearch"   , ::cmd_bansearch    , "Search for bans in the banlist. [" + level.prefix + "bansearch <query>]");
     commands(69, level.prefix + "banlist"     , ::cmd_banlist      , "List most recent bans. [" + level.prefix + "banlist]");
     commands(70, level.prefix + "reportlist"  , ::cmd_reportlist   , "List most recent reports. [" + level.prefix + "reportlist]");
+    commands(71, level.prefix + "namechange"  , ::cmd_namechange   , "Turn nonamechange on/off. [" + level.prefix + "namechange <on|off>]");
 
     level.tmp_mm_weapon_map = getCvar("tmp_mm_weapon_map");
     if(level.tmp_mm_weapon_map == "") { // cmd_wmap
@@ -4080,5 +4081,32 @@ cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<
             } else
                 message_player("^1ERROR: ^7No reports in reportlist.");
         }
+    }
+}
+
+cmd_namechange(args)
+{ // TheWikiFesh
+    if(args.size != 2) {
+        message_player("^1ERROR: ^7Invalid number of arguments.");
+        return;
+    }
+
+    if(!isDefined(args[1])) {
+        message_player("^1ERROR: ^7Invalid argument.");
+        return;
+    }
+
+    switch(args[1]) {
+        case "on":
+            message("^5INFO: ^7Namechange enabled.");
+            setCvar("scr_nonamechange", "0");
+        break;
+        case "off":
+            message("^5INFO: ^7Namechange disabled.");
+            setCvar("scr_nonamechange", "1");
+        break;
+        default:
+            message_player("^1ERROR: ^7Invalid argument.");
+        break;
     }
 }
