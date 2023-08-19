@@ -816,7 +816,7 @@ cmd_kick(args)
 
     args2 = args[2];
     if(isDefined(args2)) {
-        if(args.size > 2) {
+        if(args.size > 3) {
             for(a = 3; a < args.size; a++)
                 if(isDefined(args[a]))
                     args2 += " " + args[a];
@@ -1018,7 +1018,7 @@ cmd_pm(args)
         }
     }
 
-    if(args.size > 2) {
+    if(args.size > 3) {
         for(a = 3; a < args.size; a++)
             if(isDefined(args[a]))
                 args2 += " " + args[a];
@@ -1218,7 +1218,7 @@ cmd_warn(args)
         }
     }
 
-    if(args.size > 2) {
+    if(args.size > 3) {
         for(a = 3; a < args.size; a++)
             if(isDefined(args[a]))
                 args2 += " " + args[a];
@@ -1462,7 +1462,7 @@ cmd_ban(args)
     }
 
     reason = args[3]; // reason
-    if(args.size > 3) {
+    if(args.size > 4) {
         for(a = 4; a < args.size; a++)
             if(isDefined(args[a]))
                 reason += " " + args[a];
