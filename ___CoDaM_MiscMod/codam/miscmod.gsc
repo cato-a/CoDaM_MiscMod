@@ -80,9 +80,6 @@ _init(register)
     // anti fast fire
     [[ register ]]("spawnPlayer", ::antiFF, "thread");
 
-    // weapon32
-    [[ register ]]("spawnPlayer", ::weapon32, "thread");
-
     // MiscMod keys
     [[ register ]]("PlayerConnect",	::mmKeys, "thread");
 
@@ -1168,18 +1165,6 @@ antiFF(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
             self.fastfire = undefined;
         }
     }
-}
-// ##########
-
-// ########## weapon32
-weapon32(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9)
-{
-    if(codam\utils::getVar("scr_mm", "weapon32", "bool", 1|2, false))
-        return;
-
-    wait 1;
-
-    self setClientCvar("weapon", 0);
 }
 // ##########
 
