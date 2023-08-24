@@ -333,7 +333,7 @@ permissions(perms, id) // "*:<id>:<id1>-<id2>:!<id>" :P
     for(i = 0; i < perms.size; i++) {
         if(perms[i] == "*")
             wildcard = true;
-        else if(perms[i] == id)
+        else if(perms[i] == ("" + id))
             return true;
         else if(perms[i] == ("!" + id))
             return false;
