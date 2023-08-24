@@ -376,30 +376,31 @@ deletePlacedEntity(sEntityType)
         eEntities[i] delete();
 }
 
-_newspawn(position, angles, recursive) // 2022 code: threads for recursive?
+_newspawn(spawnpoint, recursive) // 19.08.2023
 {
     newspawn = [];
 
     for(i = 0; i < 360; i += 36) {
         angle = (0, i, 0);
 
-        trace = bulletTrace(position, position + maps\mp\_utility::vectorscale(anglesToForward(angle), 48), true, self);
+        trace = bulletTrace(spawnpoint.origin, spawnpoint.origin + maps\mp\_utility::vectorscale(anglesToForward(angle), 48), true, self);
         if(trace["fraction"] == 1 && !positionWouldTelefrag(trace["position"]) && _canspawnat(trace["position"])) {
-            self spawn(trace["position"], angles);
-            return trace["position"];
+            spawnpoint.origin = trace["position"];
+            spawnpoint.angles = angle;
+            return spawnpoint;
         }
 
-        newspawn[newspawn.size] = trace["position"];
+        newspawn[newspawn.size] = spawnStruct();
+        newspawn[newspawn.size].origin = trace["position"];
+        newspawn[newspawn.size].angles = angle;
         wait 0.05;
     }
 
     if(!isDefined(recursive)) {
-        for(j = 0; j < newspawn.size; j++) {
-            if(isDefined(newspawn[j]))
-                _newspawn(newspawn[j], angles, true);
-        }
+        for(j = 0; j < newspawn.size; j++)
+            _newspawn(newspawn[j].origin, newspawn[j].angles, true);
 
-        return position; // giving up, push anyways
+        return spawnpoint; // giving up, push anyways
     }
 }
 

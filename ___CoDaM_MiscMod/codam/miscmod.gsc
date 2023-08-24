@@ -163,6 +163,7 @@ _load()
     // spawnProtection
     precacheString(&"SPAWN PROTECTION");
     precacheHeadIcon("gfx/hud/hud@health_cross.tga");
+    level.spawnprotected = codam\utils::getVar("scr_mm", "spawnprotection", "int", 1|2, 0);
 
     // damagemarker
     level.damagemarker_minus = codam\utils::getVar("scr_mm", "damagemarker_minus", "bool", 1|2, false);
@@ -676,13 +677,10 @@ spawnPlayer(method, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, 
 
     self [[ level.gtd_call ]]("playerModel");
 
-    spawnprotected = codam\utils::getVar("scr_mm", "spawnprotection", "int", 1|2, 0);
-    if(spawnprotected != 0)
-        self thread spawnProtection(spawnprotected);
+    if(level.spawnprotected > 0)
+        self thread spawnProtection();
     else
         self [[ level.gtd_call ]]("drawFriends");
-
-    return;
 }
 
 _spawner(spClass, method)
@@ -698,25 +696,23 @@ _spawner(spClass, method)
     spawnpoints = getEntArray(spClass, "classname");
 
     spawnpoint = [[ level.gtd_call ]](method, spawnpoints);
-
     if(isDefined(spawnpoint)) {
-        if(positionWouldTelefrag(spawnpoint.origin)) {
+        if(positionWouldTelefrag(spawnpoint.origin) || !codam\_mm_mmm::_canspawnat(spawnpoint.origin)) {
             self iPrintLn("^1ERROR: ^7Unable to assign spawnpoint, finding new.");
-            spawnpoint.origin = self codam\_mm_mmm::_newspawn(spawnpoint.origin, spawnpoint.angles); // this needs to be recoded sometime -- big todo crashes on max threads if no sapwn found
-        } else
-            self spawn(spawnpoint.origin, spawnpoint.angles);
+            spawnpoint = self codam\_mm_mmm::_newspawn(spawnpoint); // TODO: test properly
+        }
 
-        // anticamper
-        self thread codam\_mm_anticamper::anticamper(spawnpoint);
+        self spawn(spawnpoint.origin, spawnpoint.angles);
+        self thread codam\_mm_anticamper::anticamper(spawnpoint); // anticamper
     } else
         maps\mp\gametypes\_callbacksetup::AbortLevel();
-
-    return;
 }
+
 // ########## Spawn Protection
-spawnProtection(spawnprotected)
-{
-    // Borrowed from PowerServer
+spawnProtection()
+{ // Borrowed from PowerServer
+    self endon("disconnect");
+
     self.spawnprotection = newClientHudElem(self);
     self.spawnprotection.alignX = "center";
     self.spawnprotection.alignY = "middle";
@@ -726,24 +722,25 @@ spawnProtection(spawnprotected)
     self.spawnprotection.sort = 9998;
     self.spawnprotection.label = &"^3SPAWN PROTECTION";
 
-    self.spawnprotected = true;
     spawnpoint = self.origin;
     self.headicon = "gfx/hud/hud@health_cross.tga";
-    for(msecs = 0; msecs <= spawnprotected; msecs += 0.05) {
-        if(self attackButtonPressed() || self aimButtonPressed() || self meleeButtonPressed())
-            break;
-        if(distance(self.origin, spawnpoint) > 50)
+
+    self.spawnprotected = true;
+    for(msecs = 0.0; msecs <= (float)level.spawnprotected; msecs += 0.05) {
+        if(self attackButtonPressed() || self aimButtonPressed()
+            || self meleeButtonPressed()
+            || distance(self.origin, spawnpoint) > 50
+            || !self.sessionstate == "playing")
             break;
 
         wait 0.05;
     }
-
-    self [[ level.gtd_call ]]("drawFriends");
+    self.spawnprotected = false;
 
     if(isDefined(self.spawnprotection))
         self.spawnprotection destroy();
 
-    self.spawnprotected = false;
+    self [[ level.gtd_call ]]("drawFriends");
 }
 
 // ##########
