@@ -700,9 +700,9 @@ _spawner(spClass, method)
 
     spawnpoint = [[ level.gtd_call ]](method, spawnpoints);
     if(isDefined(spawnpoint)) {
-        if(positionWouldTelefrag(spawnpoint.origin) || !codam\_mm_mmm::_canspawnat(spawnpoint.origin)) {
+        if(positionWouldTelefrag(spawnpoint.origin)) {
             self iPrintLn("^1ERROR: ^7Unable to assign spawnpoint, finding new.");
-            spawnpoint = self codam\_mm_mmm::_newspawn(spawnpoint); // TODO: test properly
+            spawnpoint = self codam\_mm_mmm::_newspawn(spawnpoint);
         }
 
         self spawn(spawnpoint.origin, spawnpoint.angles);

@@ -376,9 +376,11 @@ deletePlacedEntity(sEntityType)
         eEntities[i] delete();
 }
 
-_newspawn(spawnpoint, recursive) // 19.08.2023
+_newspawn(spawnpoint, recursive)
 {
-    newspawn = [];
+    recursive = (bool)isDefined(recursive);
+    if(!recursive)
+        newspawn = [];
 
     for(i = 0; i < 360; i += 36) {
         angle = (0, i, 0);
@@ -390,25 +392,29 @@ _newspawn(spawnpoint, recursive) // 19.08.2023
             return spawnpoint;
         }
 
-        newspawn[newspawn.size] = spawnStruct();
-        newspawn[newspawn.size].origin = trace["position"];
-        newspawn[newspawn.size].angles = angle;
+        if(!recursive) {
+            _index = newspawn.size;
+            newspawn[_index] = spawnStruct();
+            newspawn[_index].origin = trace["position"];
+            newspawn[_index].angles = angle;
+        }
+
         wait 0.05;
     }
 
-    if(!isDefined(recursive)) {
+    if(!recursive) {
         for(j = 0; j < newspawn.size; j++)
-            _newspawn(newspawn[j].origin, newspawn[j].angles, true);
+            _newspawn(newspawn[j], true);
 
         return spawnpoint; // giving up, push anyways
     }
 }
 
-_canspawnat(position) // 2022 code: this fixes bug introduced by original coder, like 12+ years ago...
+_canspawnat(position)
 {
     position = position + (-32, -32, 0);
-    for(x = 0; x < 64; x++) {
-        for(y = 0; y < 64; y++) {
+    for(x = 0; x < 32; x++) {
+        for(y = 0; y < 32; y++) {
             trace = bulletTrace(position + (x, y, 0), position + (x, y, 72), true, self);
 
             if(trace["fraction"] != 1)
