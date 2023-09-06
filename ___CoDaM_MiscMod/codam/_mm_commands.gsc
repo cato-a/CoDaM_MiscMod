@@ -2512,18 +2512,18 @@ cmd_force(args)
         return;
     }
 
-    players = [];
     if(args2 == "all") {
         players = getEntArray("player", "classname");
         [[ level.gtd_call ]]("switchTeam", players, args1, true);
         return;
     }
 
+    players = [];
     for(i = 2; i < args.size; i++) {
         if(codam\_mm_mmm::validate_number(args[i])) {
-            playernum = codam\_mm_mmm::playerByNum(args[i]);
-            if(isDefined(playernum))
-                players[players.size] = playernum;
+            playerbynum = codam\_mm_mmm::playerByNum(args[i]);
+            if(isDefined(playerbynum))
+                players[players.size] = playerbynum;
         }
     }
 
@@ -4099,10 +4099,12 @@ cmd_namechange(args)
     switch(args[1]) {
         case "on":
             message("^5INFO: ^7Namechange enabled.");
+            setClientNameMode("auto_change");
             setCvar("scr_nonamechange", "0");
         break;
         case "off":
             message("^5INFO: ^7Namechange disabled.");
+            setClientNameMode("manual_change");
             setCvar("scr_nonamechange", "1");
         break;
         default:
