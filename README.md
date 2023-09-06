@@ -136,6 +136,7 @@ Command:                              Description:                              
 !bansearch <query>                    Search for bans in the banlist.                             68
 !banlist                              List most recent bans.                                      69
 !reportlist                           List most recent reports.                                   70
+!namechange                           Turn nonamechange on/off.                                   71
 ```
 
 ## CREDITS
