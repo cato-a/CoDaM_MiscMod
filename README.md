@@ -77,17 +77,17 @@ Command:                              Description:                              
 !endmap                               End the map.                                                13
 !map <mapname> (gametype)             Change map and gametype.                                    14
 !status                               List players.                                               15
-!mute <num>                           Mute player.                                                16
-!unmute <num>                         Unmute player.                                              17
-!warn <num> <message>                 Warn player.                                                18
-!kill <num>                           Kill player.                                                19
-!weapon <num> <weapon>                Give weapon to player.                                      20
-!heal <num>                           Heal player.                                                21
+!mute <num>                           Mute a player.                                              16
+!unmute <num>                         Unmute a player.                                            17
+!warn <num> <message>                 Warn a player.                                              18
+!kill <num>                           Kill a player.                                              19
+!weapon <num> <weapon>                Give a weapon to player.                                    20
+!heal <num>                           Heal a player.                                              21
 !invisible <on|off>                   Become invisible.                                           22
-!ban <num> <time> <reason>            Ban player.                                                 23
-!unban <ip>                           Unban player.                                               24
+!ban <num> <time> <reason>            Ban a player.                                               23
+!unban <ip>                           Unban a player.                                             24
 !pm <player> <message>                Private message a player.                                   25
-!re <message>                         Respond to private message.                                 26
+!re <message>                         Respond to a private message.                               26
 !who                                  Display logged in users.                                    27
 
 !drop <num> <height>                  Drop a player.                                              28
@@ -97,7 +97,7 @@ Command:                              Description:                              
 !runover <num>                        Run over a player.                                          32
 !squash <num>                         Squash a player.                                            33
 !rape <num>                           Rape a player.                                              34
-!toilet <num>                         Turn player into a toilet.                                  35
+!toilet <num>                         Turn a player into a toilet.                                35
 
 !explode <num>                        Explode a player.                                           36
 !force <axis|allies|spectator> <num|all> (...)  Force players to team.                            37
@@ -116,20 +116,23 @@ Command:                              Description:                              
 !pistols <on|off|reset>               Pistol settings.                                            49
 !1sk <on|off>                         Enable or disable instant kill.                             50
 !roundlength <time>                   Set roundlength. (sd|re)                                    51
-
 !psk <on|off>                         Enable or disable instant kill on pistols.                  52
+
 !belmenu <on|off>                     Enable BEL menu instead of normal menu.                     53
 !report <on|off>                      Report a player.                                            54
 !plist                                List players without IP.                                    55
+
 !rs                                   Reset your scores in the scoreboard.                        56
-!optimize                             Change a players connection settings.                       57
-!pcvar <num> <cmd> <value>            Set/modify a client CVAR.                                   58
-!respawn <num> <sd|dm|tdm>            Move player to a new spawnpoint.                            59
+!optimize                             Set optimal connection settings for a player.               57
+
+!pcvar <num> <cmd> <value>            Set/modify a player CVAR.                                   58
+!respawn <num> <sd|dm|tdm>            Move a player to a new spawnpoint.                          59
+
 !wmap <wapon=map>                     Change CoDaM's weapon_map setting.                          60
 !meleekill <on|off>                   Enable or disable scr_mm_meleekill.                         61
 !teleport <num> (<num>|<x> <y> <z>)   Teleport a player to a player or (x, y, z) coordinates.     62
 !teambalance <on|off|force>           Adjust team balance settings or force a team balance.       63
-!swapteams                            Swap teams.                                                 64
+!swapteams (*)                        Swap teams (no reset).                                      64
 !freeze <on|off> <num|all>            Freeze certain players (on the map).                        65
 !move <num> <u|d|l|r|f|b> <units>     Move player in specified direction by specified units.      66
 !scvar <cvar> <value>                 Set/modify a server CVAR.                                   67
