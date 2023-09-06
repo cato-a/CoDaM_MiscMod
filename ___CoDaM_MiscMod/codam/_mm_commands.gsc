@@ -62,17 +62,17 @@ init()
     commands(13, level.prefix + "endmap"      , ::cmd_endmap       , "End the map. [" + level.prefix + "endmap]");
     commands(14, level.prefix + "map"         , ::cmd_map          , "Change map and gametype. [" + level.prefix + "map <map> (gametype)]");
     commands(15, level.prefix + "status"      , ::cmd_status       , "List players. [" + level.prefix + "status]");
-    commands(16, level.prefix + "mute"        , ::cmd_mute         , "Mute player. [" + level.prefix + "mute <num|list>]");
-    commands(17, level.prefix + "unmute"      , ::cmd_unmute       , "Unmute player. [" + level.prefix + "unmute <num>]");
-    commands(18, level.prefix + "warn"        , ::cmd_warn         , "Warn player. [" + level.prefix + "warn <num> <message>]");
+    commands(16, level.prefix + "mute"        , ::cmd_mute         , "Mute a player. [" + level.prefix + "mute <num|list>]");
+    commands(17, level.prefix + "unmute"      , ::cmd_unmute       , "Unmute a player. [" + level.prefix + "unmute <num>]");
+    commands(18, level.prefix + "warn"        , ::cmd_warn         , "Warn a player. [" + level.prefix + "warn <num> <message>]");
     commands(19, level.prefix + "kill"        , ::cmd_kill         , "Kill a player. [" + level.prefix + "kill <num>]");
-    commands(20, level.prefix + "weapon"      , ::cmd_weapon       , "Give weapon to player. [" + level.prefix + "weapon <num> <weapon>]");
-    commands(21, level.prefix + "heal"        , ::cmd_heal         , "Heal player. [" + level.prefix + "heal <num>]");
+    commands(20, level.prefix + "weapon"      , ::cmd_weapon       , "Give a weapon to player. [" + level.prefix + "weapon <num> <weapon>]");
+    commands(21, level.prefix + "heal"        , ::cmd_heal         , "Heal a player. [" + level.prefix + "heal <num>]");
     commands(22, level.prefix + "invisible"   , ::cmd_invisible    , "Become invisible. [" + level.prefix + "invisible <on|off>]");
-    commands(23, level.prefix + "ban"         , ::cmd_ban          , "Ban player. [" + level.prefix + "ban <num> <time> <reason>]");
-    commands(24, level.prefix + "unban"       , ::cmd_unban        , "Unban player. [" + level.prefix + "unban <ip>]");
+    commands(23, level.prefix + "ban"         , ::cmd_ban          , "Ban a player. [" + level.prefix + "ban <num> <time> <reason>]");
+    commands(24, level.prefix + "unban"       , ::cmd_unban        , "Unban a player. [" + level.prefix + "unban <ip>]");
     commands(25, level.prefix + "pm"          , ::cmd_pm           , "Private message a player. [" + level.prefix + "pm <player> <message>]");
-    commands(26, level.prefix + "re"          , ::cmd_re           , "Respond to private message. [" + level.prefix + "re <message>]");
+    commands(26, level.prefix + "re"          , ::cmd_re           , "Respond to a private message. [" + level.prefix + "re <message>]");
     commands(27, level.prefix + "who"         , ::cmd_who          , "Display logged in users. [" + level.prefix + "who]");
     // Cheese commands
     commands(28, level.prefix + "drop"        , ::cmd_drop         , "Drop a player. [" + level.prefix + "drop <num> <height>]");
@@ -82,7 +82,7 @@ init()
     commands(32, level.prefix + "runover"     , ::cmd_runover      , "Run over a player. [" + level.prefix + "runover <num>]");
     commands(33, level.prefix + "squash"      , ::cmd_squash       , "Squash a player. [" + level.prefix + "squash <num>]");
     commands(34, level.prefix + "rape"        , ::cmd_rape         , "Rape a player. [" + level.prefix + "rape <num>]");
-    commands(35, level.prefix + "toilet"      , ::cmd_toilet       , "Turn player into a toilet. [" + level.prefix + "toilet <num>]");
+    commands(35, level.prefix + "toilet"      , ::cmd_toilet       , "Turn a player into a toilet. [" + level.prefix + "toilet <num>]");
     // PowerServer
     commands(36, level.prefix + "explode"     , ::cmd_explode      , "Explode a player. [" + level.prefix + "explode <num>]");
     commands(37, level.prefix + "force"       , ::cmd_force        , "Force players to team. [" + level.prefix + "<axis|allies|spectator> <num|all> (...)]");
@@ -111,13 +111,13 @@ init()
     commands(57, level.prefix + "optimize"    , ::cmd_optimize     , "Set optimal connection settings for a player. [" + level.prefix + "optimize <num>]");
     // Client CVAR commands
     commands(58, level.prefix + "pcvar"       , ::cmd_pcvar        , "Set/modify a player CVAR (e.g fps, rate, etc). [" + level.prefix + "pcvar <num> <cvar> <value>]");
-    commands(59, level.prefix + "respawn"     , ::cmd_respawn      , "Reload a player spawnpoint. [" + level.prefix + "respawn <num> <sd|dm|tdm>]");
+    commands(59, level.prefix + "respawn"     , ::cmd_respawn      , "Move a player to a new spawnpoint. [" + level.prefix + "respawn <num> <sd|dm|tdm>]");
     // More commands
-    commands(60, level.prefix + "wmap"        , ::cmd_wmap         , "Change CoDaM weapon_map settings. [" + level.prefix + "wmap <weapon=map|codam|reset>]");
+    commands(60, level.prefix + "wmap"        , ::cmd_wmap         , "Change CoDaM's weapon_map settings. [" + level.prefix + "wmap <weapon=map|codam|reset>]");
     commands(61, level.prefix + "meleekill"   , ::cmd_wmeleekill   , "Instant kill on melee. [" + level.prefix + "meleekill <on|off>]");
     commands(62, level.prefix + "teleport"    , ::cmd_teleport     , "Teleport a player to a player or (x, y, z) coordinates. [" + level.prefix + "teleport <num> (<num>|<x> <y> <z>)]");
     commands(63, level.prefix + "teambalance" , ::cmd_teambalance  , "Enable/disable teambalance or rebalance teams. [" + level.prefix + "teambalance <on|off|force>]");
-    commands(64, level.prefix + "swapteams"   , ::cmd_swapteams    , "Swap teams (noreset). [" + level.prefix + "swapteams (*)]");
+    commands(64, level.prefix + "swapteams"   , ::cmd_swapteams    , "Swap teams (no reset). [" + level.prefix + "swapteams (*)]");
     commands(65, level.prefix + "freeze"      , ::cmd_freeze       , "Freeze player(s). [" + level.prefix + "freeze <on|off> <num|all>]");
     commands(66, level.prefix + "move"        , ::cmd_move         , "Move a player up, down, left, right, forward or backward by specified units. [" + level.prefix + "move <num> <up|down|left|right|forward|backward> <units>]");
     commands(67, level.prefix + "scvar"       , ::cmd_scvar        , "Set/modify a server CVAR. [" + level.prefix + "scvar <cvar> <value>]");
