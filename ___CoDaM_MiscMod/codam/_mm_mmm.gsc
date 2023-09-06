@@ -387,16 +387,17 @@ _newspawn(spawnpoint, recursive)
 
         trace = bulletTrace(spawnpoint.origin, spawnpoint.origin + maps\mp\_utility::vectorscale(anglesToForward(angle), 48), true, self);
         if(trace["fraction"] == 1 && !positionWouldTelefrag(trace["position"]) && _canspawnat(trace["position"])) {
-            spawnpoint.origin = trace["position"];
-            spawnpoint.angles = angle;
-            return spawnpoint;
+            _spawnpoint = spawnStruct();
+            _spawnpoint.origin = trace["position"];
+            _spawnpoint.angles = angle;
+            return _spawnpoint;
         }
 
         if(!recursive) {
-            _index = newspawn.size;
-            newspawn[_index] = spawnStruct();
-            newspawn[_index].origin = trace["position"];
-            newspawn[_index].angles = angle;
+            _spawnpoint = spawnStruct();
+            _spawnpoint.origin = trace["position"];
+            _spawnpoint.angles = angle;
+            newspawn[newspawn.size] = _spawnpoint;
         }
 
         wait 0.05;
@@ -412,11 +413,10 @@ _newspawn(spawnpoint, recursive)
 
 _canspawnat(position)
 {
-    position = position + (-32, -32, 0);
+    position = position + (-16, -16, 0);
     for(x = 0; x < 32; x++) {
         for(y = 0; y < 32; y++) {
             trace = bulletTrace(position + (x, y, 0), position + (x, y, 72), true, self);
-
             if(trace["fraction"] != 1)
                 return false;
         }
