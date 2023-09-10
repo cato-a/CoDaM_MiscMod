@@ -61,7 +61,7 @@ init()
     commands(12, level.prefix + "restart"     , ::cmd_restart      , "Restart map (soft). [" + level.prefix + "restart (*)]");
     commands(13, level.prefix + "endmap"      , ::cmd_endmap       , "End the map. [" + level.prefix + "endmap]");
     commands(14, level.prefix + "map"         , ::cmd_map          , "Change map and gametype. [" + level.prefix + "map <map> (gametype)]");
-    commands(15, level.prefix + "status"      , ::cmd_status       , "List players. [" + level.prefix + "status]");
+    commands(15, level.prefix + "status"      , ::cmd_status       , "List players and their <num> values. [" + level.prefix + "status]");
     commands(16, level.prefix + "mute"        , ::cmd_mute         , "Mute a player. [" + level.prefix + "mute <num|list>]");
     commands(17, level.prefix + "unmute"      , ::cmd_unmute       , "Unmute a player. [" + level.prefix + "unmute <num>]");
     commands(18, level.prefix + "warn"        , ::cmd_warn         , "Warn a player. [" + level.prefix + "warn <num> <message>]");
@@ -70,7 +70,7 @@ init()
     commands(21, level.prefix + "heal"        , ::cmd_heal         , "Heal a player. [" + level.prefix + "heal <num>]");
     commands(22, level.prefix + "invisible"   , ::cmd_invisible    , "Become invisible. [" + level.prefix + "invisible <on|off>]");
     commands(23, level.prefix + "ban"         , ::cmd_ban          , "Ban a player. [" + level.prefix + "ban <num> <time> <reason>]");
-    commands(24, level.prefix + "unban"       , ::cmd_unban        , "Unban a player. [" + level.prefix + "unban <ip>]");
+    commands(24, level.prefix + "unban"       , ::cmd_unban        , "Unban a player. [" + level.prefix + "unban <ip|index>]");
     commands(25, level.prefix + "pm"          , ::cmd_pm           , "Private message a player. [" + level.prefix + "pm <player> <message>]");
     commands(26, level.prefix + "re"          , ::cmd_re           , "Respond to a private message. [" + level.prefix + "re <message>]");
     commands(27, level.prefix + "who"         , ::cmd_who          , "Display logged in users. [" + level.prefix + "who]");
@@ -105,7 +105,7 @@ init()
     // Extra commands
     commands(53, level.prefix + "belmenu"     , ::cmd_belmenu      , "Enable BEL menu instead of normal menu. [" + level.prefix + "belmenu <on|off>]");
     commands(54, level.prefix + "report"      , ::cmd_report       , "Report a player. [" + level.prefix + "report <num> <reason>]");
-    commands(55, level.prefix + "plist"       , ::cmd_status       , "List players and their <num> values. [" + level.prefix + "plist]");
+    commands(55, level.prefix + "plist"       , ::cmd_status       , "List players and their <num> values. [" + level.prefix + "plist]"); // now redundant, to be removed
     // momo74 commands
     commands(56, level.prefix + "rs"          , ::cmd_rs           , "Reset your scores in the scoreboard. [" + level.prefix + "rs ]");
     commands(57, level.prefix + "optimize"    , ::cmd_optimize     , "Set optimal connection settings for a player. [" + level.prefix + "optimize <num>]");
@@ -418,17 +418,26 @@ cmd_login(args)
 
                         self.pers["mm_group"] = group;
                         self.pers["mm_user"] = user[0]; // username - as defined in config
+                        self.pers["mm_ipaccess"] = false;
 
-                        rSTR = "";
-                        if(getCvar("tmp_mm_loggedin") != "")
-                            rSTR += getCvar("tmp_mm_loggedin");
+                        ipaccess = GetCvar("scr_mm_ipaccess"); // "<user1>;<group1>;<user2>;<...>"
+                        if(ipaccess != "") {
+                            ipaccess = codam\_mm_mmm::strTok(ipaccess, ";");
+                            for(a = 0; a < ipaccess.size; a++) {
+                                if(username == tolower(ipaccess[a]) || group == ipaccess[a]) {
+                                    self.pers["mm_ipaccess"] = true;
+                                    break;
+                                }
+                            }
+                        }
 
+                        rSTR = GetCvar("tmp_mm_loggedin");
                         rSTR += self.pers["mm_user"];
                         rSTR += "|" + self.pers["mm_group"];
+                        rSTR += "|" + (int)self.pers["mm_ipaccess"];
                         rSTR += "|" + self getEntityNumber();
                         rSTR += ";";
-
-                        setCvar("tmp_mm_loggedin", rSTR);
+                        SetCvar("tmp_mm_loggedin", rSTR);
                         return;
                     }
                 }
@@ -753,26 +762,18 @@ cmd_who(args)
             pdata.user = puser.size;
     }
 
-    pdata.num = pdata.num + "";
-    pdata.num = pdata.num.size;
-
-    pdata.highscore = pdata.highscore + "";
-    pdata.highscore = pdata.highscore.size;
-
-    pdata.ping = pdata.ping + "";
-    pdata.ping = pdata.ping.size;
+    pdata.num = codam\_mm_mmm::numdigits(pdata.num);
+    pdata.highscore = codam\_mm_mmm::numdigits(pdata.highscore);
+    pdata.ping = codam\_mm_mmm::numdigits(pdata.ping);
 
     message_player("-----------------------------------------------------");
     for(i = 0; i < playersloggedin.size; i++) {
         player = playersloggedin[i];
         pnum = player getEntityNumber();
-        pnumstr = pnum + "";
-        pscorestr = player.score + "";
         pping = player getping();
-        ppingstr = pping + "";
         puser = player.pers["mm_user"] + " (" + player.pers["mm_group"] + "^7)";
-        message = "^1[^7NUM: " + pnum + spaces(pdata.num - pnumstr.size) + " ^1|^7 Score: " + player.score + spaces(pdata.highscore - pscorestr.size) + " ^1|^7 ";
-        message += "Ping: " + pping + spaces(pdata.ping - ppingstr.size) + " ^1|^7 ";
+        message = "^1[^7NUM: " + pnum + spaces(pdata.num - codam\_mm_mmm::numdigits(pnum)) + " ^1|^7 Score: " + player.score + spaces(pdata.highscore - codam\_mm_mmm::numdigits(player.score)) + " ^1|^7 ";
+        message += "Ping: " + pping + spaces(pdata.ping - codam\_mm_mmm::numdigits(pping)) + " ^1|^7 ";
         message += "User: " + puser + spaces(pdata.user - puser.size);
         message += "^1]^3 -->^7 " + codam\_mm_mmm::namefix(player.name);
 
@@ -943,27 +944,19 @@ cmd_status(args)
             pdata.ping = ping;
     }
 
-    pdata.num = pdata.num + "";
-    pdata.num = pdata.num.size;
-
-    pdata.highscore = pdata.highscore + "";
-    pdata.highscore = pdata.highscore.size;
-
-    pdata.ping = pdata.ping + "";
-    pdata.ping = pdata.ping.size;
+    pdata.num = codam\_mm_mmm::numdigits(pdata.num);
+    pdata.highscore = codam\_mm_mmm::numdigits(pdata.highscore);
+    pdata.ping = codam\_mm_mmm::numdigits(pdata.ping);
 
     message_player("-----------------------------------------------------");
     for(i = 0; i < players.size; i++) {
         player = players[i];
         pnum = player getEntityNumber();
-        pnumstr = pnum + "";
-        pscorestr = player.score + "";
         pping = player getping();
-        ppingstr = pping + "";
-        message = "^1[^7NUM: " + pnum + spaces(pdata.num - pnumstr.size) + " ^1|^7 Score: " + player.score + spaces(pdata.highscore - pscorestr.size) + " ^1|^7 ";
-        message += "Ping: " + pping + spaces(pdata.ping - ppingstr.size);
+        message = "^1[^7NUM: " + pnum + spaces(pdata.num - codam\_mm_mmm::numdigits(pnum)) + " ^1|^7 Score: " + player.score + spaces(pdata.highscore - codam\_mm_mmm::numdigits(player.score)) + " ^1|^7 ";
+        message += "Ping: " + pping + spaces(pdata.ping - codam\_mm_mmm::numdigits(pping));
 
-        if(args[0] == "!status" && getCvarInt("scr_mm_showip_status") > 0) {
+        if(isDefined(self.pers["mm_ipaccess"]) && self.pers["mm_ipaccess"]) {
             pip = player getip();
             message += " ^1|^7 IP: " + pip + spaces(pdata.ip - pip.size);
         }
@@ -1570,7 +1563,11 @@ cmd_ban(args)
         level.bans[index]["srvtime"] = bannedsrvtime;
         level.bans[index]["reason"] = bannedreason;
 
-        message_player("^5INFO: ^7You banned IP: " + bannedip);
+        if(self.pers["mm_ipaccess"])
+            message_player("^5INFO: ^7You banned IP: " + bannedip);
+        else
+            message_player("^5INFO: ^7You banned player: " + bannedname);
+
         banmessage = bannedname + " ^7was ";
         if(time > 0)
             banmessage += "temporarily ";
@@ -1685,7 +1682,6 @@ isbanned(ip)
         if(level.bans[b]["ip"] == ip)
             return b;
     }
-
     return -1;
 }
 
@@ -1701,22 +1697,34 @@ cmd_unban(args)
         return;
     }
 
-    bannedip = args[1]; // IP
-    if(!isDefined(bannedip)) {
+    args1 = args[1]; // IP | index
+    if(!isDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
-    if(!valid_ip(bannedip)) {
+    if(valid_ip(args1))
+        banindex = isbanned(args1);
+    else if(codam\_mm_mmm::validate_number(args1)) {
+        args1 = (int)args1;
+        if(isDefined(level.bans[args1]))
+            banindex = args1;
+        else {
+            message_player("^1ERROR: ^7Invalid banindex.");
+            return;
+        }
+    } else {
         message_player("^1ERROR: ^7Invalid IP address.");
         return;
     }
 
-    banindex = isbanned(bannedip);
     if(banindex != -1) {
-        message_player("^5INFO: ^7You unbanned IP: " + bannedip);
+        if(self.pers["mm_ipaccess"])
+            message_player("^5INFO: ^7You unbanned IP: " + level.bans[banindex]["ip"]);
+        else
+            message_player("^5INFO: ^7You unbanned player: " + level.bans[banindex]["name"]);
         message(level.bans[banindex]["name"] + " ^7got unbanned by " + codam\_mm_mmm::namefix(self.name) + "^7.");
-        codam\_mm_mmm::mmlog("unban;" + bannedip + ";" + level.bans[banindex]["name"] + ";" + level.bans[banindex]["time"] + ";" + level.bans[banindex]["srvtime"] + ";" + level.bans[banindex]["by"] + ";" + codam\_mm_mmm::namefix(self.name));
+        codam\_mm_mmm::mmlog("unban;" + level.bans[banindex]["ip"] + ";" + level.bans[banindex]["name"] + ";" + level.bans[banindex]["time"] + ";" + level.bans[banindex]["srvtime"] + ";" + level.bans[banindex]["by"] + ";" + codam\_mm_mmm::namefix(self.name));
         level.bans[banindex]["ip"] = "unbanned";
 
         level.banactive = true;
@@ -1744,7 +1752,7 @@ cmd_unban(args)
 
         level.banactive = false;
     } else
-        message_player("^1ERROR: ^7IP not found in loaded banlist.");
+        message_player("^1ERROR: ^7IP address not found in the loaded banlist.");
 }
 
 /* ---------- */
@@ -1760,18 +1768,19 @@ _checkMuted(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, 
     }
 }
 
-_checkLoggedIn(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9) // "username|group|num;username|group|num"
+_checkLoggedIn(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9) // "username|group|ipa|num;username|group|ipa|num"
 {
-    loggedin = getCvar("tmp_mm_loggedin");
+    loggedin = GetCvar("tmp_mm_loggedin");
     if(loggedin != "") {
         loggedin = codam\_mm_mmm::strTok(loggedin, ";");
         for(i = 0; i < loggedin.size; i++) {
             num = self getEntityNumber();
             user = codam\_mm_mmm::strTok(loggedin[i], "|");
 
-            if(user[2] == num) {
+            if((int)user[3] == num) {
                 self.pers["mm_group"] = user[1];
                 self.pers["mm_user"] = user[0];
+                self.pers["mm_ipaccess"] = (bool)user[2];
             }
         }
     }
@@ -1907,25 +1916,23 @@ _removeMuted(num)
 
 _removeLoggedIn(num)
 {
-    loggedin = getCvar("tmp_mm_loggedin");
+    loggedin = GetCvar("tmp_mm_loggedin");
     if(loggedin != "") {
         loggedin = codam\_mm_mmm::strTok(loggedin, ";");
-        validuser = false;
+        removed = false;
 
         rSTR = "";
         for(i = 0; i < loggedin.size; i++) {
             user = codam\_mm_mmm::strTok(loggedin[i], "|");
-            if(user[2] == num) {
-                validuser = true;
-                continue;
-            }
-
-            rSTR += loggedin[i];
-            rSTR += ";";
+            if((int)user[3] != num) {
+                rSTR += loggedin[i];
+                rSTR += ";";
+            } else if(!removed)
+                removed = true;
         }
 
-        if(validuser)
-            setCvar("tmp_mm_loggedin", rSTR);
+        if(removed)
+            SetCvar("tmp_mm_loggedin", rSTR);
     }
 }
 
@@ -2026,24 +2033,16 @@ playerByName(str) // 2021 attempt
                 pdata.ping = ping;
         }
 
-        pdata.num = pdata.num + "";
-        pdata.num = pdata.num.size;
-
-        pdata.highscore = pdata.highscore + "";
-        pdata.highscore = pdata.highscore.size;
-
-        pdata.ping = pdata.ping + "";
-        pdata.ping = pdata.ping.size;
+        pdata.num = codam\_mm_mmm::numdigits(pdata.num);
+        pdata.highscore = codam\_mm_mmm::numdigits(pdata.highscore);
+        pdata.ping = codam\_mm_mmm::numdigits(pdata.ping);
 
         for(i = 0; i < players.size; i++) {
             player = players[i];
             pnum = player getEntityNumber();
-            pnumstr = pnum + "";
-            pscorestr = player.score + "";
             pping = player getping();
-            ppingstr = pping + "";
-            message = "^1[^7NUM: " + pnum + spaces(pdata.num - pnumstr.size) + " ^1|^7 Score: " + player.score + spaces(pdata.highscore - pscorestr.size) + " ^1|^7 ";
-            message += "Ping: " + pping + spaces(pdata.ping - ppingstr.size);
+            message = "^1[^7NUM: " + pnum + spaces(pdata.num - codam\_mm_mmm::numdigits(pnum)) + " ^1|^7 Score: " + player.score + spaces(pdata.highscore - codam\_mm_mmm::numdigits(player.score)) + " ^1|^7 ";
+            message += "Ping: " + pping + spaces(pdata.ping - codam\_mm_mmm::numdigits(pping));
             message += "^1]^3 -->^7 " + codam\_mm_mmm::namefix(player.name);
 
             message_player(message);
@@ -3819,21 +3818,20 @@ cmd_move_freeze() // not a command :D
     self cmd_move_link(); // link
 
     while(isAlive(self) && self.sessionstate == "playing"
-            && !(self meleeButtonPressed()
-            || self useButtonPressed()
-            || self attackButtonPressed()
-            || self backButtonPressed()
-            || self forwardButtonPressed()
-            || self leftButtonPressed()
-            || self rightButtonPressed()
-            || self moveupButtonPressed()
-            || self movedownButtonPressed()
-            || self aimButtonPressed()
-            || self reloadButtonPressed()
-            || self leanLeftButtonPressed()
-            || self leanRightButtonPressed())) {
+        && !(self meleeButtonPressed()
+        || self useButtonPressed()
+        || self attackButtonPressed()
+        || self backButtonPressed()
+        || self forwardButtonPressed()
+        || self leftButtonPressed()
+        || self rightButtonPressed()
+        || self moveupButtonPressed()
+        || self movedownButtonPressed()
+        || self aimButtonPressed()
+        || self reloadButtonPressed()
+        || self leanLeftButtonPressed()
+        || self leanRightButtonPressed()))
         wait 0.05;
-    }
 
     self cmd_move_link(true); // unlink
     self.cmdmovepos = undefined;
@@ -3900,9 +3898,13 @@ cmd_bansearch(args)
             name = level.bans[i]["name"];
             name = codam\_mm_mmm::monotone(name);
             name = codam\_mm_mmm::strip(name);
-            if(name.size >= query.size)
-                if(codam\_mm_mmm::pmatch(tolower(name), tolower(query)))
-                    results[results.size] = level.bans[i];
+            if(name.size >= query.size) {
+                if(codam\_mm_mmm::pmatch(tolower(name), tolower(query))) {
+                    _index = results.size;
+                    results[_index] = level.bans[i];
+                    results[_index]["index"] = i;
+                }
+            }
         }
 
         if(results.size > 0) {
@@ -3928,7 +3930,10 @@ cmd_bansearch(args)
             }
 
             for(i = 0; i < limit; i++) {
-                message = "^1[^7IP: " + results[i]["ip"] + spaces(pdata.ip - results[i]["ip"].size);
+                if(self.pers["mm_ipaccess"])
+                    message = "^1[^7IP: " + results[i]["ip"] + "<i:" + results[i]["index"] + ">" + spaces(codam\_mm_mmm::numdigits(results[i]["index"])) + spaces(pdata.ip - results[i]["ip"].size);
+                else
+                    message = "^1[^7IP: <index:" + results[i]["index"] + ">" + spaces(codam\_mm_mmm::numdigits(results[i]["index"]));
                 message += " ^1|^7 By: " + results[i]["by"] + spaces(pdata.by - results[i]["by"].size);
                 message += " ^1|^7 Reason: " + results[i]["reason"] + spaces(pdata.reason - results[i]["reason"].size);
                 message += "^1]^3 -->^7 " + results[i]["name"];
@@ -3972,7 +3977,10 @@ cmd_banlist(args)
         }
 
         for(i = offset; i < level.bans.size; i++) {
-            message = "^1[^7IP: " + level.bans[i]["ip"] + spaces(pdata.ip - level.bans[i]["ip"].size);
+            if(self.pers["mm_ipaccess"])
+                message = "^1[^7IP: " + level.bans[i]["ip"] + "<i:" + i + ">" + spaces(codam\_mm_mmm::numdigits(i)) + spaces(pdata.ip - level.bans[i]["ip"].size);
+            else
+                message = "^1[^7IP: <index:" + i + ">" + spaces(codam\_mm_mmm::numdigits(i));
             message += " ^1|^7 By: " + level.bans[i]["by"] + spaces(pdata.by - level.bans[i]["by"].size);
             message += " ^1|^7 Reason: " + level.bans[i]["reason"] + spaces(pdata.reason - level.bans[i]["reason"].size);
             message += "^1]^3 -->^7 " + level.bans[i]["name"];
@@ -4064,11 +4072,15 @@ cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<
                 }
 
                 for(i = offset; i < reports.size; i++) {
-                    message = "^2[^7 " + reports[i]["byip"] + spaces(pdata.byip - reports[i]["byip"].size);
-                    message += " ^2|^7 " + reports[i]["by"] + spaces(pdata.by - reports[i]["by"].size) + "^2] ^7reported";
+                    message = "^2[^7 ";
+                    if(self.pers["mm_ipaccess"])
+                        message += reports[i]["byip"] + spaces(pdata.byip - reports[i]["byip"].size) + " ^2|^7 ";
+                    message += reports[i]["by"] + spaces(pdata.by - reports[i]["by"].size) + "^2] ^7reported";
                     message_player(message);
-                    message = "^1[^7 " + reports[i]["userip"] + spaces(pdata.userip - reports[i]["userip"].size);
-                    message += " ^1|^7 " + reports[i]["user"] + spaces(pdata.user - reports[i]["user"].size) + "^1] ^7for";
+                    message = "^1[^7 ";
+                    if(self.pers["mm_ipaccess"])
+                        message += reports[i]["userip"] + spaces(pdata.userip - reports[i]["userip"].size) + " ^1|^7 ";
+                    message += reports[i]["user"] + spaces(pdata.user - reports[i]["user"].size) + "^1] ^7for";
                     message_player(message);
                     message = "^3reason>^7 " + reports[i]["message"];
                     message_player(message);
