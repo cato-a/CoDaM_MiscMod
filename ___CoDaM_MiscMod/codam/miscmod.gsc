@@ -733,7 +733,7 @@ spawnProtection()
         if(self attackButtonPressed() || self aimButtonPressed()
             || self meleeButtonPressed()
             || distance(self.origin, spawnpoint) > 50
-            || !(self.sessionstate == "playing"))
+            || self.sessionstate != "playing")
             break;
 
         wait 0.05;
