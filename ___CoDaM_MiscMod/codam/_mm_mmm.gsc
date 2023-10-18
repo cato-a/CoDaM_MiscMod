@@ -588,13 +588,6 @@ aAn(word, upper)
     return "a";
 }
 
-// numdigits(num)
-// {
-//     if((int)(num / 10) == 0)
-//         return 1;
-//     return 1 + numdigits(num / 10);
-// }
-
 numdigits(num)
 {
     return (num + "").size;

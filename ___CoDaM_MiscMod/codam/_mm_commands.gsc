@@ -102,10 +102,9 @@ init()
     commands(50, level.prefix + "1sk"         , ::cmd_w1sk         , "Instant kill. [" + level.prefix + "1sk <on|off>]");
     commands(51, level.prefix + "roundlength" , ::cmd_wroundlength , "Set roundlegth. [" + level.prefix + "roundlength <time>]");
     commands(52, level.prefix + "psk"         , ::cmd_wpsk         , "Instant kill on pistols. [" + level.prefix + "psk <on|off>]");
-    // Extra commands
+    // Extra commands - 55 !plist removed
     commands(53, level.prefix + "belmenu"     , ::cmd_belmenu      , "Enable BEL menu instead of normal menu. [" + level.prefix + "belmenu <on|off>]");
     commands(54, level.prefix + "report"      , ::cmd_report       , "Report a player. [" + level.prefix + "report <num> <reason>]");
-    commands(55, level.prefix + "plist"       , ::cmd_status       , "List players and their <num> values. [" + level.prefix + "plist]"); // now redundant, to be removed
     // momo74 commands
     commands(56, level.prefix + "rs"          , ::cmd_rs           , "Reset your scores in the scoreboard. [" + level.prefix + "rs ]");
     commands(57, level.prefix + "optimize"    , ::cmd_optimize     , "Set optimal connection settings for a player. [" + level.prefix + "optimize <num>]");
