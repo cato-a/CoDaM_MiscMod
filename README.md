@@ -120,7 +120,6 @@ Command:                              Description:                              
 
 !belmenu <on|off>                     Enable BEL menu instead of normal menu.                     53
 !report <on|off>                      Report a player.                                            54
-!plist                                List players without IP.                                    55
 
 !rs                                   Reset your scores in the scoreboard.                        56
 !optimize                             Set optimal connection settings for a player.               57
