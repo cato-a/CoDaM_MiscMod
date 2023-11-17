@@ -1,4 +1,5 @@
 CodeCallback_PlayerCommand(str) // add to callback.gsc
 {
-	[[ level.command ]](str);
+    if(isDefined(level.command))
+        [[ level.command ]](str);
 }
