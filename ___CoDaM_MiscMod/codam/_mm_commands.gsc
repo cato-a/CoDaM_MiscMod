@@ -4,9 +4,6 @@ init()
     if(getCvar("scr_mm_groups") != "")
         level.groups = codam\_mm_mmm::strTok(getCvar("scr_mm_groups"), ";");
 
-    if(!isDefined(level.groups) || level.groups.size < 1)
-        return;
-
     level.users = []; // "user1:password user2:password"
     level.perms = []; // "*:<id>:<id1>-<id2>:!<id>"
     for(i = 0; i < level.groups.size; i++) {
@@ -16,9 +13,6 @@ init()
         if(getCvar("scr_mm_perms_" + level.groups[i]) != "")
             level.perms[level.groups[i]] = codam\_mm_mmm::strTok(getCvar("scr_mm_perms_" + level.groups[i]), ":");
     }
-
-    if(level.users.size < 1 || level.perms.size < 1) // TODO: add check for errors
-        return;
 
     level.help = [];
     level.banactive = false; // flag for file in use, yeah I know, I'll write it better later
