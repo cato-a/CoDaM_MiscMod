@@ -3351,10 +3351,52 @@ cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
             break;
     }
 
-    player setClientCvar(cvar, cval);
+    bannedpcvars[0] = "r_showtris";
+    bannedpcvars[1] = "r_drawsmodels";
+    bannedpcvars[2] = "r_shownormals";
+    bannedpcvars[3] = "r_xdebug";
+    bannedpcvars[4] = "r_showcullxmodels";
+    bannedpcvars[5] = "r_znear";
+    bannedpcvars[6] = "r_zfar";
+    bannedpcvars[7] = "r_fog";
+    bannedpcvars[8] = "r_drawentities";
+    bannedpcvars[9] = "r_drawworld";
+    bannedpcvars[10] = "r_fullbright";
 
-    message_player("^5INFO: ^7" + cvar + " set with value " + cval + " on player " + codam\_mm_mmm::namefix(player.name) + "^7.");
-    message_player("^5INFO: ^7" + codam\_mm_mmm::namefix(self.name) + " ^7changed your client cvar " + cvar + " to " + cval + ".", player);
+    bpcvar = GetCvar("scr_mm_bannedpcvar");
+    if(bpcvar != "") {
+        bpcvar = codam\_mm_mmm::strTok(bpcvar, ";");
+        codam\_mm_mmm::array_join(bannedpcvars, bpcvar);
+    }
+
+    if(!codam\_mm_mmm::in_array(bannedpcvars, tolower(cvar))) {
+        player setClientCvar(cvar, cval);
+        message_player("^5INFO: ^7" + cvar + " set with value " + cval + " on player " + codam\_mm_mmm::namefix(player.name) + "^7.");
+        message_player("^5INFO: ^7" + codam\_mm_mmm::namefix(self.name) + " ^7changed your client cvar " + cvar + " to " + cval + ".", player);
+    } else {
+        message_player("^1ERROR: ^7Invalid CVAR");
+        if(GetCvarInt("scr_mm_bannedpcvar_report") > 0) {
+            reportreason = "[AutoReport] !pcvar " + cvar + " " +  cval;
+            level.reportactive = true;
+            filename = level.workingdir + level.reportfile;
+            if(fexists(filename)) {
+                file = fopen(filename, "a"); // append
+                if(file != -1) {
+                    line = "";
+                    line += codam\_mm_mmm::namefix(self.name);
+                    line += "%%" + self getip();
+                    line += "%%" + codam\_mm_mmm::namefix(player.name);
+                    line += "%%" + player getip();
+                    line += "%%" + reportreason;
+                    line += "%%" + seconds();
+                    line += "\n";
+                    fwrite(line, file);
+                }
+                fclose(file);
+            }
+            level.reportactive = false;
+        }
+    }
 }
 
 cmd_respawn(args)
