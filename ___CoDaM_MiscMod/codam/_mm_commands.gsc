@@ -3374,8 +3374,8 @@ cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
         message_player("^5INFO: ^7" + cvar + " set with value " + cval + " on player " + codam\_mm_mmm::namefix(player.name) + "^7.");
         message_player("^5INFO: ^7" + codam\_mm_mmm::namefix(self.name) + " ^7changed your client cvar " + cvar + " to " + cval + ".", player);
     } else {
-        message_player("^1ERROR: ^7Invalid CVAR");
-        if(GetCvarInt("scr_mm_bannedpcvar_report") > 0) {
+        message_player("^1ERROR: ^7Invalid player CVAR.");
+        if(GetCvarInt("scr_mm_bannedcvar_report") > 0) {
             reportreason = "[AutoReport] !pcvar " + cvar + " " +  cval;
             level.reportactive = true;
             filename = level.workingdir + level.reportfile;
@@ -3895,6 +3895,12 @@ cmd_scvar(args)
     bannedcvars[1] = "cl_allowdownload";
     bannedcvars[2] = "sv_hostname";
 
+    bscvar = GetCvar("scr_mm_bannedscvar");
+    if(bscvar != "") {
+        bscvar = codam\_mm_mmm::strTok(bscvar, ";");
+        codam\_mm_mmm::array_join(bannedcvars, bscvar);
+    }
+
     cvar = codam\_mm_mmm::namefix(args[1]);
     if(!codam\_mm_mmm::in_array(bannedcvars, tolower(cvar))) {
         if(args.size == 2 || args[2] == "none")
@@ -3907,8 +3913,30 @@ cmd_scvar(args)
         if(cval == "" || cval == "none")
             cval = "empty";
         message_player("^5INFO: ^7Server CVAR " + cvar + " set to " + cval + ".");
-    } else
-        message_player("^1ERROR: ^7This CVAR is not allowed to change.");
+    } else {
+        message_player("^1ERROR: ^7Invalid server CVAR.");
+        if(GetCvarInt("scr_mm_bannedcvar_report") > 0) {
+            reportreason = "[AutoReport] !scvar " + cvar + " " +  cval;
+            level.reportactive = true;
+            filename = level.workingdir + level.reportfile;
+            if(fexists(filename)) {
+                file = fopen(filename, "a"); // append
+                if(file != -1) {
+                    line = "";
+                    line += codam\_mm_mmm::namefix(self.name);
+                    line += "%%" + self getip();
+                    line += "%%" + "AutoReport";
+                    line += "%%" + "127.0.0.1";
+                    line += "%%" + reportreason;
+                    line += "%%" + seconds();
+                    line += "\n";
+                    fwrite(line, file);
+                }
+                fclose(file);
+            }
+            level.reportactive = false;
+        }
+    }
 }
 
 cmd_bansearch(args)
