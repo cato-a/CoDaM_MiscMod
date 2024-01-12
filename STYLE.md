@@ -38,7 +38,7 @@ The indentation MUST be exactly 4 spaces. No tabs.
 Multiple conditional statements SHOULD NOT be more than two per line and the
 logical operator MUST be on the left hand side.
 
-```cpp
+```gsc
 // example - if statement with logical operator left hand side
 if(this_function(param, param2) && this_other_function(param3, param4)
     && this_third_function()) {
@@ -61,7 +61,7 @@ Empty lines SHOULD be added where applicable for code readability.
 
 Opening `{` braces for top-level functions MUST be on their own line.
 
-```cpp
+```gsc
 some_function()
 {
     // ...
@@ -71,7 +71,7 @@ some_function()
 Callback functions MUST contain spaces between the variable
 and the `[[ ]]` brackets.
 
-```cpp
+```gsc
 var = ::myfunc;
 [[ var ]](param);
 ```
@@ -86,7 +86,7 @@ var = ::myfunc;
 - `for`, `while`, `if`, `else if`, `else`, `switch` MUST contain one space between the statement and the `{` brace.
 - Between the statement name (e.g `if`) and the parenthesis MUST NOT contain white-space.
 
-```cpp
+```gsc
 // example - single-line statements
 if(statement)
     do_this();
@@ -148,7 +148,7 @@ switch(param) {
 Type casting MUST NOT contain a white-space between the type-cast
 and the expression.
 
-```cpp
+```gsc
 isenabled = (bool)GetCvarInt(cvar);
 
 myfloat = 3.1;
@@ -157,8 +157,7 @@ myint = (int)myfloat;
 
 ### Operators & Expressions
 
-A space MUST be used between any expression, and any operators
-and their operands:
+A space MUST be used between the operands and operators in any non-unary expression:
 
 #### Operators
 
@@ -166,31 +165,31 @@ Including, but not limited to:
 
 **Arithmetic**
 
-```cpp
+```gsc
 + - * / % ++ --
 ```
 
 **Relational**
 
-```cpp
+```gsc
 == != < > <= >=
 ```
 
 **Logical**
 
-```cpp
+```gsc
 && || !
 ```
 
 **Bitwise**
 
-```cpp
+```gsc
 ^ & | ~
 ```
 
 **Assignment**
 
-```cpp
+```gsc
 = += -= *= /= %= <<= >>= &= ^= |=
 ```
 
@@ -198,7 +197,7 @@ Including, but not limited to:
 
 Including, but not limited to:
 
-```cpp
+```gsc
 var = 1;
 var = "string";
 
@@ -218,13 +217,13 @@ express exactly what they do. Common sense MUST be used.
     - Lowercase is preferred.
     - Non-lowercase multiple words function names MUST use camelCase.
 - Existing and built-in functions MAY use CamelCase.
-    - New and non-built functions MUST NOT.
+    - New functions MUST NOT.
 - Built-in function names SHOULD be in their original CamelCase form when used.
 - Variable names SHOULD use all lowercase.
     - Existing variables MAY use camelCase. New variables SHOULD NOT.
 - `_` underscores MAY be used to separate words in the case of lowercase.
 
-```cpp
+```gsc
 // example - new functions
 array_merge(param1, param2)
 {
