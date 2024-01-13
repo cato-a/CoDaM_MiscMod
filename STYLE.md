@@ -174,6 +174,8 @@ Including, but not limited to:
 + - * / % ++ --
 ```
 
+`++` and `--` is postfix only.
+
 **Relational**
 
 ```gsc
