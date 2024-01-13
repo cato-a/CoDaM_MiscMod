@@ -68,23 +68,27 @@ some_function()
 }
 ```
 
-Callback functions MUST contain spaces between the variable
-and the `[[ ]]` brackets.
+Callback functions MUST contain one space on both sides of the variable name
+inside the `[[ ]]` brackets.
 
 ```gsc
-var = ::myfunc;
-[[ var ]](param);
+func = ::myfunc;
+[[ func ]](param);
 ```
 
 ### Statements
 
 - Opening `{` braces MUST be placed on the same line as the statement they open.
 - Closing `}` braces MUST be placed on their own line.
-    - `else if` and `else` MUST be on the same line as the closing `}` brace separated by one space.
+    - `else if` and `else` MUST be on the same line as the closing `}` brace
+    separated by one space.
 - Single-line statements MUST always omit bracing.
-- In `switch-case` statements the `case`, `break`, `default` and `return` MUST be on the same indent.
-- `for`, `while`, `if`, `else if`, `else`, `switch` MUST contain one space between the statement and the `{` brace.
-- Between the statement name (e.g `if`) and the parenthesis MUST NOT contain white-space.
+- In `switch-case` statements the `case`, `break`, `default` and `return` MUST
+be on the same indent.
+- `for`, `while`, `if`, `else if`, `else`, `switch` MUST contain one space
+between the statement and the opening `{` brace.
+- Between the statement name (e.g `if`) and the parenthesis MUST NOT contain
+white-space.
 
 ```gsc
 // example - single-line statements
@@ -157,7 +161,8 @@ myint = (int)myfloat;
 
 ### Operators & Expressions
 
-A space MUST be used between the operands and operators in any non-unary expression:
+A space MUST be used between the operands and operators in any non-unary
+expression:
 
 #### Operators
 
@@ -198,12 +203,14 @@ Including, but not limited to:
 Including, but not limited to:
 
 ```gsc
-var = 1;
-var = "string";
+x = 1;
+s = "string";
 
-x = 1 + a;
+y = 1 + a;
 x++;
+
 i += 5;
+z = -1;
 ```
 
 ## Naming Conventions
@@ -240,6 +247,6 @@ countOnlineAlivePlayers(param)
 // example - existing built-in function
 cvarint = GetCvarInt(param);
 
-// example - exisiting custom function
+// example - existing custom function
 isboltweapon = mod\functions::isBoltWeapon(sWeapon);
 ```
