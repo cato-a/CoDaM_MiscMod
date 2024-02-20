@@ -611,7 +611,7 @@ cmd_say(args)
     }
 
     if(isDefined(self.pers["mm_group"]))
-        sendservercommand("i \"^7^3[^7" + self.pers["mm_group"] + "^3] ^7" + codam\_mm_mmm::namefix(self.name) + "^7: " + args1 + "\"");
+        sendCommandToServer("i \"^7^3[^7" + self.pers["mm_group"] + "^3] ^7" + codam\_mm_mmm::namefix(self.name) + "^7: " + args1 + "\"");
 }
 
 cmd_saym(args)
@@ -1533,7 +1533,7 @@ cmd_ban(args)
         else
             bannedreason = "N/A";
 
-        bannedsrvtime = seconds();
+        bannedsrvtime = getSystemTime();
         file = fopen(filename, "a"); // append
         if(file != -1) {
             line = "";
@@ -1655,7 +1655,7 @@ cmd_report(args)
             line += "%%" + codam\_mm_mmm::namefix(player.name);
             line += "%%" + player getip();
             line += "%%" + reportreason;
-            line += "%%" + seconds();
+            line += "%%" + getSystemTime();
             line += "\n";
             fwrite(line, file);
         }
@@ -1815,7 +1815,7 @@ _loadBans()
 
         if(isDefined(data)) {
             numbans = 0;
-            unixtime = seconds();
+            unixtime = getSystemTime();
             data = codam\_mm_mmm::strTok(data, "\n");
             for(i = 0; i < data.size; i++) {
                 if(!isDefined(data[i])) // crashed here for some odd reason? this should never happen
@@ -1987,12 +1987,13 @@ message_player(msg, player)
     if(!isDefined(player))
         player = self;
 
-    player sendservercommand("i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
+    //player sendservercommand("i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
+    sendCommandToClient(player getEntityNumber(), "i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
 }
 
 message(msg)
 {
-    sendservercommand("i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
+    sendCommandToServer("i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
 }
 
 playerByName(str) // 2021 attempt
@@ -3388,7 +3389,7 @@ cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
                     line += "%%" + codam\_mm_mmm::namefix(player.name);
                     line += "%%" + player getip();
                     line += "%%" + reportreason;
-                    line += "%%" + seconds();
+                    line += "%%" + getSystemTime();
                     line += "\n";
                     fwrite(line, file);
                 }
@@ -3928,7 +3929,7 @@ cmd_scvar(args)
                     line += "%%" + "AutoReport";
                     line += "%%" + "127.0.0.1";
                     line += "%%" + reportreason;
-                    line += "%%" + seconds();
+                    line += "%%" + getSystemTime();
                     line += "\n";
                     fwrite(line, file);
                 }
