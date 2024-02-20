@@ -168,7 +168,6 @@ command(str)
 
     str = codam\_mm_mmm::strip(str);
     if(str.size < 1) { // string index 0 out of range
-        creturn(); // return in codextended.so
         return;
     }
 
@@ -197,7 +196,6 @@ command(str)
     }
 
     if(isDefined(self.pers["mm_mute"]) || (level.maxmessages > 0 && self.pers["mm_chatmessages"] > level.maxmessages)) {
-        creturn(); // return in codextended.so
         return;
     }
 
@@ -213,15 +211,11 @@ command(str)
                 if(isDefined(self.badword))
                     badmessage += " The offensive word in question was: " + self.badword + ".";
                 message_player(badmessage);
-
-                creturn();
             }
         }
 
         return;
     }
-
-    creturn(); // return in codextended.so
 
     cmd = codam\_mm_mmm::strTok(str, " "); // is a command with level.prefix
     if(isDefined(level.commands[cmd[0]])) {
@@ -1517,7 +1511,7 @@ cmd_ban(args)
 
     level.banactive = true;
     filename = level.workingdir + level.banfile;
-    if(fexists(filename)) {
+    if(file_exists(filename)) {
         if(isipaddr) {
             bannedip = args1;
             bannedname = "^7An IP address";
@@ -1646,7 +1640,7 @@ cmd_report(args)
     reportreason = codam\_mm_mmm::namefix(args2); // To prevent malicious input
     level.reportactive = true;
     filename = level.workingdir + level.reportfile;
-    if(fexists(filename)) {
+    if(file_exists(filename)) {
         file = fopen(filename, "a"); // append
         if(file != -1) {
             line = "";
@@ -1722,7 +1716,7 @@ cmd_unban(args)
 
         level.banactive = true;
         filename = level.workingdir + level.banfile;
-        if(fexists(filename)) {
+        if(file_exists(filename)) {
             file = fopen(filename, "w");
             if(file != -1) {
                 for(i = 0; i < level.bans.size; i++) {
@@ -1807,7 +1801,7 @@ _checkFOV(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7
 _loadBans()
 {
     filename = level.workingdir + level.banfile;
-    if(fexists(filename)) {
+    if(file_exists(filename)) {
         file = fopen(filename, "r");
         if(file != -1)
             data = fread(0, file); // codextended.so bug?
@@ -1987,7 +1981,6 @@ message_player(msg, player)
     if(!isDefined(player))
         player = self;
 
-    //player sendservercommand("i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
     sendCommandToClient(player getEntityNumber(), "i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
 }
 
@@ -3380,7 +3373,7 @@ cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
             reportreason = "[AutoReport] !pcvar " + cvar + " " +  cval;
             level.reportactive = true;
             filename = level.workingdir + level.reportfile;
-            if(fexists(filename)) {
+            if(file_exists(filename)) {
                 file = fopen(filename, "a"); // append
                 if(file != -1) {
                     line = "";
@@ -3920,7 +3913,7 @@ cmd_scvar(args)
             reportreason = "[AutoReport] !scvar " + cvar + " " +  cval;
             level.reportactive = true;
             filename = level.workingdir + level.reportfile;
-            if(fexists(filename)) {
+            if(file_exists(filename)) {
                 file = fopen(filename, "a"); // append
                 if(file != -1) {
                     line = "";
@@ -4062,7 +4055,7 @@ cmd_banlist(args)
 cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<reported user IP>%<report message>&<unixtime>
 {
     filename = level.workingdir + level.reportfile;
-    if(fexists(filename)) {
+    if(file_exists(filename)) {
         file = fopen(filename, "r");
         if(file != -1)
             data = fread(0, file); // codextended.so bug?

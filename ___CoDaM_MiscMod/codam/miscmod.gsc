@@ -786,7 +786,6 @@ PlayerConnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5, b6
         }
 
         if(isDefined(self.isbanned)) { // used in PlayerDisconnect
-            //self sendservercommand("w \"Player Banned: ^1" + bannedreason + "\"");
             sendCommandToClient(self getEntityNumber(), "w \"Player Banned: ^1" + bannedreason + "\"");
             self waittill("begin");
             wait 0.05; // server/script crashes without it
@@ -858,7 +857,6 @@ PlayerConnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5, b6
         oldhostname = "sv_hostname\\" + level.mmhostname + "\\"; // Code by Defected
         newhostname = "sv_hostname\\" + scoreboard_text + "\\"; // Code by Defected
         newconfstr = replace(curconfstr, oldhostname, newhostname); // (input, replace_from, replace_with) - Code by Defected
-        //self sendservercommand("d 0 " + newconfstr); // Code by Defected
         sendCommandToClient(self getEntityNumber(), "d 0 " + newconfstr); // Code by Defected
     }
 
