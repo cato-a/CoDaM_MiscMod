@@ -554,7 +554,7 @@ message_player(msg, player)
 
 message(msg)
 {
-    sendCommandToServer("i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
+    sendCommandToClient(undefined, "i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
 }
 
 playerByNum(num)

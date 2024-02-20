@@ -611,7 +611,7 @@ cmd_say(args)
     }
 
     if(isDefined(self.pers["mm_group"]))
-        sendCommandToServer("i \"^7^3[^7" + self.pers["mm_group"] + "^3] ^7" + codam\_mm_mmm::namefix(self.name) + "^7: " + args1 + "\"");
+        sendCommandToClient(undefined, "i \"^7^3[^7" + self.pers["mm_group"] + "^3] ^7" + codam\_mm_mmm::namefix(self.name) + "^7: " + args1 + "\"");
 }
 
 cmd_saym(args)
@@ -1993,7 +1993,7 @@ message_player(msg, player)
 
 message(msg)
 {
-    sendCommandToServer("i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
+    sendCommandToClient(undefined, "i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
 }
 
 playerByName(str) // 2021 attempt
