@@ -605,7 +605,7 @@ cmd_say(args)
     }
 
     if(isDefined(self.pers["mm_group"]))
-        sendCommandToClient(undefined, "i \"^7^3[^7" + self.pers["mm_group"] + "^3] ^7" + codam\_mm_mmm::namefix(self.name) + "^7: " + args1 + "\"");
+        sendCommandToClient(-1, "i \"^7^3[^7" + self.pers["mm_group"] + "^3] ^7" + codam\_mm_mmm::namefix(self.name) + "^7: " + args1 + "\"");
 }
 
 cmd_saym(args)
@@ -1804,7 +1804,7 @@ _loadBans()
     if(file_exists(filename)) {
         file = fopen(filename, "r");
         if(file != -1)
-            data = fread(0, file); // codextended.so bug?
+            data = fread(file);
         fclose(file); // all-in-one chunk
 
         if(isDefined(data)) {
@@ -1986,7 +1986,7 @@ message_player(msg, player)
 
 message(msg)
 {
-    sendCommandToClient(undefined, "i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
+    sendCommandToClient(-1, "i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
 }
 
 playerByName(str) // 2021 attempt
@@ -4058,7 +4058,7 @@ cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<
     if(file_exists(filename)) {
         file = fopen(filename, "r");
         if(file != -1)
-            data = fread(0, file); // codextended.so bug?
+            data = fread(file);
         fclose(file); // all-in-one chunk
 
         if(isDefined(data)) {
