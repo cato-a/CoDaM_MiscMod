@@ -34,6 +34,8 @@ _init(register)
 
     level.modbycato1 = true;
 
+    level.miscmodversion = "3.1.4";
+
     // reset welcome messages / mapvote
     [[ register ]]("gt_endMap", ::endMap, "takeover");
 
@@ -117,22 +119,16 @@ _load()
     level.modbycato2 = true;
 
     // MiscMod huds
-    // Used to concatenate localized strings, but show error or freeze server
-    // e.g &"string one" + level.stringTwo
-    // pair has unmatching types 'localized string' and 'localized string'
-    // Reported by ImNoob
     if(!isDefined(level.topText))
-        level.topText = &"^1MiscMod ^3v3.1.4";
-
-    level.originalBottomText = &"^1+ ^5MiscMod ^3v3.1.4";
-
-    if(!isDefined(game["gamestarted"])) {
-        precacheString(level.topText);
-        precacheString(level.originalBottomText);
-
-        if(isDefined(level.bottomText))
-            precacheString(level.bottomText);
+    {
+        topText_concatenated = "^1MiscMod ^3v" + level.miscmodversion;
+        topText_concatenated_localized = makeLocalizedString(topText_concatenated);
+        level.topText = topText_concatenated_localized;
     }
+
+    originalBottomText_concatenated = "^1+ ^5MiscMod ^3v" + level.miscmodversion;
+    originalBottomText_concatenated_localized = makeLocalizedString(originalBottomText_concatenated);
+    level.originalBottomText = originalBottomText_concatenated_localized;
 
     // hitmarker
     precacheShader("gfx/hud/hud@fire_ready.tga");
@@ -160,23 +156,14 @@ _load()
         codam\_mm_commands::init();
     }
 
-    // _tmpHudsForFunEvent
-    precacheString(&"Please wait...");
-
     // spawnProtection
-    precacheString(&"SPAWN PROTECTION");
     precacheHeadIcon("gfx/hud/hud@health_cross.tga");
     level.spawnprotected = codam\utils::getVar("scr_mm", "spawnprotection", "int", 1|2, 0);
 
     // damagemarker
     level.damagemarker_minus = codam\utils::getVar("scr_mm", "damagemarker_minus", "bool", 1|2, false);
-    if(level.damagemarker_minus)
-        precacheString(&"-");
-    else
-        precacheString(&"+");
 
-    // meleefight / melee hud / melee headicon
-    precacheString(&"FIGHT");
+    // melee hud / melee headicon
     precacheStatusIcon("gfx/hud/headicon@re_objcarrier.tga");
 
     // BEL menu
@@ -290,8 +277,6 @@ _showMiscModHuds()
         bottomText.archived = true;
         bottomText setText(level.bottomText);
     }
-
-    level.miscmodversion = "^5MiscMod ^3v3.1.4";
 }
 // ##########
 

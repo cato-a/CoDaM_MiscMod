@@ -4,8 +4,6 @@ init()
 	game["maptimeleft"] = &"Time left: ";
 
 	precacheShader("white");
-	precacheString(game["mapvote"]);
-	precacheString(game["maptimeleft"]);
 
 	level.mmgametype = getCvar("g_gametype");
 	level.mmmapname = getCvar("mapname");
