@@ -1538,7 +1538,7 @@ cmd_ban(args)
             line += "%%" + bannedsrvtime;
             line += "%%" + bannedreason;
             line += "\n";
-            fwrite(line, file);
+            fwrite(file, line);
         }
         fclose(file);
 
@@ -1651,7 +1651,7 @@ cmd_report(args)
             line += "%%" + reportreason;
             line += "%%" + getSystemTime();
             line += "\n";
-            fwrite(line, file);
+            fwrite(file, line);
         }
 
         fclose(file);
@@ -1730,7 +1730,7 @@ cmd_unban(args)
                     line += "%%" + level.bans[i]["srvtime"];
                     line += "%%" + level.bans[i]["reason"];
                     line += "\n";
-                    fwrite(line, file);
+                    fwrite(file, line);
                 }
             }
             fclose(file);
@@ -1865,7 +1865,7 @@ _loadBans()
                         line += "%%" + level.bans[i]["srvtime"];
                         line += "%%" + level.bans[i]["reason"];
                         line += "\n";
-                        fwrite(line, file);
+                        fwrite(file, line);
                     }
                 }
                 fclose(file);
@@ -3384,7 +3384,7 @@ cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
                     line += "%%" + reportreason;
                     line += "%%" + getSystemTime();
                     line += "\n";
-                    fwrite(line, file);
+                    fwrite(file, line);
                 }
                 fclose(file);
             }
@@ -3924,7 +3924,7 @@ cmd_scvar(args)
                     line += "%%" + reportreason;
                     line += "%%" + getSystemTime();
                     line += "\n";
-                    fwrite(line, file);
+                    fwrite(file, line);
                 }
                 fclose(file);
             }
