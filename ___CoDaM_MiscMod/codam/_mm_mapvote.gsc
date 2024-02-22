@@ -256,7 +256,7 @@ setupHud()
     level.vote_hud_bgnd.alpha = .9;
     level.vote_hud_bgnd.x = level.xMapName - 9;
     level.vote_hud_bgnd.y = level.vote_header.y + 17.5;
-    backgroundHeight = level.mapvote_currentchoices * 23;
+    backgroundHeight = level.mapvote_currentchoices * 22;
     level.vote_hud_bgnd setShader("black", level.backgroundWidth, backgroundHeight);
     level.vote_hud_bgnd.sort = 1;
 
@@ -286,8 +286,6 @@ setupHud()
 
 destroyHud()
 {
-    printLn("######## destroyHud");
-
     level.voteTimer destroy();
     level.vote_instruction destroy();
     level.vote_votes destroy();
@@ -336,10 +334,11 @@ runMapVote()
     
     if(level.mapvotereplay)
     {
-        lastChoice = level.mapvote_currentchoices;
-        level.mapcandidate[lastChoice]["map"] = level.mmmapname;
-        level.mapcandidate[lastChoice]["mapname"] = "replay this map";
-        level.mapcandidate[lastChoice]["votes"] = 0;
+        lastChoiceIndex = level.mapvote_currentchoices - 1;
+        level.mapcandidate[lastChoiceIndex]["map"] = level.mmmapname;
+        level.mapcandidate[lastChoiceIndex]["mapname"] = "replay this map";
+        level.mapcandidate[lastChoiceIndex]["gametype"] = level.mmgametype;
+        level.mapcandidate[lastChoiceIndex]["votes"] = 0;
     }
     
     players = getEntArray("player", "classname");
@@ -392,8 +391,6 @@ voteLogic()
 
 setMapWinner(val)
 {
-    printLn("######## setMapWinner");
-
     map = level.mapcandidate[val]["map"];
     mapname	= level.mapcandidate[val]["mapname"];
     gametype = level.mapcandidate[val]["gametype"];
@@ -408,8 +405,11 @@ setMapWinner(val)
     iPrintLnBold(" ");
     iPrintLnBold(" ");
     iPrintLnBold("The winner is");
-    iPrintLnBold("^2" + map);
-    iPrintLnBold(" ");
+    iPrintLnBold("^2" + mapname);
+    if(level.mapvotegametype && (mapname != "replay this map" && mapname != "mystery map"))
+		iPrintLnBold("^2" + getGametypeName(gametype));
+	else
+		iPrintLnBold(" ");
 
     level.voteTimer fadeOverTime(1);
     level.vote_instruction fadeOverTime(1);
@@ -439,7 +439,6 @@ setMapWinner(val)
         }
     }
     wait 4;
-    printLn("######## notify voting_complete");
     level notify("voting_complete");
 }
 
@@ -479,9 +478,25 @@ playerVote()
                 self.votechoice = 0;
 
             self.vote_indicator.y = (level.yMapName - 2) + (self.votechoice * level.distanceBetween);
+
+            if(level.mapvotesound)
+                self playLocalSound("hq_score"); // training_good_grenade_throw // Not working
         }
 
         while(self attackButtonPressed())
             wait 0.01;
     }
+}
+
+getGametypeName(gt)
+{
+	switch(gt) {
+		case "dm": gtname = "Deathmatch"; break;
+		case "tdm": gtname = "Team Deathmatch"; break;
+		case "sd": gtname = "Search & Destroy"; break;
+		case "re": gtname = "Retrieval"; break;
+		default: gtname = gt; break;
+	}
+
+	return gtname;
 }
