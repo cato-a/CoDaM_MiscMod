@@ -1,40 +1,40 @@
 init()
 {
     level.groups = []; // "group1;group2;group3"
-    if(getCvar("scr_mm_groups") != "")
-        level.groups = codam\_mm_mmm::strTok(getCvar("scr_mm_groups"), ";");
+    if(GetCvar("scr_mm_groups") != "")
+        level.groups = codam\_mm_mmm::strTok(GetCvar("scr_mm_groups"), ";");
 
     level.users = []; // "user1:password user2:password"
     level.perms = []; // "*:<id>:<id1>-<id2>:!<id>"
     for(i = 0; i < level.groups.size; i++) {
-        if(getCvar("scr_mm_users_" + level.groups[i]) != "")
-            level.users[level.groups[i]] = codam\_mm_mmm::strTok(getCvar("scr_mm_users_" + level.groups[i]), " ");
+        if(GetCvar("scr_mm_users_" + level.groups[i]) != "")
+            level.users[level.groups[i]] = codam\_mm_mmm::strTok(GetCvar("scr_mm_users_" + level.groups[i]), " ");
 
-        if(getCvar("scr_mm_perms_" + level.groups[i]) != "")
-            level.perms[level.groups[i]] = codam\_mm_mmm::strTok(getCvar("scr_mm_perms_" + level.groups[i]), ":");
+        if(GetCvar("scr_mm_perms_" + level.groups[i]) != "")
+            level.perms[level.groups[i]] = codam\_mm_mmm::strTok(GetCvar("scr_mm_perms_" + level.groups[i]), ":");
     }
 
     level.help = [];
     level.banactive = false; // flag for file in use, yeah I know, I'll write it better later
     level.reportactive = false; // flag for file in use, yeah I know, I'll write it better later
 
-    level.workingdir = getCvar("fs_basepath") + "/main/";
-    if(getCvar("scr_mm_cmd_path") != "")
-        level.workingdir = getCvar("scr_mm_cmd_path") + "/";
+    level.workingdir = GetCvar("fs_basepath") + "/main/";
+    if(GetCvar("scr_mm_cmd_path") != "")
+        level.workingdir = GetCvar("scr_mm_cmd_path") + "/";
 
     level.banfile = "miscmod_bans.dat";
     level.reportfile = "miscmod_reports.dat";
 
-    if(!isDefined(level.perms["default"]))
+    if(!IsDefined(level.perms["default"]))
         level.perms["default"] = codam\_mm_mmm::strTok("0-4:25:26", ":"); // pff xD
 
     level.prefix = "!";
-    if(getCvar("scr_mm_cmd_prefix") != "")
-        level.prefix = getCvar("scr_mm_cmd_prefix");
+    if(GetCvar("scr_mm_cmd_prefix") != "")
+        level.prefix = GetCvar("scr_mm_cmd_prefix");
 
     level.nameprefix = "[MiscMod]";
-    if(getCvar("scr_mm_cmd_nameprefix") != "")
-        level.nameprefix = getCvar("scr_mm_cmd_nameprefix");
+    if(GetCvar("scr_mm_cmd_nameprefix") != "")
+        level.nameprefix = GetCvar("scr_mm_cmd_nameprefix");
 
     level.command = ::command;
     level.commands = [];
@@ -119,9 +119,9 @@ init()
     commands(70, level.prefix + "reportlist"  , ::cmd_reportlist   , "List most recent reports. [" + level.prefix + "reportlist]");
     commands(71, level.prefix + "namechange"  , ::cmd_namechange   , "Turn nonamechange on/off. [" + level.prefix + "namechange <on|off>]");
 
-    level.tmp_mm_weapon_map = getCvar("tmp_mm_weapon_map");
+    level.tmp_mm_weapon_map = GetCvar("tmp_mm_weapon_map");
     if(level.tmp_mm_weapon_map == "") { // cmd_wmap
-        scr_weapon_map = getCvar("scr_weapon_map");
+        scr_weapon_map = GetCvar("scr_weapon_map");
         if(scr_weapon_map == "")
             scr_weapon_map = "empty";
 
@@ -163,7 +163,7 @@ commands(id, cmd, func, desc)
 
 command(str)
 {
-    if(!isDefined(str)) // string index 0 out of range
+    if(!IsDefined(str)) // string index 0 out of range
         return;
 
     str = codam\_mm_mmm::strip(str);
@@ -171,7 +171,7 @@ command(str)
         return;
     }
 
-    isloggedin = (bool)isDefined(self.pers["mm_group"]);
+    isloggedin = (bool)IsDefined(self.pers["mm_group"]);
     if(level.maxmessages > 0 && !isloggedin) {
         penaltytime = level.penaltytime;
         if(self.pers["mm_chatmessages"] > level.maxmessages)
@@ -195,20 +195,20 @@ command(str)
         }
     }
 
-    if(isDefined(self.pers["mm_mute"]) || (level.maxmessages > 0 && self.pers["mm_chatmessages"] > level.maxmessages)) {
+    if(IsDefined(self.pers["mm_mute"]) || (level.maxmessages > 0 && self.pers["mm_chatmessages"] > level.maxmessages)) {
         return;
     }
 
     if(str.size == 1) return; // just 1 letter, ignore
     if(str[0] != level.prefix) { // string index 0 out of range (fixed above)
-        if(isDefined(level.badwords)) {
+        if(IsDefined(level.badwords)) {
             //print message to console with cleaned string say or sayt
             //requires modification to codextended, or sendservercommand with say/sayt
             //str = badwords_clean(str, badwords);
 
             if(badwords_mute(str)) {
                 badmessage = "^5INFO: ^7You were silenced due to inappropriate language.";
-                if(isDefined(self.badword))
+                if(IsDefined(self.badword))
                     badmessage += " The offensive word in question was: " + self.badword + ".";
                 message_player(badmessage);
             }
@@ -218,7 +218,7 @@ command(str)
     }
 
     cmd = codam\_mm_mmm::strTok(str, " "); // is a command with level.prefix
-    if(isDefined(level.commands[cmd[0]])) {
+    if(IsDefined(level.commands[cmd[0]])) {
         perms = level.perms["default"];
 
         cmduser = "none";
@@ -270,7 +270,7 @@ command(str)
 
 badwords_mute(str) // str - mute
 {
-    if(!isDefined(str) || !isDefined(level.badwords))
+    if(!IsDefined(str) || !IsDefined(level.badwords))
         return false;
 
     str = codam\_mm_mmm::strTok(str, " ");
@@ -289,7 +289,7 @@ badwords_mute(str) // str - mute
 
 // badwords_clean(str, badwords) // str, arr - asterix
 // { // Defected can fix this for codextended
-//     if(!isDefined(str) || !isDefined(badwords))
+//     if(!IsDefined(str) || !IsDefined(badwords))
 //         return str;
 
 //     cleanstr = "";
@@ -359,7 +359,7 @@ cmd_login(args)
         return;
     }
 
-    if(isDefined(self.pers["mm_group"])) {
+    if(IsDefined(self.pers["mm_group"])) {
         message_player("^5INFO: ^7You are already logged in.");
         return;
     }
@@ -373,7 +373,7 @@ cmd_login(args)
     }
 
     username = tolower(username);
-    loggedin = getCvar("tmp_mm_loggedin");
+    loggedin = GetCvar("tmp_mm_loggedin");
     if(loggedin != "") {
         loggedin = codam\_mm_mmm::strTok(loggedin, ";");
         for(i = 0; i < loggedin.size; i++) {
@@ -391,7 +391,7 @@ cmd_login(args)
 
     for(i = 0; i < level.groups.size; i++) {
         group = level.groups[i];
-        if(isDefined(group) && isDefined(level.users[group])) {
+        if(IsDefined(group) && IsDefined(level.users[group])) {
             users = level.users[group];
             for(u = 0; u < users.size; u++) {
                 user = codam\_mm_mmm::strTok(users[u], ":");
@@ -445,7 +445,7 @@ cmd_invisible(args)
     }
 
     args1 = args[1];
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -478,7 +478,7 @@ cmd_fov(args)
         return;
     }
 
-    if(isDefined(self.pers["mm_fov"]) && args1 == self.pers["mm_fov"]) {
+    if(IsDefined(self.pers["mm_fov"]) && args1 == self.pers["mm_fov"]) {
         message_player("^5INFO: ^7Your FOV is already set to " + self.pers["mm_fov"] + ".");
         return;
     }
@@ -489,7 +489,7 @@ cmd_fov(args)
     }
 
     self.pers["mm_fov"] = args1;
-    self setClientCvar("cg_fov", self.pers["mm_fov"]);
+    self SetClientCvar("cg_fov", self.pers["mm_fov"]);
 
     message_player("^5INFO: ^7Your FOV changed to: " + self.pers["mm_fov"]);
 
@@ -497,8 +497,8 @@ cmd_fov(args)
     _removeFOV(clientnum);
 
     rSTR = "";
-    if(getCvar("tmp_mm_fov") != "")
-        rSTR += getCvar("tmp_mm_fov");
+    if(GetCvar("tmp_mm_fov") != "")
+        rSTR += GetCvar("tmp_mm_fov");
 
     rSTR += args1;
     rSTR += "|" + clientnum;
@@ -514,7 +514,7 @@ cmd_version(args)
         return;
     }
 
-    message_player("This server is running " + level.miscmodversion + "^7.");
+    message_player("This server is running ^5MiscMod ^3v" + level.miscmodversion + "^7.");
 }
 
 cmd_name(args)
@@ -525,18 +525,18 @@ cmd_name(args)
     }
 
     args1 = args[1]; // name
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(args.size > 2) {
         for(a = 2; a < args.size; a++)
-            if(isDefined(args[a]))
+            if(IsDefined(args[a]))
                 args1 += " " + args[a];
     }
 
-    self setClientCvar("name", args1);
+    self SetClientCvar("name", args1);
     message_player("Your name was changed to: " + args1 + "^7.");
 }
 
@@ -549,7 +549,7 @@ cmd_help(args)
 
     message_player("Here is a list of available commands.");
 
-    isloggedin = (bool)isDefined(self.pers["mm_group"]);
+    isloggedin = (bool)IsDefined(self.pers["mm_group"]);
     perms = level.perms["default"];
     if(isloggedin) {
         cmdgroup = self.pers["mm_group"];
@@ -557,7 +557,7 @@ cmd_help(args)
     }
 
     for(i = 0; i < level.help.size; i++) {
-        if((i == 0 && isloggedin) || !isDefined(level.help[i]))
+        if((i == 0 && isloggedin) || !IsDefined(level.help[i]))
             continue;
 
         cmd = level.help[i]["cmd"];
@@ -577,7 +577,7 @@ cmd_logout(args)
         return;
     }
 
-    if(isDefined(self.pers["mm_group"])) {
+    if(IsDefined(self.pers["mm_group"])) {
         self.pers["mm_group"]	= undefined;
         self.pers["mm_user"]	= undefined;
         message_player("You are logged out.");
@@ -593,18 +593,18 @@ cmd_say(args)
     }
 
     args1 = args[1];
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(args.size > 2) {
         for(a = 2; a < args.size; a++)
-            if(isDefined(args[a]))
+            if(IsDefined(args[a]))
                 args1 += " " + args[a];
     }
 
-    if(isDefined(self.pers["mm_group"]))
+    if(IsDefined(self.pers["mm_group"]))
         sendCommandToClient(-1, "i \"^7^3[^7" + self.pers["mm_group"] + "^3] ^7" + codam\_mm_mmm::namefix(self.name) + "^7: " + args1 + "\"");
 }
 
@@ -616,14 +616,14 @@ cmd_saym(args)
     }
 
     args1 = args[1];
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(args.size > 2) {
         for(a = 2; a < args.size; a++)
-            if(isDefined(args[a]))
+            if(IsDefined(args[a]))
                 args1 += " " + args[a];
     }
 
@@ -638,14 +638,14 @@ cmd_sayo(args)
     }
 
     args1 = args[1];
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(args.size > 2) {
         for(a = 2; a < args.size; a++)
-            if(isDefined(args[a]))
+            if(IsDefined(args[a]))
                 args1 += " " + args[a];
     }
 
@@ -661,7 +661,7 @@ cmd_rename(args)
 
     args1 = args[1]; // num | string
     args2 = args[2]; // name
-    if(!isDefined(args1) || !isDefined(args2)) {
+    if(!IsDefined(args1) || !IsDefined(args2)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -673,13 +673,13 @@ cmd_rename(args)
         }
 
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
 
         if(player == self) {
             message_player("^1ERROR: ^7You can't use this command on yourself.");
@@ -689,12 +689,12 @@ cmd_rename(args)
 
     if(args.size > 3) {
         for(a = 3; a < args.size; a++)
-            if(isDefined(args[a]))
+            if(IsDefined(args[a]))
                 args2 += " " + args[a];
     }
 
     message_player("^5INFO: ^7You renamed " + codam\_mm_mmm::namefix(player.name) + " ^7to " + args2 + "^7.");
-    player setClientCvar("name", args2);
+    player SetClientCvar("name", args2);
 }
 
 cmd_endmap(args)
@@ -727,7 +727,7 @@ cmd_who(args)
     for(i = 0; i < players.size; i++) {
         player = players[i];
 
-        if(!isDefined(player.pers["mm_group"]))
+        if(!IsDefined(player.pers["mm_group"]))
             continue;
 
         playersloggedin[playersloggedin.size] = player;
@@ -776,7 +776,7 @@ cmd_kick(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -788,13 +788,13 @@ cmd_kick(args)
         }
 
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
 
         if(player == self) {
             message_player("^1ERROR: ^7You can't use this command on yourself.");
@@ -803,10 +803,10 @@ cmd_kick(args)
     }
 
     args2 = args[2];
-    if(isDefined(args2)) {
+    if(IsDefined(args2)) {
         if(args.size > 3) {
             for(a = 3; a < args.size; a++)
-                if(isDefined(args[a]))
+                if(IsDefined(args[a]))
                     args2 += " " + args[a];
         }
 
@@ -853,18 +853,18 @@ cmd_map(args)
     }
 
     map = args[1];
-    if(!isDefined(map)) {
+    if(!IsDefined(map)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     gametype = level.mmgametype;
-    if(isDefined(args[2]))
+    if(IsDefined(args[2]))
         gametype = args[2];
 
-    mapvar = getCvar("scr_mm_cmd_maps");
+    mapvar = GetCvar("scr_mm_cmd_maps");
     for(i = 1;; i++) {
-        tmpvar = getCvar("scr_mm_cmd_maps" + i);
+        tmpvar = GetCvar("scr_mm_cmd_maps" + i);
         if(tmpvar != "") {
             if(mapvar != "")
                 mapvar += " ";
@@ -943,7 +943,7 @@ cmd_status(args)
         message = "^1[^7NUM: " + pnum + spaces(pdata.num - codam\_mm_mmm::numdigits(pnum)) + " ^1|^7 Score: " + player.score + spaces(pdata.highscore - codam\_mm_mmm::numdigits(player.score)) + " ^1|^7 ";
         message += "Ping: " + pping + spaces(pdata.ping - codam\_mm_mmm::numdigits(pping));
 
-        if(isDefined(self.pers["mm_ipaccess"]) && self.pers["mm_ipaccess"]) {
+        if(IsDefined(self.pers["mm_ipaccess"]) && self.pers["mm_ipaccess"]) {
             pip = player getip();
             message += " ^1|^7 IP: " + pip + spaces(pdata.ip - pip.size);
         }
@@ -972,7 +972,7 @@ cmd_pm(args)
 
     args1 = args[1]; // num | string
     args2 = args[2]; // message
-    if(!isDefined(args1) || !isDefined(args2)) {
+    if(!IsDefined(args1) || !IsDefined(args2)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -984,13 +984,13 @@ cmd_pm(args)
         }
 
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
 
         if(player == self) {
             message_player("^1ERROR: ^7You can't use this command on yourself.");
@@ -1000,7 +1000,7 @@ cmd_pm(args)
 
     if(args.size > 3) {
         for(a = 3; a < args.size; a++)
-            if(isDefined(args[a]))
+            if(IsDefined(args[a]))
                 args2 += " " + args[a];
     }
 
@@ -1013,13 +1013,13 @@ cmd_pm(args)
 
 cmd_re(args)
 {
-    if(!isDefined(self.pers["pm"])) {
+    if(!IsDefined(self.pers["pm"])) {
         message_player("^1ERROR: ^7Player ID not found, use !pm <player> <message> first.");
         return;
     }
 
     player = codam\_mm_mmm::playerByNum(self.pers["pm"]);
-    if(!isDefined(player)) {
+    if(!IsDefined(player)) {
         message_player("^1ERROR: ^7Player ID not found, use !pm <player> <message> first.");
         return;
     }
@@ -1032,12 +1032,12 @@ cmd_re(args)
         //pair has unmatching types 'string' and 'undefined': (file 'codam\_mm_commands.gsc', line 829)
         //  message_player("^2[^7PM^2]^7 " + codam\_mm_mmm::namefix(self.name) + "^7: " + args1, player);
         //                                                                              *
-        if(!isDefined(args1)) // Reported by ImNoob
+        if(!IsDefined(args1)) // Reported by ImNoob
             return; // Attempted fix
 
         if(args.size > 2) {
             for(a = 2; a < args.size; a++)
-                if(isDefined(args[a]))
+                if(IsDefined(args[a]))
                     args1 += " " + args[a];
         }
 
@@ -1057,18 +1057,18 @@ cmd_mute(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(args1 == "list") { // new feature, but recode sometime, too lazy to make better
-        muted = codam\_mm_mmm::strTok(getCvar("tmp_mm_muted"), ";");
+        muted = codam\_mm_mmm::strTok(GetCvar("tmp_mm_muted"), ";");
         if(muted.size > 0) {
             message_player("^5INFO: ^7Muted players:"); // + codam\_mm_mmm::namefix(player.name));
             for(i = 0; i < muted.size; i++) {
                 player = codam\_mm_mmm::playerByNum(muted[i]);
-                if(isDefined(player)) {
+                if(IsDefined(player)) {
                     spaces = "";
                     if((int)muted[i] < 10) // or: if(muted[i].size == 1)
                         spaces = " ";
@@ -1088,13 +1088,13 @@ cmd_mute(args)
         }
 
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
 
         if(player == self) {
             message_player("^1ERROR: ^7You can't use this command on yourself.");
@@ -1102,15 +1102,15 @@ cmd_mute(args)
         }
     }
 
-    muted = codam\_mm_mmm::strTok(getCvar("tmp_mm_muted"), ";");
+    muted = codam\_mm_mmm::strTok(GetCvar("tmp_mm_muted"), ";");
     playernum = player getEntityNumber();
     if(!codam\_mm_mmm::in_array(muted, playernum)) {
         player.pers["mm_mute"] = true;
         message(codam\_mm_mmm::namefix(player.name) + " ^7is muted by " + codam\_mm_mmm::namefix(self.name) + "^7.");
 
         rID = "";
-        if(getCvar("tmp_mm_muted") != "")
-            rID += getCvar("tmp_mm_muted");
+        if(GetCvar("tmp_mm_muted") != "")
+            rID += GetCvar("tmp_mm_muted");
 
         rID += playernum;
         rID += ";";
@@ -1128,7 +1128,7 @@ cmd_unmute(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -1140,13 +1140,13 @@ cmd_unmute(args)
         }
 
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
 
         if(player == self) {
             message_player("^1ERROR: ^7You can't use this command on yourself.");
@@ -1154,7 +1154,7 @@ cmd_unmute(args)
         }
     }
 
-    if(isDefined(player.pers["mm_mute"])) {
+    if(IsDefined(player.pers["mm_mute"])) {
         playernum = player getEntityNumber();
         player.pers["mm_mute"] = undefined;
         message(codam\_mm_mmm::namefix(player.name) + " ^7is unmuted by " + codam\_mm_mmm::namefix(self.name) + "^7.");
@@ -1172,7 +1172,7 @@ cmd_warn(args)
 
     args1 = args[1]; // num | string
     args2 = args[2]; // message
-    if(!isDefined(args1) || !isDefined(args2)) {
+    if(!IsDefined(args1) || !IsDefined(args2)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -1184,13 +1184,13 @@ cmd_warn(args)
         }
 
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
 
         if(player == self) {
             message_player("^1ERROR: ^7You can't use this command on yourself.");
@@ -1200,7 +1200,7 @@ cmd_warn(args)
 
     if(args.size > 3) {
         for(a = 3; a < args.size; a++)
-            if(isDefined(args[a]))
+            if(IsDefined(args[a]))
                 args2 += " " + args[a];
     }
 
@@ -1216,20 +1216,20 @@ cmd_kill(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     if(isAlive(player)) {
@@ -1248,7 +1248,7 @@ cmd_weapon(args) // without the _mp at end of filename
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -1258,20 +1258,20 @@ cmd_weapon(args) // without the _mp at end of filename
         weapon = args1;
     } else {
         weapon = args[2];
-        if(!isDefined(weapon)) {
+        if(!IsDefined(weapon)) {
             message_player("^1ERROR: ^7Invalid weapon.");
             return;
         }
 
         if(codam\_mm_mmm::validate_number(args1)) {
             player = codam\_mm_mmm::playerByNum(args1);
-            if(!isDefined(player)) {
+            if(!IsDefined(player)) {
                 message_player("^1ERROR: ^7No such player.");
                 return;
             }
         } else {
             player = playerByName(args1);
-            if(!isDefined(player)) return;
+            if(!IsDefined(player)) return;
         }
     }
 
@@ -1284,7 +1284,7 @@ cmd_weapon(args) // without the _mp at end of filename
             if(!isAlive(player))
                 break;
 
-            weaponlist = getCvar("scr_mm_weaponcmd_list_" + weapontypes[i]);
+            weaponlist = GetCvar("scr_mm_weaponcmd_list_" + weapontypes[i]);
             if(weaponlist == "none")
                 continue;
 
@@ -1340,7 +1340,7 @@ cmd_weapon(args) // without the _mp at end of filename
                     break;
                 }
 
-                if(playerweapon != "none" && !isDefined(primarynone)) {
+                if(playerweapon != "none" && !IsDefined(primarynone)) {
                     player takeWeapon(playerweapon);
                     wait 0;
                 }
@@ -1366,20 +1366,20 @@ cmd_heal(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     if(isAlive(player)) {
@@ -1424,7 +1424,7 @@ cmd_ban(args)
 
     args1 = args[1]; // num | string | IP
     duration = args[2]; // duration
-    if(!isDefined(duration) || duration == "-1" || duration == "0")
+    if(!IsDefined(duration) || duration == "-1" || duration == "0")
         duration = "0s";
 
     if(duration.size < 2) {
@@ -1444,7 +1444,7 @@ cmd_ban(args)
     reason = args[3]; // reason
     if(args.size > 4) {
         for(a = 4; a < args.size; a++)
-            if(isDefined(args[a]))
+            if(IsDefined(args[a]))
                 reason += " " + args[a];
     }
 
@@ -1457,13 +1457,13 @@ cmd_ban(args)
             }
 
             player = codam\_mm_mmm::playerByNum(args1);
-            if(!isDefined(player)) {
+            if(!IsDefined(player)) {
                 message_player("^1ERROR: ^7No such player.");
                 return;
             }
         } else {
             player = playerByName(args1);
-            if(!isDefined(player)) return;
+            if(!IsDefined(player)) return;
 
             if(player == self) {
                 message_player("^1ERROR: ^7You can't use this command on yourself.");
@@ -1521,7 +1521,7 @@ cmd_ban(args)
         }
 
         bannedby = codam\_mm_mmm::namefix(self.pers["mm_user"]);
-        hasreason = (bool)isDefined(reason);
+        hasreason = (bool)IsDefined(reason);
         if(hasreason)
             bannedreason = codam\_mm_mmm::namefix(reason); // to prevent malicious input
         else
@@ -1590,7 +1590,7 @@ cmd_report(args)
         return;
     }
 
-    if(!isDefined(self.pers["reports"]))
+    if(!IsDefined(self.pers["reports"]))
         self.pers["reports"] = 0;
 
     reportlimit = getCvarInt("scr_mm_reportlimit_permap");
@@ -1606,7 +1606,7 @@ cmd_report(args)
     args1 = args[1]; // num | string
     args2 = args[2]; // reason
 
-    if(!isDefined(args1) || !isDefined(args2)) {
+    if(!IsDefined(args1) || !IsDefined(args2)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -1618,13 +1618,13 @@ cmd_report(args)
         }
 
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
 
         if(player == self) {
             message_player("^1ERROR: ^7You can't use this command on yourself.");
@@ -1685,7 +1685,7 @@ cmd_unban(args)
     }
 
     args1 = args[1]; // IP | index
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -1694,7 +1694,7 @@ cmd_unban(args)
         banindex = isbanned(args1);
     else if(codam\_mm_mmm::validate_number(args1)) {
         args1 = (int)args1;
-        if(isDefined(level.bans[args1]))
+        if(IsDefined(level.bans[args1]))
             banindex = args1;
         else {
             message_player("^1ERROR: ^7Invalid banindex.");
@@ -1745,7 +1745,7 @@ cmd_unban(args)
 /* ---------- */
 _checkMuted(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9) // "num;num;num"
 {
-    muted = getCvar("tmp_mm_muted");
+    muted = GetCvar("tmp_mm_muted");
     if(muted != "") {
         num = self getEntityNumber();
         muted = codam\_mm_mmm::strTok(muted, ";");
@@ -1777,12 +1777,12 @@ _checkFOV(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7
 {
     self waittill("begin");
 
-    if(isDefined(self.pers["mm_fov"])) {
-        self setClientCvar("cg_fov", self.pers["mm_fov"]);
+    if(IsDefined(self.pers["mm_fov"])) {
+        self SetClientCvar("cg_fov", self.pers["mm_fov"]);
         return;
     }
 
-    fov = getCvar("tmp_mm_fov");
+    fov = GetCvar("tmp_mm_fov");
     if(fov != "") {
         fov = codam\_mm_mmm::strTok(fov, ";");
         for(i = 0; i < fov.size; i++) {
@@ -1791,7 +1791,7 @@ _checkFOV(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7
 
             if(user[1] == num) {
                 self.pers["mm_fov"] = user[0];
-                self setClientCvar("cg_fov", self.pers["mm_fov"]);
+                self SetClientCvar("cg_fov", self.pers["mm_fov"]);
                 break;
             }
         }
@@ -1807,12 +1807,12 @@ _loadBans()
             data = fread(file);
         fclose(file); // all-in-one chunk
 
-        if(isDefined(data)) {
+        if(IsDefined(data)) {
             numbans = 0;
             unixtime = getSystemTime();
             data = codam\_mm_mmm::strTok(data, "\n");
             for(i = 0; i < data.size; i++) {
-                if(!isDefined(data[i])) // crashed here for some odd reason? this should never happen
+                if(!IsDefined(data[i])) // crashed here for some odd reason? this should never happen
                     continue; // crashed here for some odd reason? this should never happen
 
                 line = codam\_mm_mmm::strTok(data[i], "%"); // crashed here for some odd reason? this should never happen
@@ -1821,7 +1821,7 @@ _loadBans()
 
                 banfile_error = false;
                 for(l = 0; l < line.size; l++) {
-                    if(!isDefined(line[l])) {
+                    if(!IsDefined(line[l])) {
                         banfile_error = true;
                         break;
                     }
@@ -1884,7 +1884,7 @@ _delete(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, 
 
 _removeMuted(num)
 {
-    muted = getCvar("tmp_mm_muted");
+    muted = GetCvar("tmp_mm_muted");
     if(muted != "") {
         muted = codam\_mm_mmm::strTok(muted, ";");
         if(codam\_mm_mmm::in_array(muted, num)) {
@@ -1925,7 +1925,7 @@ _removeLoggedIn(num)
 
 _removeFOV(num)
 {
-    fov = getCvar("tmp_mm_fov");
+    fov = GetCvar("tmp_mm_fov");
     if(fov != "") {
         fov = codam\_mm_mmm::strTok(fov, ";");
         validuser = false;
@@ -1951,10 +1951,10 @@ _loadBadWords()
 {
     badwords = "";
     for(i = 1; /* /!\ */; i++) {
-        if(getCvar("scr_mm_badwords" + i) != "") {
+        if(GetCvar("scr_mm_badwords" + i) != "") {
             if(i > 1)
                 badwords += " ";
-            badwords += getCvar("scr_mm_badwords" + i);
+            badwords += GetCvar("scr_mm_badwords" + i);
         } else
             break;
     }
@@ -1978,7 +1978,7 @@ w = drop client with message
 */
 message_player(msg, player)
 {
-    if(!isDefined(player))
+    if(!IsDefined(player))
         player = self;
 
     sendCommandToClient(player getEntityNumber(), "i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
@@ -2052,20 +2052,20 @@ cmd_drop(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     height = 512;
@@ -2096,20 +2096,20 @@ cmd_spank(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     time = 15;
@@ -2126,7 +2126,7 @@ cmd_spank(args)
 
         for(i = 0; i < time; i++) {
             player playSound("melee_hit");
-            player setClientCvar("cl_stance", 2);
+            player SetClientCvar("cl_stance", 2);
             wait randomFloat(0.5);
         }
 
@@ -2143,20 +2143,20 @@ cmd_slap(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     dmg = 10;
@@ -2194,20 +2194,20 @@ cmd_blind(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     time = 15;
@@ -2221,16 +2221,16 @@ cmd_blind(args)
     half = time / 2;
 
     player shellshock("default", time);
-    player.blindscreen = newClientHudElem(player);
+    player.blindscreen = NewClientHudElem(player);
     player.blindscreen.x = 0;
     player.blindscreen.y = 0;
     player.blindscreen.alpha = 1;
-    player.blindscreen setShader("white", 640, 480);
+    player.blindscreen SetShader("white", 640, 480);
     wait half;
-    player.blindscreen fadeOverTime(half);
+    player.blindscreen FadeOverTime(half);
     player.blindscreen.alpha = 0;
     wait half;
-    player.blindscreen destroy();
+    player.blindscreen Destroy();
 }
 
 cmd_runover(args)
@@ -2241,20 +2241,20 @@ cmd_runover(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     if(isAlive(player)) {
@@ -2292,20 +2292,20 @@ cmd_squash(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     if(isAlive(player)) {
@@ -2335,20 +2335,20 @@ cmd_rape(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     if(isAlive(player)) {
@@ -2392,7 +2392,7 @@ forceprone(args) {
     self endon("spawned");
 
     while(isAlive(self)) {
-        self setClientCvar("cl_stance", 2);
+        self SetClientCvar("cl_stance", 2);
         wait 0.05;
     }
 }
@@ -2405,20 +2405,20 @@ cmd_toilet(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     time = 15;
@@ -2435,11 +2435,11 @@ cmd_toilet(args)
 
         iPrintLn(codam\_mm_mmm::namefix(player.name) + " ^7was turned into a toilet.");
 
-        player setClientCvar("cg_thirdperson", "1");
+        player SetClientCvar("cg_thirdperson", "1");
 
         wait time;
 
-        player setClientCvar("cg_thirdperson", "0");
+        player SetClientCvar("cg_thirdperson", "0");
         player suicide();
     } else
         message_player("^1ERROR: ^7Player must be alive.");
@@ -2455,20 +2455,20 @@ cmd_explode(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     if(isAlive(player)) {
@@ -2488,7 +2488,7 @@ cmd_force(args)
 
     args1 = args[1]; // axis | allies | spectator
     args2 = args[2]; // num | all
-    if(!isDefined(args1) || !isDefined(args2)) {
+    if(!IsDefined(args1) || !IsDefined(args2)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -2499,7 +2499,7 @@ cmd_force(args)
     }
 
     if(args2 == "all") {
-        players = getEntArray("player", "classname");
+        players = GetEntArray("player", "classname");
         [[ level.gtd_call ]]("switchTeam", players, args1, true);
         return;
     }
@@ -2508,7 +2508,7 @@ cmd_force(args)
     for(i = 2; i < args.size; i++) {
         if(codam\_mm_mmm::validate_number(args[i])) {
             playerbynum = codam\_mm_mmm::playerByNum(args[i]);
-            if(isDefined(playerbynum))
+            if(IsDefined(playerbynum))
                 players[players.size] = playerbynum;
         }
     }
@@ -2529,20 +2529,20 @@ cmd_mortar(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     if(isAlive(player)) {
@@ -2586,7 +2586,7 @@ cmd_matrix(args)
 
     wait 2;
 
-    players = getEntArray("player", "classname");
+    players = GetEntArray("player", "classname");
 
     for(i = 0; i < players.size; i++)
         players[i] shellshock("groggy", 6);
@@ -2605,8 +2605,8 @@ cmd_matrix(args)
 
     wait 0.05;
     for(i = 0; i < players.size; i++)
-        if(isDefined(players[i].pers["mm_fov"]))
-            players[i] setClientCvar("cg_fov", players[i].pers["mm_fov"]);
+        if(IsDefined(players[i].pers["mm_fov"]))
+            players[i] SetClientCvar("cg_fov", players[i].pers["mm_fov"]);
 }
 
 cmd_burn(args)
@@ -2617,20 +2617,20 @@ cmd_burn(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     if(isAlive(player)) {
@@ -2664,20 +2664,20 @@ cmd_cow(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     if(isAlive(player)) {
@@ -2698,7 +2698,7 @@ cmd_cow(args)
 
 cmd_cow_extra(arg) // lazy to fix
 {
-    if(isDefined(arg) && arg == "burn") {
+    if(IsDefined(arg) && arg == "burn") {
         self endon("disconnect");
 
         burnTime = 10;
@@ -2722,13 +2722,13 @@ cmd_cow_extra(arg) // lazy to fix
         primary = self getWeaponSlotWeapon("primary");
         primaryb = self getWeaponSlotWeapon("primaryb");
 
-        if(!isDefined(grenade))
+        if(!IsDefined(grenade))
             grenade = "none";
-        if(!isDefined(pistol))
+        if(!IsDefined(pistol))
             pistol = "none";
-        if(!isDefined(primary))
+        if(!IsDefined(primary))
             primary = "none";
-        if(!isDefined(primaryb))
+        if(!IsDefined(primaryb))
             primary = "none";
 
         self dropItem(grenade);
@@ -2746,20 +2746,20 @@ cmd_disarm(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     if(isAlive(player)) {
@@ -2769,13 +2769,13 @@ cmd_disarm(args)
         primary = player getWeaponSlotWeapon("primary");
         primaryb = player getWeaponSlotWeapon("primaryb");
 
-        if(!isDefined(grenade))
+        if(!IsDefined(grenade))
             grenade = "none";
-        if(!isDefined(pistol))
+        if(!IsDefined(pistol))
             pistol = "none";
-        if(!isDefined(primary))
+        if(!IsDefined(primary))
             primary = "none";
-        if(!isDefined(primaryb))
+        if(!IsDefined(primaryb))
             primary = "none";
 
         player dropItem(grenade);
@@ -2794,7 +2794,7 @@ cmd_belmenu(args)
         return;
     }
 
-    if(!isDefined(args[1])) {
+    if(!IsDefined(args[1])) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -2857,7 +2857,7 @@ cmd_waw(args)
     setCvar("scr_allow_bren", "1");
     setCvar("scr_allow_mg42", "1");
 
-    if(isDefined(args[1])) {
+    if(IsDefined(args[1])) {
         message("^5INFO: ^7All weapons with 1 sniper enabled.");
         setCvar("scr_mm_restrict_springfield", "1");
         setCvar("scr_mm_restrict_kar98ksniper", "1");
@@ -2952,10 +2952,10 @@ cmd_wpistols(args)
 
     args1 = args[1]; // on/empty/disable/bullets
     args2 = args[2]; // chamber or clip
-    if(!isDefined(args2))
+    if(!IsDefined(args2))
         args2 = "";
 
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Argument not specified.");
         return;
     }
@@ -3000,7 +3000,7 @@ cmd_wmap(args)
 
     args1 = args[1]; // "m1garand=kar98k colt=luger ppsh=mp44"
 
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -3034,7 +3034,7 @@ cmd_whealth(args)
 
     args1 = args[1];
 
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -3045,7 +3045,7 @@ cmd_whealth(args)
             setCvar("ham_xpacks", args1);
             setCvar("scr_nohealthdrop", "0"); // 0 = drop
 
-            if(getCvar("scr_" + level.mmgametype + "_nohealthdrop") != "")
+            if(GetCvar("scr_" + level.mmgametype + "_nohealthdrop") != "")
                 setCvar("scr_" + level.mmgametype + "_nohealthdrop", "0");
         break;
         case "off":
@@ -3053,7 +3053,7 @@ cmd_whealth(args)
             setCvar("ham_xpacks", "0");
             setCvar("scr_nohealthdrop", "1"); // 1 = no drop
 
-            if(getCvar("scr_" + level.mmgametype + "_nohealthdrop") != "")
+            if(GetCvar("scr_" + level.mmgametype + "_nohealthdrop") != "")
                 setCvar("scr_" + level.mmgametype + "_nohealthdrop", "1");
         break;
         default:
@@ -3071,7 +3071,7 @@ cmd_wgrenade(args)
 
     args1 = args[1];
 
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -3102,7 +3102,7 @@ cmd_w1sk(args)
         return;
     }
 
-    if(!isDefined(args[1])) {
+    if(!IsDefined(args[1])) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -3129,7 +3129,7 @@ cmd_wmeleekill(args)
         return;
     }
 
-    if(!isDefined(args[1])) {
+    if(!IsDefined(args[1])) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -3156,7 +3156,7 @@ cmd_wpsk(args)
         return;
     }
 
-    if(!isDefined(args[1])) {
+    if(!IsDefined(args[1])) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
@@ -3214,11 +3214,11 @@ cmd_rs(args)
 
     self.score = 0;
     self.deaths = 0;
-    if(isDefined(self.pers["kills"]))
+    if(IsDefined(self.pers["kills"]))
         self.pers["kills"] = 0;
-    if(isDefined(self.pers["score"]))
+    if(IsDefined(self.pers["score"]))
         self.pers["score"] = 0;
-    if(isDefined(self.pers["deaths"]))
+    if(IsDefined(self.pers["deaths"]))
         self.pers["deaths"] = 0;
 
     message_player("^5INFO: ^7Your score is reset." );
@@ -3232,27 +3232,27 @@ cmd_optimize(args)
     }
 
     args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
+    if(!IsDefined(args1)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
-    player setClientCvar("rate", 25000);
+    player SetClientCvar("rate", 25000);
     wait 0.05;
-    player setClientCvar("cl_maxpackets", 100);
+    player SetClientCvar("cl_maxpackets", 100);
     wait 0.05;
-    player setClientCvar("snaps", 40);
+    player SetClientCvar("snaps", 40);
 
     message_player("^5INFO: ^7Player " + codam\_mm_mmm::namefix(player.name) + " ^7connection settings optimized.");
     message_player("^5INFO: ^7" + codam\_mm_mmm::namefix(self.name) + " ^7modifed your 'rate', 'snaps' and 'cl_maxpackets' to optimal values.", player);
@@ -3270,20 +3270,20 @@ cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
     cvar = args[2];
     cval = args[3];
 
-    if(!isDefined(args1) || !isDefined(cvar) || !isDefined(cval)) {
+    if(!IsDefined(args1) || !IsDefined(cvar) || !IsDefined(cval)) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     switch(cvar) {
@@ -3364,7 +3364,7 @@ cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
     }
 
     if(!codam\_mm_mmm::in_array(bannedpcvars, tolower(cvar))) {
-        player setClientCvar(cvar, cval);
+        player SetClientCvar(cvar, cval);
         message_player("^5INFO: ^7" + cvar + " set with value " + cval + " on player " + codam\_mm_mmm::namefix(player.name) + "^7.");
         message_player("^5INFO: ^7" + codam\_mm_mmm::namefix(self.name) + " ^7changed your client cvar " + cvar + " to " + cval + ".", player);
     } else {
@@ -3408,13 +3408,13 @@ cmd_respawn(args)
 
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player.");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     if(!isAlive(player) || player.pers["team"] == "spectator") {
@@ -3423,8 +3423,8 @@ cmd_respawn(args)
     }
 
     stype = args[2]; // dm | tdm | sd
-    if(!isDefined(stype))
-        stype = getCvar("g_gametype");
+    if(!IsDefined(stype))
+        stype = GetCvar("g_gametype");
 
     stype = tolower(stype);
 
@@ -3435,19 +3435,19 @@ cmd_respawn(args)
 
     switch(stype) {
         case "dm":
-            spawnpoints = getEntArray("mp_deathmatch_spawn", "classname");
+            spawnpoints = GetEntArray("mp_deathmatch_spawn", "classname");
             spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_DM(spawnpoints);
         break;
         case "sd":
-            if(!isDefined(player.pers["team"])) { // This will never be true?
+            if(!IsDefined(player.pers["team"])) { // This will never be true?
                 message_player("^1ERROR: ^7Player team is not defined.");
                 return;
             }
 
             if(player.pers["team"] == "allies")
-                spawnpoints = getEntArray("mp_searchanddestroy_spawn_allied", "classname");
+                spawnpoints = GetEntArray("mp_searchanddestroy_spawn_allied", "classname");
             else if(player.pers["team"] == "axis")
-                spawnpoints = getEntArray("mp_searchanddestroy_spawn_axis", "classname");
+                spawnpoints = GetEntArray("mp_searchanddestroy_spawn_axis", "classname");
             else {
                 message_player("^1ERROR: ^7Player is not axis or allies.");
                 return;
@@ -3456,12 +3456,12 @@ cmd_respawn(args)
             spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_Random(spawnpoints);
         break;
         case "tdm":
-            spawnpoints = getEntArray("mp_teamdeathmatch_spawn", "classname");
+            spawnpoints = GetEntArray("mp_teamdeathmatch_spawn", "classname");
             spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_NearTeam(spawnpoints);
         break;
     }
 
-    if(isDefined(spawnpoint) && !positionWouldTelefrag(spawnpoint.origin)) {
+    if(IsDefined(spawnpoint) && !positionWouldTelefrag(spawnpoint.origin)) {
         if(player != self) {
             message_player("^5INFO: ^7You respawned player " + codam\_mm_mmm::namefix(player.name) + "^7.");
             message_player("^5INFO: ^7You were respawned by " + codam\_mm_mmm::namefix(self.name) + "^7.", player);
@@ -3490,26 +3490,26 @@ cmd_teleport(args)
     args1 = args[1]; // num | string
     if(codam\_mm_mmm::validate_number(args1)) {
         player1 = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player1)) {
+        if(!IsDefined(player1)) {
             message_player("^1ERROR: ^7No such player (" +  args1 + ").");
             return;
         }
     } else {
         player1 = playerByName(args1);
-        if(!isDefined(player1)) return;
+        if(!IsDefined(player1)) return;
     }
 
     if(args.size == 3) {
         args2 = args[2]; // num | string
         if(codam\_mm_mmm::validate_number(args2)) {
             player2 = codam\_mm_mmm::playerByNum(args2);
-            if(!isDefined(player2)) {
+            if(!IsDefined(player2)) {
                 message_player("^1ERROR: ^7No such player (" +  args2 + ").");
                 return;
             }
         } else {
             player2 = playerByName(args2);
-            if(!isDefined(player2)) return;
+            if(!IsDefined(player2)) return;
         }
 
         self endon("spawned");
@@ -3595,12 +3595,12 @@ cmd_teambalance(args)
             _tmp = []; // from CoDaM's own command system "swapteams" in teams.gsc
             _tmp[0] = "allies";
             _allies = codam\utils::playersFromList(_tmp); // can return undefined if zero or other failures
-            if(!isDefined(_allies))
+            if(!IsDefined(_allies))
                 _allies = [];
 
             _tmp[0] = "axis";
             _axis = codam\utils::playersFromList(_tmp); // can return undefined if zero or other failures
-            if(!isDefined(_axis))
+            if(!IsDefined(_axis))
                 _axis = [];
 
             if(_axis.size - _allies.size > 1) {
@@ -3652,7 +3652,7 @@ cmd_swapteams(args)
     [[ level.gtd_call ]]("switchTeam", _allies, "axis", true);
     [[ level.gtd_call ]]("switchTeam", _axis, "allies", true);
 
-    if(isDefined(args[1])) // Pass any argument to prevent reset
+    if(IsDefined(args[1])) // Pass any argument to prevent reset
         return; // Now reset by default
 
     game["alliedscore"] = 0; // TheWikiFesh
@@ -3676,17 +3676,17 @@ cmd_freeze(args)
     if(args2 != "all") {
         if(codam\_mm_mmm::validate_number(args2)) {
             player = codam\_mm_mmm::playerByNum(args2);
-            if(!isDefined(player)) {
+            if(!IsDefined(player)) {
                 message_player("^1ERROR: ^7No such player (" +  args2 + ").");
                 return;
             }
         } else {
             player = playerByName(args2);
-            if(!isDefined(player)) return;
+            if(!IsDefined(player)) return;
         }
 
         if(args1 == "on") {
-            if(!isDefined(player.cmdfreeze)) {
+            if(!IsDefined(player.cmdfreeze)) {
                 player.cmdfreeze = spawn("script_origin", player.origin);
                 player linkTo(player.cmdfreeze);
                 if(player != self) {
@@ -3701,7 +3701,7 @@ cmd_freeze(args)
                     message_player("^1ERROR: ^You are already frozen.");
             }
         } else {
-            if(isDefined(player.cmdfreeze)) {
+            if(IsDefined(player.cmdfreeze)) {
                 player unlink();
                 player.cmdfreeze delete();
                 player.cmdfreeze = undefined;
@@ -3718,19 +3718,19 @@ cmd_freeze(args)
             }
         }
     } else {
-        players = getEntArray("player", "classname");
+        players = GetEntArray("player", "classname");
         for(i = 0; i < players.size; i++) {
             player = players[i];
             if(!isAlive(player) || player.sessionstate != "playing" || player == self) continue;
 
             if(args1 == "on") {
-                if(!isDefined(player.cmdfreeze)) {
+                if(!IsDefined(player.cmdfreeze)) {
                     player.cmdfreeze = spawn("script_origin", player.origin);
                     player linkTo(player.cmdfreeze);
                     message_player("^5INFO: ^7You are frozen by " + codam\_mm_mmm::namefix(self.name) + "^7.", player);
                 }
             } else {
-                if(isDefined(player.cmdfreeze)) {
+                if(IsDefined(player.cmdfreeze)) {
                     player unlink();
                     player.cmdfreeze delete();
                     player.cmdfreeze = undefined;
@@ -3763,13 +3763,13 @@ cmd_move(args)
     args1 = args[1]; // num | string
     if(codam\_mm_mmm::validate_number(args1)) {
         player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
+        if(!IsDefined(player)) {
             message_player("^1ERROR: ^7No such player (" +  args1 + ").");
             return;
         }
     } else {
         player = playerByName(args1);
-        if(!isDefined(player)) return;
+        if(!IsDefined(player)) return;
     }
 
     if(isAlive(player)) {
@@ -3782,7 +3782,7 @@ cmd_move(args)
             directions["f"] = "forward";
             directions["b"] = "backward";
 
-            if(isDefined(directions[direction]))
+            if(IsDefined(directions[direction]))
                 direction = directions[direction];
         }
             
@@ -3829,11 +3829,11 @@ cmd_move(args)
         } else
             message_player("^5INFO: ^7You moved yourself " + units + " units " + direction + ".");
 
-        if(isDefined(player.cmdmovepos))
+        if(IsDefined(player.cmdmovepos))
             player cmd_move_link(true); // unlink
 
         player setOrigin(player.origin + dirv);
-        if(!isDefined(player.cmdmovepos))
+        if(!IsDefined(player.cmdmovepos))
             player thread cmd_move_freeze();
         else
             player cmd_move_link(); // link
@@ -3849,7 +3849,7 @@ cmd_move_freeze() // not a command :D
     while(isAlive(self) && self.sessionstate == "playing"
         && !(self meleeButtonPressed()
         || self useButtonPressed()
-        || self attackButtonPressed()
+        || self AttackButtonPressed()
         || self backButtonPressed()
         || self forwardButtonPressed()
         || self leftButtonPressed()
@@ -3868,12 +3868,12 @@ cmd_move_freeze() // not a command :D
 
 cmd_move_link(unlink) // not a command :)
 {
-    if(!isDefined(unlink)) {
+    if(!IsDefined(unlink)) {
         self.cmdmovepos = spawn("script_origin", self.origin);
         self linkTo(self.cmdmovepos);
     } else {
         self unlink();
-        if(isDefined(self.cmdmovepos))
+        if(IsDefined(self.cmdmovepos))
             self.cmdmovepos delete();
     }
 }
@@ -4061,11 +4061,11 @@ cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<
             data = fread(file);
         fclose(file); // all-in-one chunk
 
-        if(isDefined(data)) {
+        if(IsDefined(data)) {
             reports = [];
             data = codam\_mm_mmm::strTok(data, "\n");
             for(i = 0; i < data.size; i++) {
-                if(!isDefined(data[i])) // crashed here for some odd reason? this should never happen
+                if(!IsDefined(data[i])) // crashed here for some odd reason? this should never happen
                     continue; // crashed here for some odd reason? this should never happen
 
                 line = codam\_mm_mmm::strTok(data[i], "%"); // crashed here for some odd reason? this should never happen
@@ -4074,7 +4074,7 @@ cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<
 
                 reportfile_error = false;
                 for(l = 0; l < line.size; l++) {
-                    if(!isDefined(line[l])) {
+                    if(!IsDefined(line[l])) {
                         reportfile_error = true;
                         break;
                     }
@@ -4160,7 +4160,7 @@ cmd_namechange(args)
         return;
     }
 
-    if(!isDefined(args[1])) {
+    if(!IsDefined(args[1])) {
         message_player("^1ERROR: ^7Invalid argument.");
         return;
     }

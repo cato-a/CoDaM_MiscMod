@@ -5,7 +5,7 @@
 // 22-10-2021: new namefix() function
 namefix(playername)
 {
-    if(!isDefined(playername))
+    if(!IsDefined(playername))
         return "";
 
     allowedchars = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!'#[]<>/&()=?+`^~*-_.,;|$@:{}"; // " " (space) moved first as it is more frequent -- "�" removed, unknown what this char is?
@@ -25,7 +25,7 @@ namefix(playername)
 
 array_shuffle(arr)
 {
-    if(!isDefined(arr))
+    if(!IsDefined(arr))
         return undefined;
 
     for(i = 0; i < arr.size; i++) {
@@ -40,7 +40,7 @@ array_shuffle(arr)
 
 in_array(arr, needle)
 {
-    if(!isDefined(arr) || !isDefined(needle))
+    if(!IsDefined(arr) || !IsDefined(needle))
         return undefined;
 
     for(i = 0; i < arr.size; i++)
@@ -52,7 +52,7 @@ in_array(arr, needle)
 
 array_join(arrTo, arrFrom)
 {
-    if(!isDefined(arrTo) || !isDefined(arrFrom))
+    if(!IsDefined(arrTo) || !IsDefined(arrFrom))
         return undefined;
 
     for(i = 0; i < arrFrom.size; i++)
@@ -63,10 +63,10 @@ array_join(arrTo, arrFrom)
 
 array_remove(arr, str, r) // NEED URGENT OPTIMIZE - If set to true, it will remove previous element aswell.
 {
-    if(!isDefined(arr) || !isDefined(str))
+    if(!IsDefined(arr) || !IsDefined(str))
         return undefined;
 
-    if(!isDefined(r))
+    if(!IsDefined(r))
         r = false;
 
     x = 0;
@@ -89,7 +89,7 @@ array_remove(arr, str, r) // NEED URGENT OPTIMIZE - If set to true, it will remo
         y = 0;
         _tmpb = [];
         for(i = 0; i < _tmpa.size; i++) {
-            if(isDefined(_tmpa[i])) {
+            if(IsDefined(_tmpa[i])) {
                 _tmpb[y] = _tmpa[i];
                 y++;
             }
@@ -136,12 +136,12 @@ strTok(text, separator) // new attemt to fix double, tripple delimiter, etc
 
     for(i = 0; i < text.size; i++) {
         if(text[i] != separator) {
-            if(!isDefined(tokens[token]))
+            if(!IsDefined(tokens[token]))
                 tokens[token] = "";
 
             tokens[token] += text[i];
         } else {
-            if(isDefined(tokens[token]))
+            if(IsDefined(tokens[token]))
                 token++;
         }
     }
@@ -151,7 +151,7 @@ strTok(text, separator) // new attemt to fix double, tripple delimiter, etc
 
 strTru(str, len, ind)
 {
-    if(!isDefined(ind))
+    if(!IsDefined(ind))
         ind = " >";
 
     len = len + ind.size;
@@ -198,13 +198,13 @@ PlaySoundAtLocation(sound, location, iTime)
 
 compassdb(id)
 {
-    if(!isDefined(level.compassdb)) {
+    if(!IsDefined(level.compassdb)) {
         level.compassdb = [];
         for(i = 0; i <= 15; i++) // 16 objects
             level.compassdb[i] = -1;
     }
 
-    if(!isDefined(id)) { // generate an ID
+    if(!IsDefined(id)) { // generate an ID
         for(i = 2; i < level.compassdb.size; i++) { // bomb zones
             if(level.compassdb[i] == -1) {
                 level.compassdb[i] = i;
@@ -259,7 +259,7 @@ weaponremoval() // from Cheese
 
 monotone(str, loop)
 {
-    if(!isDefined(str))
+    if(!IsDefined(str))
         return "";
 
     _str = "";
@@ -275,7 +275,7 @@ monotone(str, loop)
         _str += str[i];
     }
 
-    if(!isDefined(loop))
+    if(!IsDefined(loop))
         _str = monotone(_str, true);
 
     return _str;
@@ -319,12 +319,12 @@ pmatch(s, p)
 
 validate_number(input, isfloat)
 {
-    if(!isDefined(input))
+    if(!IsDefined(input))
         return false;
 
     input += ""; // convert to str
 
-    if(!isDefined(isfloat))
+    if(!IsDefined(isfloat))
         isfloat = false;
 
     hasdot = false;
@@ -352,7 +352,7 @@ validate_number(input, isfloat)
     return true;
 }
 
-getOnlinePlayers() // get all online players, apparently getEntArray doesn't list 999/connecting players
+getOnlinePlayers() // get all online players, apparently GetEntArray doesn't list 999/connecting players
 {
     p = [];
 
@@ -362,7 +362,7 @@ getOnlinePlayers() // get all online players, apparently getEntArray doesn't lis
 
     for(i = 0; i < maxclients; i++) {
         player = GetEntByNum(i);
-        if(isDefined(player))
+        if(IsDefined(player))
             p[p.size] = player;
     }
 
@@ -371,14 +371,14 @@ getOnlinePlayers() // get all online players, apparently getEntArray doesn't lis
 
 deletePlacedEntity(sEntityType)
 {
-    eEntities = getEntArray(sEntityType, "classname");
+    eEntities = GetEntArray(sEntityType, "classname");
     for(i = 0; i < eEntities.size; i++)
         eEntities[i] delete();
 }
 
 _newspawn(spawnpoint, recursive)
 {
-    recursive = (bool)isDefined(recursive);
+    recursive = (bool)IsDefined(recursive);
     if(!recursive)
         newspawn = [];
 
@@ -442,8 +442,8 @@ freezePlayer(time)
 _tmpHudsForFunEvent()
 {
     wait 0.5;
-    if(!isDefined(level.tmpHudsForFunEvent)) {
-        level.tmpHudsForFunEvent = newHudElem();
+    if(!IsDefined(level.tmpHudsForFunEvent)) {
+        level.tmpHudsForFunEvent = NewHudElem();
         level.tmpHudsForFunEvent.archived = false;
         level.tmpHudsForFunEvent.x = 320;
         level.tmpHudsForFunEvent.y = 40;
@@ -452,20 +452,20 @@ _tmpHudsForFunEvent()
         level.tmpHudsForFunEvent.sort = 9500;
         level.tmpHudsForFunEvent.fontScale = 3.0;
         level.tmpHudsForFunEvent.color = (1, 0.2, 0);
-        level.tmpHudsForFunEvent setText(&"Please wait...");
+        level.tmpHudsForFunEvent SetText(&"Please wait...");
 
-        players = getEntArray("player", "classname");
+        players = GetEntArray("player", "classname");
         for(i = 0; i < players.size; i++) {
             players[i].sessionstate = "spectator";
             players[i].spectatorclient = -1;
 
             resettimeout();
 
-            players[i] setClientCvar("g_scriptMainMenu", "");
-            players[i] closeMenu();
+            players[i] SetClientCvar("g_scriptMainMenu", "");
+            players[i] CloseMenu();
         }
     } else
-        level.tmpHudsForFunEvent destroy();
+        level.tmpHudsForFunEvent Destroy();
 }
 
 vectorScale(vec, scale)
@@ -476,7 +476,7 @@ vectorScale(vec, scale)
 
 isPrimaryWeapon(sWeapon)
 {
-    if(!isDefined(sWeapon)) return false;
+    if(!IsDefined(sWeapon)) return false;
     switch(sWeapon) {
         // rifles
         case "mosin_nagant_mp":
@@ -509,7 +509,7 @@ isPrimaryWeapon(sWeapon)
 
 isSecondaryWeapon(sWeapon)
 {
-    if(!isDefined(sWeapon)) return false;
+    if(!IsDefined(sWeapon)) return false;
     switch(sWeapon) {
         case "colt_mp":
         case "luger_mp":
@@ -521,7 +521,7 @@ isSecondaryWeapon(sWeapon)
 
 isGrenade(sWeapon)
 {
-    if(!isDefined(sWeapon)) return false;
+    if(!IsDefined(sWeapon)) return false;
     switch(sWeapon) {
         // german
         case "stielhandgranate_mp":
@@ -545,7 +545,7 @@ mmlog(msg)
 
 message_player(msg, player)
 {
-    if(!isDefined(player))
+    if(!IsDefined(player))
         player = self;
 
     sendCommandToClient(player getEntityNumber(), "i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
@@ -574,7 +574,7 @@ aAn(word, upper)
     if(word.size < 1)
         return "";
 
-    upper = (bool)isDefined(upper);
+    upper = (bool)IsDefined(upper);
     switch(word[0]) {
         case "a": case "e": case "i": case "o": case "u":
         case "A": case "E": case "I": case "O": case "U":
