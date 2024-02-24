@@ -121,13 +121,10 @@ _load()
     // MiscMod huds
     if(!isDefined(level.topText)) {
         topTextConcat = "^1MiscMod ^3v" + level.miscmodversion;
-        topTextConcat_localized = makeLocalizedString(topTextConcat);
-        level.topText = topTextConcat_localized;
+        level.topText = makeLocalizedString(topTextConcat);
     }
-    
     originalBottomTextConcat = "^1+ ^5MiscMod ^3v" + level.miscmodversion;
-    originalBottomTextConcat_localized = makeLocalizedString(originalBottomTextConcat);
-    level.originalBottomText = originalBottomTextConcat_localized;
+    level.originalBottomText = makeLocalizedString(originalBottomTextConcat);
 
     // hitmarker
     precacheShader("gfx/hud/hud@fire_ready.tga");

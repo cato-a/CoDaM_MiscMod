@@ -162,26 +162,24 @@ setupHud()
             players[i]._stopwatch destroy();
 
     if(isDefined(level.ham_hudscores)) {
-        if( isDefined( level.gtd_call ) )
-            teams = [[ level.gtd_call ]]( "teamsPlaying" );
-        if( !isDefined( teams ) || ( teams.size < 1 ) ) {
+        if(isDefined( level.gtd_call))
+            teams = [[ level.gtd_call ]]("teamsPlaying");
+
+        if(!isDefined(teams) || (teams.size < 1)) {
             teams = [];
-            teams[ teams.size ] = "allies";
-            teams[ teams.size ] = "axis";
+            teams[teams.size] = "allies";
+            teams[teams.size] = "axis";
         }
-        for( i = 0; i < teams.size + 2; i++) {
-            if( isDefined( level.ham_score[ "actual" ] ) &&
-                 isDefined( level.ham_score[ "actual" ][ i ] ) )
-                level.ham_score[ "actual" ][ i ] destroy();
-            if( isDefined( level.ham_score[ "numteam" ] ) &&
-                 isDefined( level.ham_score[ "numteam" ][ i ] ) )
-                level.ham_score[ "numteam" ][ i ] destroy();
-            if( isDefined( level.ham_score[ "alive" ] ) &&
-                 isDefined( level.ham_score[ "alive" ][ i ] ) )
-                level.ham_score[ "alive" ][ i ] destroy();
-            if( isDefined( level.ham_score[ "icon" ] ) &&
-                 isDefined( level.ham_score[ "icon" ][ i ] ) )
-                level.ham_score[ "icon" ][ i ] destroy();
+        
+        for(i = 0; i < teams.size + 2; i++) {
+            if(isDefined(level.ham_score["actual"]) && isDefined(level.ham_score["actual"][i]))
+                level.ham_score["actual"][i] destroy();
+            if(isDefined(level.ham_score["numteam"]) && isDefined(level.ham_score["numteam"][i]))
+                level.ham_score["numteam"][i] destroy();
+            if(isDefined(level.ham_score["alive"]) && isDefined(level.ham_score["alive"][i]))
+                level.ham_score["alive"][i] destroy();
+            if(isDefined(level.ham_score["icon"]) && isDefined(level.ham_score["icon"][i]))
+                level.ham_score["icon"][i] destroy();
         }
     }
 
@@ -415,6 +413,7 @@ setMapWinner(val)
             players[i].vote_indicator.alpha = 0;
         }
     }
+
     wait 4;
     level notify("voting_complete");
 }
