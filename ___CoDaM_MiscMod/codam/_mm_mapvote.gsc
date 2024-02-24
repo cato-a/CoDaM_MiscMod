@@ -448,10 +448,11 @@ playerVote()
             if(self.votechoice >= level.mapvote_currentchoices)
                 self.votechoice = 0;
             
-            if(level.mapvotegametype && (level.mapcandidate[self.votechoice]["mapname"] != "replay this map" && level.mapcandidate[self.votechoice]["mapname"] != "mystery map"))
-				self iPrintLn("You have voted for ^2" + codam\_mm_mmm::strTru(level.mapcandidate[self.votechoice]["mapname"], 13) + " ^7(" + level.mapcandidate[self.votechoice]["gametype"] + ")");
-			else
-				self iPrintLn("You have voted for ^2" + codam\_mm_mmm::strTru(level.mapcandidate[self.votechoice]["mapname"], 13));
+            if(level.mapvotegametype
+                && (level.mapcandidate[self.votechoice]["mapname"] != "replay this map" && level.mapcandidate[self.votechoice]["mapname"] != "mystery map"))
+                self iPrintLn("You have voted for ^2" + codam\_mm_mmm::strTru(level.mapcandidate[self.votechoice]["mapname"], 13) + " ^7(" + level.mapcandidate[self.votechoice]["gametype"] + ")");
+            else
+                self iPrintLn("You have voted for ^2" + codam\_mm_mmm::strTru(level.mapcandidate[self.votechoice]["mapname"], 13));
 
             self.vote_indicator.y = (level.yMapName - 2) + (self.votechoice * level.distanceBetween);
 
