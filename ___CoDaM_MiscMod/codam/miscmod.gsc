@@ -257,7 +257,7 @@ _showMiscModHuds()
     topText.sort = 10000;
     topText.fontScale = 1.3;
     topText.archived = true;
-    topText SetText(level.topText);
+    topText setText(level.topText);
 
     originalBottomText = newHudElem();
     originalBottomText.x = 57;
@@ -265,7 +265,7 @@ _showMiscModHuds()
     originalBottomText.sort = 10000;
     originalBottomText.fontScale = 0.6;
     originalBottomText.archived = true;
-    originalBottomText SetText(level.originalBottomText);
+    originalBottomText setText(level.originalBottomText);
 
     if(isDefined(level.bottomText)) { // precache above for level.bottomText for this block
         bottomText = newHudElem();
@@ -274,7 +274,7 @@ _showMiscModHuds()
         bottomText.sort = 10000;
         bottomText.fontScale = 0.6;
         bottomText.archived = true;
-        bottomText SetText(level.bottomText);
+        bottomText setText(level.bottomText);
     }
 }
 // ##########
@@ -499,10 +499,10 @@ _showHitmarker(iDamage, iHealth)
     }
 
     if(!codam\utils::getVar("scr_mm", "hitmarker_noscale", "bool", 1|2, false)) {
-        self.hitBlip SetShader("gfx/hud/hud@fire_ready.tga", 2, 2);
+        self.hitBlip setShader("gfx/hud/hud@fire_ready.tga", 2, 2);
         self.hitBlip scaleOverTime(0.30, 48, 48);
     } else
-        self.hitBlip SetShader("gfx/hud/hud@fire_ready.tga", 48, 48);
+        self.hitBlip setShader("gfx/hud/hud@fire_ready.tga", 48, 48);
 
     wait 0.30;
 
@@ -540,7 +540,7 @@ _showDamagemarker(iDamage)
         self.damageBlip[self.damageBlipSize].label = &"-";
     else
         self.damageBlip[self.damageBlipSize].label = &"+";
-    self.damageBlip[self.damageBlipSize] SetValue(iDamage);
+    self.damageBlip[self.damageBlipSize] setValue(iDamage);
     self.damageBlip[self.damageBlipSize] moveOverTime(0.35);
 
     rand = randomInt(10);
@@ -714,7 +714,7 @@ spawnProtection()
 
     self.spawnprotected = true;
     for(msecs = 0.0; msecs <= (float)level.spawnprotected; msecs += 0.05) {
-        if(self AttackButtonPressed() || self aimButtonPressed()
+        if(self attackButtonPressed() || self aimButtonPressed()
             || self meleeButtonPressed()
             || distance(self.origin, spawnpoint) > 50
             || self.sessionstate != "playing")
@@ -1196,8 +1196,8 @@ mmKeys(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
             keys += "u";
          }
 
-        if(keys.size > 0 && self AttackButtonPressed()) {
-            while(self AttackButtonPressed())
+        if(keys.size > 0 && self attackButtonPressed()) {
+            while(self attackButtonPressed())
                 wait 0.05;
 
             keys += "a";

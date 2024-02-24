@@ -2225,7 +2225,7 @@ cmd_blind(args)
     player.blindscreen.x = 0;
     player.blindscreen.y = 0;
     player.blindscreen.alpha = 1;
-    player.blindscreen SetShader("white", 640, 480);
+    player.blindscreen setShader("white", 640, 480);
     wait half;
     player.blindscreen fadeOverTime(half);
     player.blindscreen.alpha = 0;
@@ -3849,7 +3849,7 @@ cmd_move_freeze() // not a command :D
     while(isAlive(self) && self.sessionstate == "playing"
         && !(self meleeButtonPressed()
         || self useButtonPressed()
-        || self AttackButtonPressed()
+        || self attackButtonPressed()
         || self backButtonPressed()
         || self forwardButtonPressed()
         || self leftButtonPressed()

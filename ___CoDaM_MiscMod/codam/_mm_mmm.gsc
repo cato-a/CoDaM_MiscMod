@@ -452,7 +452,7 @@ _tmpHudsForFunEvent()
         level.tmpHudsForFunEvent.sort = 9500;
         level.tmpHudsForFunEvent.fontScale = 3.0;
         level.tmpHudsForFunEvent.color = (1, 0.2, 0);
-        level.tmpHudsForFunEvent SetText(&"Please wait...");
+        level.tmpHudsForFunEvent setText(&"Please wait...");
 
         players = getEntArray("player", "classname");
         for(i = 0; i < players.size; i++) {

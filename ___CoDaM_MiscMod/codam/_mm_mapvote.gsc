@@ -237,7 +237,7 @@ setupHud()
     level.vote_header.x = level.xMapName - 9;
     level.vote_header.y = yTitles - 4;
     level.vote_header.color = (0.37, 0.37, 0.16);
-    level.vote_header SetShader("white", level.backgroundWidth, 17);
+    level.vote_header setShader("white", level.backgroundWidth, 17);
     level.vote_header.sort = 1;
 
     // Main background
@@ -246,7 +246,7 @@ setupHud()
     level.vote_hud_bgnd.x = level.xMapName - 9;
     level.vote_hud_bgnd.y = level.vote_header.y + 17.5;
     backgroundHeight = level.mapvote_currentchoices * 22;
-    level.vote_hud_bgnd SetShader("black", level.backgroundWidth, backgroundHeight);
+    level.vote_hud_bgnd setShader("black", level.backgroundWidth, backgroundHeight);
     level.vote_hud_bgnd.sort = 1;
 
     // Choices
@@ -254,7 +254,7 @@ setupHud()
     level.vote_mapList.x = level.xMapName;
     level.vote_mapList.y = level.yMapName;
     mapvote_list_localized = makeLocalizedString(level.mapvote_list);
-    level.vote_mapList SetText(mapvote_list_localized);
+    level.vote_mapList setText(mapvote_list_localized);
     level.vote_mapList.fontscale = .9;
     level.vote_mapList.sort = 4;
 
@@ -266,7 +266,7 @@ setupHud()
             level.mapvote_hud_counts[i].y = level.yMapName;
         else
             level.mapvote_hud_counts[i].y = level.mapvote_hud_counts[i-1].y + level.distanceBetween;
-        level.mapvote_hud_counts[i] SetValue(0);
+        level.mapvote_hud_counts[i] setValue(0);
         level.mapvote_hud_counts[i].fontscale = .9;
         level.mapvote_hud_counts[i].sort = 4;
     }
@@ -348,7 +348,7 @@ voteLogic()
             
             // Display updated count
             for(i = 0; i < level.mapvote_currentchoices; i++)
-                level.mapvote_hud_counts[i] SetValue(level.mapcandidate[i]["votes"]);
+                level.mapvote_hud_counts[i] setValue(level.mapcandidate[i]["votes"]);
 
             wait 0.1;
         }
@@ -429,7 +429,7 @@ playerVote()
     self.vote_indicator.x = level.xMapName - 5;
     self.vote_indicator.alpha = 0;
     self.vote_indicator.color = (0.20, 1, 0.76);
-    self.vote_indicator SetShader("white", level.backgroundWidth - 8, 16);
+    self.vote_indicator setShader("white", level.backgroundWidth - 8, 16);
     self.vote_indicator.sort = 3;
 
     hasVoted = false;
@@ -437,7 +437,7 @@ playerVote()
     for(;;) {
         wait 0.01;
 
-        if(self AttackButtonPressed()) {
+        if(self attackButtonPressed()) {
             if(!hasVoted) {
                 self.vote_indicator.alpha = 0.3;
                 self.votechoice = 0;
@@ -455,7 +455,7 @@ playerVote()
                 self PlayLocalSound("hq_score"); // training_good_grenade_throw // Not working
         }
 
-        while(self AttackButtonPressed())
+        while(self attackButtonPressed())
             wait 0.01;
     }
 }
