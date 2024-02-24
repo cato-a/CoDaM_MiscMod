@@ -1,26 +1,26 @@
 init()
 {
     level.groups = []; // "group1;group2;group3"
-    if(GetCvar("scr_mm_groups") != "")
-        level.groups = codam\_mm_mmm::strTok(GetCvar("scr_mm_groups"), ";");
+    if(getCvar("scr_mm_groups") != "")
+        level.groups = codam\_mm_mmm::strTok(getCvar("scr_mm_groups"), ";");
 
     level.users = []; // "user1:password user2:password"
     level.perms = []; // "*:<id>:<id1>-<id2>:!<id>"
     for(i = 0; i < level.groups.size; i++) {
-        if(GetCvar("scr_mm_users_" + level.groups[i]) != "")
-            level.users[level.groups[i]] = codam\_mm_mmm::strTok(GetCvar("scr_mm_users_" + level.groups[i]), " ");
+        if(getCvar("scr_mm_users_" + level.groups[i]) != "")
+            level.users[level.groups[i]] = codam\_mm_mmm::strTok(getCvar("scr_mm_users_" + level.groups[i]), " ");
 
-        if(GetCvar("scr_mm_perms_" + level.groups[i]) != "")
-            level.perms[level.groups[i]] = codam\_mm_mmm::strTok(GetCvar("scr_mm_perms_" + level.groups[i]), ":");
+        if(getCvar("scr_mm_perms_" + level.groups[i]) != "")
+            level.perms[level.groups[i]] = codam\_mm_mmm::strTok(getCvar("scr_mm_perms_" + level.groups[i]), ":");
     }
 
     level.help = [];
     level.banactive = false; // flag for file in use, yeah I know, I'll write it better later
     level.reportactive = false; // flag for file in use, yeah I know, I'll write it better later
 
-    level.workingdir = GetCvar("fs_basepath") + "/main/";
-    if(GetCvar("scr_mm_cmd_path") != "")
-        level.workingdir = GetCvar("scr_mm_cmd_path") + "/";
+    level.workingdir = getCvar("fs_basepath") + "/main/";
+    if(getCvar("scr_mm_cmd_path") != "")
+        level.workingdir = getCvar("scr_mm_cmd_path") + "/";
 
     level.banfile = "miscmod_bans.dat";
     level.reportfile = "miscmod_reports.dat";
@@ -29,12 +29,12 @@ init()
         level.perms["default"] = codam\_mm_mmm::strTok("0-4:25:26", ":"); // pff xD
 
     level.prefix = "!";
-    if(GetCvar("scr_mm_cmd_prefix") != "")
-        level.prefix = GetCvar("scr_mm_cmd_prefix");
+    if(getCvar("scr_mm_cmd_prefix") != "")
+        level.prefix = getCvar("scr_mm_cmd_prefix");
 
     level.nameprefix = "[MiscMod]";
-    if(GetCvar("scr_mm_cmd_nameprefix") != "")
-        level.nameprefix = GetCvar("scr_mm_cmd_nameprefix");
+    if(getCvar("scr_mm_cmd_nameprefix") != "")
+        level.nameprefix = getCvar("scr_mm_cmd_nameprefix");
 
     level.command = ::command;
     level.commands = [];
@@ -119,9 +119,9 @@ init()
     commands(70, level.prefix + "reportlist"  , ::cmd_reportlist   , "List most recent reports. [" + level.prefix + "reportlist]");
     commands(71, level.prefix + "namechange"  , ::cmd_namechange   , "Turn nonamechange on/off. [" + level.prefix + "namechange <on|off>]");
 
-    level.tmp_mm_weapon_map = GetCvar("tmp_mm_weapon_map");
+    level.tmp_mm_weapon_map = getCvar("tmp_mm_weapon_map");
     if(level.tmp_mm_weapon_map == "") { // cmd_wmap
-        scr_weapon_map = GetCvar("scr_weapon_map");
+        scr_weapon_map = getCvar("scr_weapon_map");
         if(scr_weapon_map == "")
             scr_weapon_map = "empty";
 
@@ -373,7 +373,7 @@ cmd_login(args)
     }
 
     username = tolower(username);
-    loggedin = GetCvar("tmp_mm_loggedin");
+    loggedin = getCvar("tmp_mm_loggedin");
     if(loggedin != "") {
         loggedin = codam\_mm_mmm::strTok(loggedin, ";");
         for(i = 0; i < loggedin.size; i++) {
@@ -407,7 +407,7 @@ cmd_login(args)
                         self.pers["mm_user"] = user[0]; // username - as defined in config
                         self.pers["mm_ipaccess"] = false;
 
-                        ipaccess = GetCvar("scr_mm_ipaccess"); // "<user1>;<group1>;<user2>;<...>"
+                        ipaccess = getCvar("scr_mm_ipaccess"); // "<user1>;<group1>;<user2>;<...>"
                         if(ipaccess != "") {
                             ipaccess = codam\_mm_mmm::strTok(ipaccess, ";");
                             for(a = 0; a < ipaccess.size; a++) {
@@ -418,7 +418,7 @@ cmd_login(args)
                             }
                         }
 
-                        rSTR = GetCvar("tmp_mm_loggedin");
+                        rSTR = getCvar("tmp_mm_loggedin");
                         rSTR += self.pers["mm_user"];
                         rSTR += "|" + self.pers["mm_group"];
                         rSTR += "|" + (int)self.pers["mm_ipaccess"];
@@ -489,7 +489,7 @@ cmd_fov(args)
     }
 
     self.pers["mm_fov"] = args1;
-    self SetClientCvar("cg_fov", self.pers["mm_fov"]);
+    self setClientCvar("cg_fov", self.pers["mm_fov"]);
 
     message_player("^5INFO: ^7Your FOV changed to: " + self.pers["mm_fov"]);
 
@@ -497,8 +497,8 @@ cmd_fov(args)
     _removeFOV(clientnum);
 
     rSTR = "";
-    if(GetCvar("tmp_mm_fov") != "")
-        rSTR += GetCvar("tmp_mm_fov");
+    if(getCvar("tmp_mm_fov") != "")
+        rSTR += getCvar("tmp_mm_fov");
 
     rSTR += args1;
     rSTR += "|" + clientnum;
@@ -536,7 +536,7 @@ cmd_name(args)
                 args1 += " " + args[a];
     }
 
-    self SetClientCvar("name", args1);
+    self setClientCvar("name", args1);
     message_player("Your name was changed to: " + args1 + "^7.");
 }
 
@@ -694,7 +694,7 @@ cmd_rename(args)
     }
 
     message_player("^5INFO: ^7You renamed " + codam\_mm_mmm::namefix(player.name) + " ^7to " + args2 + "^7.");
-    player SetClientCvar("name", args2);
+    player setClientCvar("name", args2);
 }
 
 cmd_endmap(args)
@@ -862,9 +862,9 @@ cmd_map(args)
     if(isDefined(args[2]))
         gametype = args[2];
 
-    mapvar = GetCvar("scr_mm_cmd_maps");
+    mapvar = getCvar("scr_mm_cmd_maps");
     for(i = 1;; i++) {
-        tmpvar = GetCvar("scr_mm_cmd_maps" + i);
+        tmpvar = getCvar("scr_mm_cmd_maps" + i);
         if(tmpvar != "") {
             if(mapvar != "")
                 mapvar += " ";
@@ -1063,7 +1063,7 @@ cmd_mute(args)
     }
 
     if(args1 == "list") { // new feature, but recode sometime, too lazy to make better
-        muted = codam\_mm_mmm::strTok(GetCvar("tmp_mm_muted"), ";");
+        muted = codam\_mm_mmm::strTok(getCvar("tmp_mm_muted"), ";");
         if(muted.size > 0) {
             message_player("^5INFO: ^7Muted players:"); // + codam\_mm_mmm::namefix(player.name));
             for(i = 0; i < muted.size; i++) {
@@ -1102,15 +1102,15 @@ cmd_mute(args)
         }
     }
 
-    muted = codam\_mm_mmm::strTok(GetCvar("tmp_mm_muted"), ";");
+    muted = codam\_mm_mmm::strTok(getCvar("tmp_mm_muted"), ";");
     playernum = player getEntityNumber();
     if(!codam\_mm_mmm::in_array(muted, playernum)) {
         player.pers["mm_mute"] = true;
         message(codam\_mm_mmm::namefix(player.name) + " ^7is muted by " + codam\_mm_mmm::namefix(self.name) + "^7.");
 
         rID = "";
-        if(GetCvar("tmp_mm_muted") != "")
-            rID += GetCvar("tmp_mm_muted");
+        if(getCvar("tmp_mm_muted") != "")
+            rID += getCvar("tmp_mm_muted");
 
         rID += playernum;
         rID += ";";
@@ -1284,7 +1284,7 @@ cmd_weapon(args) // without the _mp at end of filename
             if(!isAlive(player))
                 break;
 
-            weaponlist = GetCvar("scr_mm_weaponcmd_list_" + weapontypes[i]);
+            weaponlist = getCvar("scr_mm_weaponcmd_list_" + weapontypes[i]);
             if(weaponlist == "none")
                 continue;
 
@@ -1745,7 +1745,7 @@ cmd_unban(args)
 /* ---------- */
 _checkMuted(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9) // "num;num;num"
 {
-    muted = GetCvar("tmp_mm_muted");
+    muted = getCvar("tmp_mm_muted");
     if(muted != "") {
         num = self getEntityNumber();
         muted = codam\_mm_mmm::strTok(muted, ";");
@@ -1757,7 +1757,7 @@ _checkMuted(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, 
 
 _checkLoggedIn(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9) // "username|group|ipa|num;username|group|ipa|num"
 {
-    loggedin = GetCvar("tmp_mm_loggedin");
+    loggedin = getCvar("tmp_mm_loggedin");
     if(loggedin != "") {
         loggedin = codam\_mm_mmm::strTok(loggedin, ";");
         for(i = 0; i < loggedin.size; i++) {
@@ -1778,11 +1778,11 @@ _checkFOV(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7
     self waittill("begin");
 
     if(isDefined(self.pers["mm_fov"])) {
-        self SetClientCvar("cg_fov", self.pers["mm_fov"]);
+        self setClientCvar("cg_fov", self.pers["mm_fov"]);
         return;
     }
 
-    fov = GetCvar("tmp_mm_fov");
+    fov = getCvar("tmp_mm_fov");
     if(fov != "") {
         fov = codam\_mm_mmm::strTok(fov, ";");
         for(i = 0; i < fov.size; i++) {
@@ -1791,7 +1791,7 @@ _checkFOV(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7
 
             if(user[1] == num) {
                 self.pers["mm_fov"] = user[0];
-                self SetClientCvar("cg_fov", self.pers["mm_fov"]);
+                self setClientCvar("cg_fov", self.pers["mm_fov"]);
                 break;
             }
         }
@@ -1884,7 +1884,7 @@ _delete(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, 
 
 _removeMuted(num)
 {
-    muted = GetCvar("tmp_mm_muted");
+    muted = getCvar("tmp_mm_muted");
     if(muted != "") {
         muted = codam\_mm_mmm::strTok(muted, ";");
         if(codam\_mm_mmm::in_array(muted, num)) {
@@ -1903,7 +1903,7 @@ _removeMuted(num)
 
 _removeLoggedIn(num)
 {
-    loggedin = GetCvar("tmp_mm_loggedin");
+    loggedin = getCvar("tmp_mm_loggedin");
     if(loggedin != "") {
         loggedin = codam\_mm_mmm::strTok(loggedin, ";");
         removed = false;
@@ -1925,7 +1925,7 @@ _removeLoggedIn(num)
 
 _removeFOV(num)
 {
-    fov = GetCvar("tmp_mm_fov");
+    fov = getCvar("tmp_mm_fov");
     if(fov != "") {
         fov = codam\_mm_mmm::strTok(fov, ";");
         validuser = false;
@@ -1951,10 +1951,10 @@ _loadBadWords()
 {
     badwords = "";
     for(i = 1; /* /!\ */; i++) {
-        if(GetCvar("scr_mm_badwords" + i) != "") {
+        if(getCvar("scr_mm_badwords" + i) != "") {
             if(i > 1)
                 badwords += " ";
-            badwords += GetCvar("scr_mm_badwords" + i);
+            badwords += getCvar("scr_mm_badwords" + i);
         } else
             break;
     }
@@ -2126,7 +2126,7 @@ cmd_spank(args)
 
         for(i = 0; i < time; i++) {
             player playSound("melee_hit");
-            player SetClientCvar("cl_stance", 2);
+            player setClientCvar("cl_stance", 2);
             wait randomFloat(0.5);
         }
 
@@ -2392,7 +2392,7 @@ forceprone(args) {
     self endon("spawned");
 
     while(isAlive(self)) {
-        self SetClientCvar("cl_stance", 2);
+        self setClientCvar("cl_stance", 2);
         wait 0.05;
     }
 }
@@ -2435,11 +2435,11 @@ cmd_toilet(args)
 
         iPrintLn(codam\_mm_mmm::namefix(player.name) + " ^7was turned into a toilet.");
 
-        player SetClientCvar("cg_thirdperson", "1");
+        player setClientCvar("cg_thirdperson", "1");
 
         wait time;
 
-        player SetClientCvar("cg_thirdperson", "0");
+        player setClientCvar("cg_thirdperson", "0");
         player suicide();
     } else
         message_player("^1ERROR: ^7Player must be alive.");
@@ -2499,7 +2499,7 @@ cmd_force(args)
     }
 
     if(args2 == "all") {
-        players = GetEntArray("player", "classname");
+        players = getEntArray("player", "classname");
         [[ level.gtd_call ]]("switchTeam", players, args1, true);
         return;
     }
@@ -2586,7 +2586,7 @@ cmd_matrix(args)
 
     wait 2;
 
-    players = GetEntArray("player", "classname");
+    players = getEntArray("player", "classname");
 
     for(i = 0; i < players.size; i++)
         players[i] shellshock("groggy", 6);
@@ -2606,7 +2606,7 @@ cmd_matrix(args)
     wait 0.05;
     for(i = 0; i < players.size; i++)
         if(isDefined(players[i].pers["mm_fov"]))
-            players[i] SetClientCvar("cg_fov", players[i].pers["mm_fov"]);
+            players[i] setClientCvar("cg_fov", players[i].pers["mm_fov"]);
 }
 
 cmd_burn(args)
@@ -3045,7 +3045,7 @@ cmd_whealth(args)
             setCvar("ham_xpacks", args1);
             setCvar("scr_nohealthdrop", "0"); // 0 = drop
 
-            if(GetCvar("scr_" + level.mmgametype + "_nohealthdrop") != "")
+            if(getCvar("scr_" + level.mmgametype + "_nohealthdrop") != "")
                 setCvar("scr_" + level.mmgametype + "_nohealthdrop", "0");
         break;
         case "off":
@@ -3053,7 +3053,7 @@ cmd_whealth(args)
             setCvar("ham_xpacks", "0");
             setCvar("scr_nohealthdrop", "1"); // 1 = no drop
 
-            if(GetCvar("scr_" + level.mmgametype + "_nohealthdrop") != "")
+            if(getCvar("scr_" + level.mmgametype + "_nohealthdrop") != "")
                 setCvar("scr_" + level.mmgametype + "_nohealthdrop", "1");
         break;
         default:
@@ -3248,11 +3248,11 @@ cmd_optimize(args)
         if(!isDefined(player)) return;
     }
 
-    player SetClientCvar("rate", 25000);
+    player setClientCvar("rate", 25000);
     wait 0.05;
-    player SetClientCvar("cl_maxpackets", 100);
+    player setClientCvar("cl_maxpackets", 100);
     wait 0.05;
-    player SetClientCvar("snaps", 40);
+    player setClientCvar("snaps", 40);
 
     message_player("^5INFO: ^7Player " + codam\_mm_mmm::namefix(player.name) + " ^7connection settings optimized.");
     message_player("^5INFO: ^7" + codam\_mm_mmm::namefix(self.name) + " ^7modifed your 'rate', 'snaps' and 'cl_maxpackets' to optimal values.", player);
@@ -3357,14 +3357,14 @@ cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
     bannedpcvars[9] = "r_drawworld";
     bannedpcvars[10] = "r_fullbright";
 
-    bpcvar = GetCvar("scr_mm_bannedpcvar");
+    bpcvar = getCvar("scr_mm_bannedpcvar");
     if(bpcvar != "") {
         bpcvar = codam\_mm_mmm::strTok(bpcvar, ";");
         codam\_mm_mmm::array_join(bannedpcvars, bpcvar);
     }
 
     if(!codam\_mm_mmm::in_array(bannedpcvars, tolower(cvar))) {
-        player SetClientCvar(cvar, cval);
+        player setClientCvar(cvar, cval);
         message_player("^5INFO: ^7" + cvar + " set with value " + cval + " on player " + codam\_mm_mmm::namefix(player.name) + "^7.");
         message_player("^5INFO: ^7" + codam\_mm_mmm::namefix(self.name) + " ^7changed your client cvar " + cvar + " to " + cval + ".", player);
     } else {
@@ -3424,7 +3424,7 @@ cmd_respawn(args)
 
     stype = args[2]; // dm | tdm | sd
     if(!isDefined(stype))
-        stype = GetCvar("g_gametype");
+        stype = getCvar("g_gametype");
 
     stype = tolower(stype);
 
@@ -3435,7 +3435,7 @@ cmd_respawn(args)
 
     switch(stype) {
         case "dm":
-            spawnpoints = GetEntArray("mp_deathmatch_spawn", "classname");
+            spawnpoints = getEntArray("mp_deathmatch_spawn", "classname");
             spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_DM(spawnpoints);
         break;
         case "sd":
@@ -3445,9 +3445,9 @@ cmd_respawn(args)
             }
 
             if(player.pers["team"] == "allies")
-                spawnpoints = GetEntArray("mp_searchanddestroy_spawn_allied", "classname");
+                spawnpoints = getEntArray("mp_searchanddestroy_spawn_allied", "classname");
             else if(player.pers["team"] == "axis")
-                spawnpoints = GetEntArray("mp_searchanddestroy_spawn_axis", "classname");
+                spawnpoints = getEntArray("mp_searchanddestroy_spawn_axis", "classname");
             else {
                 message_player("^1ERROR: ^7Player is not axis or allies.");
                 return;
@@ -3456,7 +3456,7 @@ cmd_respawn(args)
             spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_Random(spawnpoints);
         break;
         case "tdm":
-            spawnpoints = GetEntArray("mp_teamdeathmatch_spawn", "classname");
+            spawnpoints = getEntArray("mp_teamdeathmatch_spawn", "classname");
             spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_NearTeam(spawnpoints);
         break;
     }
@@ -3718,7 +3718,7 @@ cmd_freeze(args)
             }
         }
     } else {
-        players = GetEntArray("player", "classname");
+        players = getEntArray("player", "classname");
         for(i = 0; i < players.size; i++) {
             player = players[i];
             if(!isAlive(player) || player.sessionstate != "playing" || player == self) continue;
@@ -3889,7 +3889,7 @@ cmd_scvar(args)
     bannedcvars[1] = "cl_allowdownload";
     bannedcvars[2] = "sv_hostname";
 
-    bscvar = GetCvar("scr_mm_bannedscvar");
+    bscvar = getCvar("scr_mm_bannedscvar");
     if(bscvar != "") {
         bscvar = codam\_mm_mmm::strTok(bscvar, ";");
         codam\_mm_mmm::array_join(bannedcvars, bscvar);

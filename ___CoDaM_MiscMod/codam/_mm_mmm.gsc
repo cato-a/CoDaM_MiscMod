@@ -352,7 +352,7 @@ validate_number(input, isfloat)
     return true;
 }
 
-getOnlinePlayers() // get all online players, apparently GetEntArray doesn't list 999/connecting players
+getOnlinePlayers() // get all online players, apparently getEntArray doesn't list 999/connecting players
 {
     p = [];
 
@@ -371,7 +371,7 @@ getOnlinePlayers() // get all online players, apparently GetEntArray doesn't lis
 
 deletePlacedEntity(sEntityType)
 {
-    eEntities = GetEntArray(sEntityType, "classname");
+    eEntities = getEntArray(sEntityType, "classname");
     for(i = 0; i < eEntities.size; i++)
         eEntities[i] delete();
 }
@@ -454,15 +454,15 @@ _tmpHudsForFunEvent()
         level.tmpHudsForFunEvent.color = (1, 0.2, 0);
         level.tmpHudsForFunEvent SetText(&"Please wait...");
 
-        players = GetEntArray("player", "classname");
+        players = getEntArray("player", "classname");
         for(i = 0; i < players.size; i++) {
             players[i].sessionstate = "spectator";
             players[i].spectatorclient = -1;
 
             resettimeout();
 
-            players[i] SetClientCvar("g_scriptMainMenu", "");
-            players[i] CloseMenu();
+            players[i] setClientCvar("g_scriptMainMenu", "");
+            players[i] closeMenu();
         }
     } else
         level.tmpHudsForFunEvent destroy();

@@ -9,8 +9,8 @@ init()
 
     precacheShader("white");
 
-    level.mmgametype = GetCvar("g_gametype");
-    level.mmmapname = GetCvar("mapname");
+    level.mmgametype = getCvar("g_gametype");
+    level.mmmapname = getCvar("mapname");
 
     level.mapvote = false;
     if(getCvarInt("scr_mm_mapvote"))
@@ -79,14 +79,14 @@ prepareMaps()
         level.mapvote_list = "mystery map" + "\n\n";
     }
         
-    if(GetCvar("sv_mapRotation") == "")
+    if(getCvar("sv_mapRotation") == "")
         return;
         
-    mapRotation = codam\_mm_mmm::strip(GetCvar("sv_mapRotation"));
+    mapRotation = codam\_mm_mmm::strip(getCvar("sv_mapRotation"));
 
     for(i = 1; /* /!\ */; i++) {
-        if(GetCvar("sv_mapRotation" + i) != "")
-            mapRotation = mapRotation + " " + codam\_mm_mmm::strip(GetCvar("sv_mapRotation" + i));
+        if(getCvar("sv_mapRotation" + i) != "")
+            mapRotation = mapRotation + " " + codam\_mm_mmm::strip(getCvar("sv_mapRotation" + i));
         else
             break;
     }
@@ -156,7 +156,7 @@ setupHud()
     if(isDefined(level.clock))
         level.clock destroy();
 
-    players = GetEntArray("player", "classname");
+    players = getEntArray("player", "classname");
     for(i = 0; i < players.size; i++)
         if(isDefined(players[i]._stopwatch))
             players[i]._stopwatch destroy();
@@ -186,14 +186,14 @@ setupHud()
     }
 
     // Will close scoreboard
-    players = GetEntArray("player", "classname");
+    players = getEntArray("player", "classname");
     for(i = 0; i < players.size; i++) {
         player = players[i];
         player.sessionstate = "spectator";
         player.spectatorclient = -1;
         resettimeout(); // I don't know what this is for
-        player SetClientCvar("g_scriptMainMenu", "main");
-        player CloseMenu();
+        player setClientCvar("g_scriptMainMenu", "main");
+        player closeMenu();
     }
 
     // Offsets
@@ -283,7 +283,7 @@ destroyHud()
     for(i = 0; i < level.mapvote_currentchoices; i++)
         level.mapvote_hud_counts[i] destroy();
     
-    players = GetEntArray("player", "classname");
+    players = getEntArray("player", "classname");
     for(i = 0; i < players.size; i++)
         if(isDefined(players[i].vote_indicator))
             players[i].vote_indicator destroy();
@@ -325,7 +325,7 @@ runMapVote()
         level.mapcandidate[lastChoiceIndex]["votes"] = 0;
     }
     
-    players = GetEntArray("player", "classname");
+    players = getEntArray("player", "classname");
     for(i = 0; i < players.size; i++)
         players[i] thread playerVote();
     
@@ -341,7 +341,7 @@ voteLogic()
             for(i = 0; i < level.mapvote_currentchoices; i++)
                 level.mapcandidate[i]["votes"] = 0;
 
-            players = GetEntArray("player", "classname");
+            players = getEntArray("player", "classname");
             for(i = 0; i < players.size; i++)
                 if(isDefined(players[i].votechoice))
                     level.mapcandidate[players[i].votechoice]["votes"]++;
@@ -408,7 +408,7 @@ setMapWinner(val)
     for(i = 0; i < level.mapvote_currentchoices; i++)
         level.mapvote_hud_counts[i].alpha = 0;
 
-    players = GetEntArray("player", "classname");
+    players = getEntArray("player", "classname");
     for(i = 0; i < players.size; i++) {
         if(isDefined(players[i].vote_indicator)) {
             players[i].vote_indicator fadeOverTime(1);

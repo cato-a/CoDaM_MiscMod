@@ -138,9 +138,9 @@ _load()
     precacheShellshock("default");
 
     // global variables
-    level.mmgametype = GetCvar("g_gametype");
-    level.mmmapname = GetCvar("mapname");
-    level.mmhostname = GetCvar("sv_hostname");
+    level.mmgametype = getCvar("g_gametype");
+    level.mmmapname = getCvar("mapname");
+    level.mmhostname = getCvar("sv_hostname");
     level.bans = []; // moved here to fix using MiscMod without users/groups set
 
     // mapvote
@@ -219,7 +219,7 @@ _timerStuck() // tip by Jona
     for(;;) {
         wait 60;
 
-        players = GetEntArray("player", "classname");
+        players = getEntArray("player", "classname");
         if(players.size == 0) {
             emptymap = codam\utils::getVar("scr_mm", "emptymap", "string", 0, "");
             if(emptymap != "") {
@@ -310,7 +310,7 @@ welcome_display(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, 
     level endon("end_map");
 
     pID = self getEntityNumber();
-    getGreets = codam\_mm_mmm::strTok(GetCvar("tmp_mm_welcomemessages"), ";"); // get cvar to array (14;19;23;11;20...)
+    getGreets = codam\_mm_mmm::strTok(getCvar("tmp_mm_welcomemessages"), ";"); // get cvar to array (14;19;23;11;20...)
 
     if(!codam\_mm_mmm::in_array(getGreets, pID)) {
         addID = pID; // create a variable with all welcome message id's
@@ -321,11 +321,11 @@ welcome_display(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, 
         setCvar("tmp_mm_welcomemessages", addID); // add all the generated id's to a cvar for later use
 
         for(i = 1; /* /!\ */; i++) {
-            if(GetCvar("scr_mm_welcome" + i) != "") {
+            if(getCvar("scr_mm_welcome" + i) != "") {
                 if(i == 1)
-                    self iPrintLnBold(GetCvar("scr_mm_welcome" + i) + " " + codam\_mm_mmm::namefix(self.name));
+                    self iPrintLnBold(getCvar("scr_mm_welcome" + i) + " " + codam\_mm_mmm::namefix(self.name));
                 else
-                    self iPrintLnBold(GetCvar("scr_mm_welcome" + i));
+                    self iPrintLnBold(getCvar("scr_mm_welcome" + i));
 
                 wait 6;
             } else {
@@ -339,7 +339,7 @@ welcome_display(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, 
 welcome_remove(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9)
 {
     pID = self getEntityNumber();
-    getGreets = codam\_mm_mmm::strTok(GetCvar("tmp_mm_welcomemessages"), ";");
+    getGreets = codam\_mm_mmm::strTok(getCvar("tmp_mm_welcomemessages"), ";");
 
     if(codam\_mm_mmm::in_array(getGreets, pID)) {
         delWelcome = codam\_mm_mmm::array_remove(getGreets, pID);
@@ -571,7 +571,7 @@ endMap(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
     if(codam\utils::getVar("scr_mm", "repeatwelcome", "bool", 1|2, false))
         setCvar("tmp_mm_welcomemessages", "");
 
-    players = GetEntArray("player", "classname");
+    players = getEntArray("player", "classname");
     if(players.size > 0) {
         if(level.mmgametype == "sd" || level.mmgametype == "re") {
             if(game["alliedscore"] == game["axisscore"])
@@ -584,9 +584,9 @@ endMap(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
             for(i = 0; i < players.size; i++) {
                 player = players[i];
 
-                player CloseMenu();
-                player SetClientCvar("g_scriptMainMenu", "main");
-                player SetClientCvar("cg_objectiveText", text);
+                player closeMenu();
+                player setClientCvar("g_scriptMainMenu", "main");
+                player setClientCvar("cg_objectiveText", text);
                 player [[ level.gtd_call ]]("gt_spawnIntermission");
             }
         } else
@@ -680,7 +680,7 @@ _spawner(spClass, method)
     if(!isDefined(method))
         method = "spawn_default";
 
-    spawnpoints = GetEntArray(spClass, "classname");
+    spawnpoints = getEntArray(spClass, "classname");
 
     spawnpoint = [[ level.gtd_call ]](method, spawnpoints);
     if(isDefined(spawnpoint)) {
@@ -802,7 +802,7 @@ PlayerConnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5, b6
                 renameto = codam\utils::getVar("scr_mm", "renameto", "string", 0, "^1Disallowed Name^3#^1%");
                 if(renameto[renameto.size - 1] == "%")
                     renameto = renameto + randomInt(1000);
-                self SetClientCvar("name", codam\_mm_mmm::namefix(renameto)); // super lazy, fix sometime to improve code
+                self setClientCvar("name", codam\_mm_mmm::namefix(renameto)); // super lazy, fix sometime to improve code
                 break;
             }
         }
@@ -885,11 +885,11 @@ PlayerConnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5, b6
 
     if(isDefined(team) && (team != "spectator")) {
         if(level.ham_g_gametype == "bel"/* || codam\utils::getVar("scr_mm", "bel_menu", "bool", 0, false)*/)
-            self SetClientCvar("g_scriptMainMenu", game["menu_weapon_all"]);
+            self setClientCvar("g_scriptMainMenu", game["menu_weapon_all"]);
         else
-            self SetClientCvar("g_scriptMainMenu", game["menu_weapon_" + team]);
+            self setClientCvar("g_scriptMainMenu", game["menu_weapon_" + team]);
 
-        self SetClientCvar(level.ui_weapontab, "1");
+        self setClientCvar(level.ui_weapontab, "1");
 
         if(isDefined(self.pers["weapon"]))
             self [[ level.gtd_call ]]("gt_spawnPlayer");
@@ -929,8 +929,8 @@ lockPlayer(reason)
     self [[	level.gtd_call ]]("goSpectate"); // For now, just force spec.
 
     self [[ level.gtd_call ]]("blockMenu");  // Disable menu operation
-    self SetClientCvar("g_scriptMainMenu",	"main"); // Only see main menu
-    self CloseMenu();
+    self setClientCvar("g_scriptMainMenu",	"main"); // Only see main menu
+    self closeMenu();
 
     self thread [[ level.gtd_call ]]("manageSpectate", "kick");
 
@@ -1020,8 +1020,8 @@ antiFF(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
 
     if(!isDefined(level.fastfireaction)) {
         level.fastfireaction = "suicide";
-        if(GetCvar("scr_mm_fastfireaction") != "" && GetCvar("scr_mm_fastfireaction") != "suicide")
-            level.fastfireaction = GetCvar("scr_mm_fastfireaction");
+        if(getCvar("scr_mm_fastfireaction") != "" && getCvar("scr_mm_fastfireaction") != "suicide")
+            level.fastfireaction = getCvar("scr_mm_fastfireaction");
     }
 
     wait 1;
@@ -1160,7 +1160,7 @@ weapon32(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7,
 
     wait 1;
 
-    self SetClientCvar("weapon", 0);
+    self setClientCvar("weapon", 0);
 }
 // ##########
 
@@ -1346,7 +1346,7 @@ assignWeapon(weapon, useDefault, forceTeam, a3, a4, a5, a6, a7, a8, a9, b0, b1, 
     // the weapons in use.
     teamCount = 1;	// Count me in!
     weapCount = 0;
-    players = GetEntArray("player", "classname");
+    players = getEntArray("player", "classname");
     for(i = 0; i < players.size; i++) {
         player = players[i];
         if(player == self)
@@ -1502,7 +1502,7 @@ givePistol(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b
     if (!isDefined(pistol))
         return;
 
-    if((bool)(GetCvar("scr_mm_allow_pistols") != "")) {
+    if((bool)(getCvar("scr_mm_allow_pistols") != "")) {
         setting = getCvarInt("scr_mm_allow_pistols");
         if(setting == -1) {
             return;
@@ -1527,7 +1527,7 @@ giveGrenade(weapon, a1, a2, a3, a4, a5, a6, a7, a8, a9,	b0, b1, b2, b3, b4, b5, 
         return;
 
     mm_grenades = -1;
-    if(GetCvar("scr_mm_allow_grenades") != "" && getCvarInt("scr_mm_allow_grenades") >= 0)
+    if(getCvar("scr_mm_allow_grenades") != "" && getCvarInt("scr_mm_allow_grenades") >= 0)
         mm_grenades = getCvarInt("scr_mm_allow_grenades");
 
     if(mm_grenades > 3)
@@ -1604,7 +1604,7 @@ msgBroadcast(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6,
         msgb_id = 1;
 
     while(true) {
-        message = GetCvar("scr_mm_msgb" + msgb_id);
+        message = getCvar("scr_mm_msgb" + msgb_id);
 
         if(message != "")
             message = codam\_mm_mmm::strTok(message, ";");
@@ -1630,7 +1630,7 @@ msgBroadcast(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6,
 
         msgb_id += 1;
 
-        if(GetCvar("scr_mm_msgb" + msgb_id) == "")
+        if(getCvar("scr_mm_msgb" + msgb_id) == "")
             msgb_id = 1;
 
         setCvar("tmp_mm_msgb", (int)msgb_id);
@@ -1659,7 +1659,7 @@ badnames(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7,
 
     while(true) { // will recode this another time better
         checkname = false;
-        players = GetEntArray("player", "classname");
+        players = getEntArray("player", "classname");
         for(i = 0; i < players.size; i++) {
             playername = codam\_mm_mmm::monotone(tolower(players[i].name));
             checkname = false;
@@ -1759,25 +1759,25 @@ weaponsPerMapGt()
     cvar_prefix = "scr_allow_";
     for(i = 0; i < weapons.size; i++) {
         tmpcvar = "tmp_" + cvar_prefix + weapons[i];
-        if(GetCvar(tmpcvar) == "")
-            setCvar(tmpcvar, GetCvar(cvar_prefix + weapons[i]));
+        if(getCvar(tmpcvar) == "")
+            setCvar(tmpcvar, getCvar(cvar_prefix + weapons[i]));
 
         // scr_allow_<weapon>_<gametype>
-        _cvar1 = GetCvar(cvar_prefix + weapons[i] + "_" + level.mmgametype);
+        _cvar1 = getCvar(cvar_prefix + weapons[i] + "_" + level.mmgametype);
         if(_cvar1 == "1")
             setCvar(cvar_prefix + weapons[i], "1");
         else if(_cvar1 == "0")
             setCvar(cvar_prefix + weapons[i], "0");
 
         // scr_allow_<weapon>_<mapname>
-        _cvar2 = GetCvar(cvar_prefix + weapons[i] + "_" + level.mmmapname );
+        _cvar2 = getCvar(cvar_prefix + weapons[i] + "_" + level.mmmapname );
         if(_cvar2 == "1")
             setCvar(cvar_prefix + weapons[i], "1");
         else if(_cvar2 == "0")
             setCvar(cvar_prefix + weapons[i], "0");
 
         if(_cvar1 == "" && _cvar2 == "")
-            setCvar(cvar_prefix + weapons[i], GetCvar(tmpcvar));
+            setCvar(cvar_prefix + weapons[i], getCvar(tmpcvar));
     }
 
     codam\weapon::_initWeaponAssign(); // reload the CoDaM weapon assign
