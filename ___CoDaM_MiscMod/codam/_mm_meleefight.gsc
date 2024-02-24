@@ -1,22 +1,22 @@
 meleeFight()
 {
-    if(/*!IsDefined(level.roundbased)*/level.mmgametype != "sd") // sd or re gametype TODO: fix so no melee showdown on carrier
+    if(/*!isDefined(level.roundbased)*/level.mmgametype != "sd") // sd or re gametype TODO: fix so no melee showdown on carrier
         return;
 
-    if(IsDefined(level.roundstarted) && !level.roundstarted) // dirty fix for join players
+    if(isDefined(level.roundstarted) && !level.roundstarted) // dirty fix for join players
         return;
 
-    if(IsDefined(level.bombplanted) && level.bombplanted)
+    if(isDefined(level.bombplanted) && level.bombplanted)
         return;
 
-    if(!IsDefined(level.showdown))
+    if(!isDefined(level.showdown))
         level.showdown = false;
 
     al = 0;
     ax = 0;
     mp = [];
 
-    players = GetEntArray("player", "classname");
+    players = getEntArray("player", "classname");
     for(i = 0; i < players.size; i++) {
         if(players[i].sessionstate != "playing")
             continue;
@@ -33,7 +33,7 @@ meleeFight()
     }
 
     if(al == 1 && ax == 1) {
-        if(!IsDefined(self.showdown))
+        if(!isDefined(self.showdown))
             self.showdown = true;
 
         if(self.showdown && !level.showdown) {
@@ -52,7 +52,7 @@ meleeFight()
             bombzone_A = getent("bombzone_A", "targetname");
             bombzone_B = getent("bombzone_B", "targetname");
 
-            if(IsDefined(bombzone_A) || IsDefined(bombzone_B)) {
+            if(isDefined(bombzone_A) || isDefined(bombzone_B)) {
                 bombzone_A delete();
                 bombzone_B delete();
                 objective_delete(0);
@@ -69,7 +69,7 @@ meleeFight()
                 spawns = 0;
                 for(i = 0; i < mp.size; i++) { // check if there is valid spawns for teleport
                     mp[i].meleespawn = _meleeFightSpawn(mp[i].pers["team"]);
-                    if(IsDefined(mp[i].meleespawn))
+                    if(isDefined(mp[i].meleespawn))
                         spawns++;
                 }
 
@@ -83,7 +83,7 @@ meleeFight()
                         mp[i] thread codam\_mm_mmm::freezePlayer(3); // based on timers, they must always be right or unexpected things can happen
                     }
 
-                    fightHud = NewHudElem();
+                    fightHud = newHudElem();
                     fightHud.x = 320;
                     fightHud.y = 210;
                     fightHud.sort = 10000;
@@ -92,27 +92,27 @@ meleeFight()
                     fightHud.alignY = "middle";
 
                     fightHud.alpha = 1;
-                    fightHud SetValue(3);
-                    fightHud FadeOverTime(0.75);
+                    fightHud setValue(3);
+                    fightHud fadeOverTime(0.75);
                     fightHud.alpha = 0;
 
                     wait 1;
 
                     fightHud.alpha = 1;
-                    fightHud SetValue(2);
-                    fightHud FadeOverTime(0.75);
+                    fightHud setValue(2);
+                    fightHud fadeOverTime(0.75);
                     fightHud.alpha = 0;
 
                     wait 1;
 
                     fightHud.alpha = 1;
-                    fightHud SetValue(1);
-                    fightHud FadeOverTime(0.75);
+                    fightHud setValue(1);
+                    fightHud fadeOverTime(0.75);
                     fightHud.alpha = 0;
 
                     wait 1;
 
-                    fightHud Destroy();
+                    fightHud destroy();
                 }
             }
 
@@ -123,7 +123,7 @@ meleeFight()
                 mp[i].health = 100; // normalize and equalize health
 
                 _pistolweap = mp[i] getWeaponSlotWeapon("pistol");
-                if(!IsDefined(_pistolweap)) {
+                if(!isDefined(_pistolweap)) {
                     _pistolweap = "colt_mp";
                     if(mp[i].pers["team"] == "axis")
                         _pistolweap = "luger_mp";
@@ -153,7 +153,7 @@ meleeFight()
 
 _meleeFightHud()
 {
-    fightHud = NewHudElem();
+    fightHud = newHudElem();
     fightHud.x = 320;
     fightHud.y = 210;
     fightHud.sort = 10000;
@@ -162,18 +162,18 @@ _meleeFightHud()
     fightHud.alignY = "middle";
 
     fightHud.alpha = 1;
-    fightHud SetText(&"FIGHT");
-    fightHud FadeOverTime(0.75);
+    fightHud setText(&"FIGHT");
+    fightHud fadeOverTime(0.75);
     fightHud.alpha = 0;
 
     wait 1;
 
-    fightHud Destroy();
+    fightHud destroy();
 }
 
 _meleeFightSpawn(team)
 {
-    if(!IsDefined(team))
+    if(!isDefined(team))
         return undefined;
 
     spawns = [];
@@ -535,7 +535,7 @@ _meleeFightSpawn(team)
     if(team == false)
         return spawns["allies"].size;
 
-    if(!IsDefined(level.meleespawn))
+    if(!isDefined(level.meleespawn))
         level.meleespawn = randomInt(spawns[team].size); // (spawns.size / 2)
 
     spawn = spawnStruct();
@@ -551,13 +551,13 @@ _meleeCompass(id)
         return;
 
     objective_add(id, "current", self.origin, "gfx/hud/objective.tga");
-    if(IsDefined(self.pers["team"])) {
+    if(isDefined(self.pers["team"])) {
         if(self.pers["team"] == "axis")
             team = "allies";
         else if(self.pers["team"] == "allies")
             team = "axis";
 
-        if(IsDefined(team))
+        if(isDefined(team))
             objective_team(id, team);
     }
 
@@ -578,13 +578,13 @@ _meleeWinner()
     if(!codam\utils::getVar("scr_mm", "meleefight_winner", "bool", 1|2, false))
         return;
 
-    while(isAlive(self) && !IsDefined(level.meleewinner))
+    while(isAlive(self) && !isDefined(level.meleewinner))
         wait 0.5; // allow 1s time for a draw
 
-    if(!isAlive(self) && !IsDefined(level.meleewinner))
+    if(!isAlive(self) && !isDefined(level.meleewinner))
         level.meleewinner = true;
     else {
-        if(isAlive(self) && IsDefined(level.meleewinner)) {
+        if(isAlive(self) && isDefined(level.meleewinner)) {
             self.pers["meleewinner"] = true;
             iPrintLn(codam\_mm_mmm::namefix(self.name) + " ^7is the winner!");
         }
@@ -599,10 +599,10 @@ _meleeAnnounce()
     wait (level.graceperiod + 1);
 
     for(;;) {
-        if(IsDefined(level.bombplanted) && level.bombplanted)
+        if(isDefined(level.bombplanted) && level.bombplanted)
             break;
 
-        players = GetEntArray("player", "classname");
+        players = getEntArray("player", "classname");
         if(players.size < 2) // don't announce if there is only 2 players?
             break;
 
@@ -640,10 +640,10 @@ __testSpawns()
         return;
 
     spawnsize = _meleeFightSpawn(false);
-    if(IsDefined(spawnsize) && codam\utils::isNumeric(spawnsize)) {
+    if(isDefined(spawnsize) && codam\utils::isNumeric(spawnsize)) {
         iPrintLn("Running test spawns.");
 
-        players = GetEntArray("player", "classname");
+        players = getEntArray("player", "classname");
         for(a = 0; a < spawnsize; a++) {
             level.meleespawn = a;
             for(i = 0; i < players.size; i++) {

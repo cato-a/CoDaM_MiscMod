@@ -29,7 +29,7 @@ _init(register)
 {
     codam\utils::debug(0, "======== MiscMod/_init:: |", register, "|");
 
-    if(IsDefined(level.modbycato1))
+    if(isDefined(level.modbycato1))
         return;
 
     level.modbycato1 = true;
@@ -113,21 +113,21 @@ _load()
 {
     codam\utils::debug(0, "======== MiscMod/_load");
 
-    if(IsDefined(level.modbycato2))
+    if(isDefined(level.modbycato2))
         return;
 
     level.modbycato2 = true;
 
     // MiscMod huds
-    if(!IsDefined(level.topText)) {
-        topText_concatenated = "^1MiscMod ^3v" + level.miscmodversion;
-        topText_concatenated_localized = makeLocalizedString(topText_concatenated);
-        level.topText = topText_concatenated_localized;
+    if(!isDefined(level.topText)) {
+        topTextConcat = "^1MiscMod ^3v" + level.miscmodversion;
+        topTextConcat_localized = makeLocalizedString(topTextConcat);
+        level.topText = topTextConcat_localized;
     }
     
-    originalBottomText_concatenated = "^1+ ^5MiscMod ^3v" + level.miscmodversion;
-    originalBottomText_concatenated_localized = makeLocalizedString(originalBottomText_concatenated);
-    level.originalBottomText = originalBottomText_concatenated_localized;
+    originalBottomTextConcat = "^1+ ^5MiscMod ^3v" + level.miscmodversion;
+    originalBottomTextConcat_localized = makeLocalizedString(originalBottomTextConcat);
+    level.originalBottomText = originalBottomTextConcat_localized;
 
     // hitmarker
     precacheShader("gfx/hud/hud@fire_ready.tga");
@@ -191,7 +191,7 @@ _start()
 {
     codam\utils::debug(0, "======== MiscMod/_start");
 
-    if(IsDefined(level.modbycato3))
+    if(isDefined(level.modbycato3))
         return;
 
     level.modbycato3 = true;
@@ -213,7 +213,7 @@ _start()
 // ########## timer stuck
 _timerStuck() // tip by Jona
 {
-    if(!IsDefined(game["maprestarts"]))
+    if(!isDefined(game["maprestarts"]))
         game["maprestarts"] = 0;
 
     for(;;) {
@@ -251,7 +251,7 @@ _timerStuck() // tip by Jona
 // ########## MiscMod huds
 _showMiscModHuds()
 {
-    topText = NewHudElem();
+    topText = newHudElem();
     topText.x = 5;
     topText.y = 1;
     topText.sort = 10000;
@@ -259,7 +259,7 @@ _showMiscModHuds()
     topText.archived = true;
     topText SetText(level.topText);
 
-    originalBottomText = NewHudElem();
+    originalBottomText = newHudElem();
     originalBottomText.x = 57;
     originalBottomText.y = 471;
     originalBottomText.sort = 10000;
@@ -267,8 +267,8 @@ _showMiscModHuds()
     originalBottomText.archived = true;
     originalBottomText SetText(level.originalBottomText);
 
-    if(IsDefined(level.bottomText)) { // precache above for level.bottomText for this block
-        bottomText = NewHudElem();
+    if(isDefined(level.bottomText)) { // precache above for level.bottomText for this block
+        bottomText = newHudElem();
         bottomText.x = 116; // 1-9
         bottomText.y = 471;
         bottomText.sort = 10000;
@@ -359,23 +359,23 @@ welcome_remove(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b
 // ########## instant kill / hitmarker / damagemarker / shellshock
 _finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9)
 {
-    if(IsDefined(eAttacker) && isPlayer(eAttacker)) {
+    if(isDefined(eAttacker) && isPlayer(eAttacker)) {
         if(sMeansOfDeath != "MOD_MELEE") {
-            if(IsDefined(eAttacker.fastfire) && codam\_mm_mmm::isBoltWeapon(sWeapon))
+            if(isDefined(eAttacker.fastfire) && codam\_mm_mmm::isBoltWeapon(sWeapon))
                 return; // immunize players subject to fastfire
 
-            if(IsDefined(level.showdownactive))
+            if(isDefined(level.showdownactive))
                 return; // showdown immunize
         }
 
         if(codam\utils::getVar("scr_mm", "headshots", "bool", 1|2, false) && sHitLoc != "head")
             return;
 
-        if(IsDefined(self.spawnprotected) && self.spawnprotected)
+        if(isDefined(self.spawnprotected) && self.spawnprotected)
             return;
     }
 
-    if(!IsDefined(vDir)) // Don't do knockback if the damage direction was not specified
+    if(!isDefined(vDir)) // Don't do knockback if the damage direction was not specified
         iDFlags |= level.iDFLAGS_NO_KNOCKBACK;
 
     if(iDamage < 1) // Make sure at least one point of damage is done
@@ -413,7 +413,7 @@ _finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWea
 
         self shellshock(shellshock["name"], shellshock["duration"]);
     } else {
-        if(IsDefined(eAttacker) && isPlayer(eAttacker) && isAlive(eAttacker)) {
+        if(isDefined(eAttacker) && isPlayer(eAttacker) && isAlive(eAttacker)) {
             if(sMeansOfDeath != "MOD_FALL" && sMeansOfDeath != "MOD_MELEE") {
                 instantkill = codam\utils::getVar("scr_mm", "instantkill", "bool", 1|2, false);
                 if(instantkill && codam\_mm_mmm::isBoltWeapon(sWeapon)) {
@@ -440,7 +440,7 @@ _finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWea
                             tmpvar_ignore = true;
                     }
 
-                    if(!IsDefined(tmpvar_ignore)) {
+                    if(!isDefined(tmpvar_ignore)) {
                         iDamage = iDamage + 100;
                         instantdamage = true;
                     }
@@ -449,7 +449,7 @@ _finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWea
 
             if(codam\utils::getVar("scr_mm", "damagemarker", "bool", 1|2, false)) {
                 iMarker = iDamage;
-                if(IsDefined(instantdamage))
+                if(isDefined(instantdamage))
                     iMarker = iMarker - 100;
 
                 if(eAttacker != self)
@@ -480,10 +480,10 @@ _showHitmarker(iDamage, iHealth)
     self endon("spawned");
     self endon("disconnect");
 
-    if(IsDefined(self.hitBlip))
-        self.hitBlip Destroy();
+    if(isDefined(self.hitBlip))
+        self.hitBlip destroy();
 
-    self.hitBlip = NewClientHudElem(self);
+    self.hitBlip = newClientHudElem(self);
     self.hitBlip.alignX = "center";
     self.hitBlip.alignY = "middle";
     self.hitBlip.x = 320;
@@ -491,7 +491,7 @@ _showHitmarker(iDamage, iHealth)
     self.hitBlip.alpha = 1; // 0.5
 
     self.hitBlip.color = (1, 0.7, 0);
-    if(IsDefined(iDamage) && IsDefined(iHealth)) {
+    if(isDefined(iDamage) && isDefined(iHealth)) {
         if(iHealth - iDamage < 0)
             self.hitBlip.color = (0, 0, 0);
         else if(iDamage >= 50)
@@ -506,8 +506,8 @@ _showHitmarker(iDamage, iHealth)
 
     wait 0.30;
 
-    if(IsDefined(self.hitBlip))
-        self.hitBlip Destroy();
+    if(isDefined(self.hitBlip))
+        self.hitBlip destroy();
 }
 
 _showDamagemarker(iDamage)
@@ -515,20 +515,20 @@ _showDamagemarker(iDamage)
     self endon("spawned");
     self endon("disconnect");
 
-    if(!IsDefined(self.damageBlip))
+    if(!isDefined(self.damageBlip))
         self.damageBlip = [];
 
-    if(!IsDefined(self.damageBlipSize))
+    if(!isDefined(self.damageBlipSize))
         self.damageBlipSize = 0;
 
     if(self.damageBlipSize > 2)
         self.damageBlipSize = 0;
 
-    if(IsDefined(self.damageBlip[self.damageBlipSize]))
-        self.damageBlip[self.damageBlipSize] Destroy();
+    if(isDefined(self.damageBlip[self.damageBlipSize]))
+        self.damageBlip[self.damageBlipSize] destroy();
 
     time = getTime(); // dirty hack to fix blip problem XD
-    self.damageBlip[self.damageBlipSize] = NewClientHudElem(self);
+    self.damageBlip[self.damageBlipSize] = newClientHudElem(self);
     self.damageBlip[self.damageBlipSize].blipId = time; // dirty hack to fix blip problem XD
     self.damageBlip[self.damageBlipSize].alignX = "center";
     self.damageBlip[self.damageBlipSize].alignY = "middle";
@@ -553,8 +553,8 @@ _showDamagemarker(iDamage)
 
     wait 0.35;
 
-    if(IsDefined(self.damageBlip[damageBlipSize]) && self.damageBlip[damageBlipSize].blipId == time)
-        self.damageBlip[damageBlipSize] Destroy();
+    if(isDefined(self.damageBlip[damageBlipSize]) && self.damageBlip[damageBlipSize].blipId == time)
+        self.damageBlip[damageBlipSize] destroy();
 
 }
 // ##########
@@ -630,12 +630,12 @@ spawnPlayer(method, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, 
     self.friendlydamage = undefined;
 
     spClass = level.spawnType[self.pers["team"]];
-    if(!IsDefined(spClass))
+    if(!isDefined(spClass))
         spClass = level.spawnType["any"];
 
     self _spawner(spClass, method);
 
-    if(IsDefined(self.pers["meleewinner"])) { // meleefight
+    if(isDefined(self.pers["meleewinner"])) { // meleefight
         self.pers["meleewinner"] = undefined;
         self.statusicon = "gfx/hud/headicon@re_objcarrier.tga";
     } else
@@ -649,15 +649,15 @@ spawnPlayer(method, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, 
     self.objs_held = 0;
     self.cmdfreeze = undefined;
 
-    if(!IsDefined(self.pers["score"]))
+    if(!isDefined(self.pers["score"]))
         self.pers[ "score" ] = 0;
 
     self.score = self.pers["score"];
 
-    if(!IsDefined(self.pers["kills"]))
+    if(!isDefined(self.pers["kills"]))
         self.pers["kills"] = 0;
 
-    if(!IsDefined(self.pers["deaths"]))
+    if(!isDefined(self.pers["deaths"]))
         self.pers["deaths"] = 0;
 
     self.deaths = self.pers["deaths"];
@@ -672,18 +672,18 @@ spawnPlayer(method, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, 
 
 _spawner(spClass, method)
 {
-    if(!IsDefined(spClass) || (spClass == ""))
+    if(!isDefined(spClass) || (spClass == ""))
         return;
 
-    if(!IsDefined(method))
+    if(!isDefined(method))
         method = level.spawnMethod[spClass];
-    if(!IsDefined(method))
+    if(!isDefined(method))
         method = "spawn_default";
 
     spawnpoints = GetEntArray(spClass, "classname");
 
     spawnpoint = [[ level.gtd_call ]](method, spawnpoints);
-    if(IsDefined(spawnpoint)) {
+    if(isDefined(spawnpoint)) {
         if(positionWouldTelefrag(spawnpoint.origin)) {
             self iPrintLn("^1ERROR: ^7Unable to assign spawnpoint, finding new.");
             spawnpoint = self codam\_mm_mmm::_newspawn(spawnpoint);
@@ -700,7 +700,7 @@ spawnProtection()
 { // Borrowed from PowerServer
     self endon("disconnect");
 
-    self.spawnprotection = NewClientHudElem(self);
+    self.spawnprotection = newClientHudElem(self);
     self.spawnprotection.alignX = "center";
     self.spawnprotection.alignY = "middle";
     self.spawnprotection.x = 320;
@@ -724,8 +724,8 @@ spawnProtection()
     }
     self.spawnprotected = false;
 
-    if(IsDefined(self.spawnprotection))
-        self.spawnprotection Destroy();
+    if(isDefined(self.spawnprotection))
+        self.spawnprotection destroy();
 
     self [[ level.gtd_call ]]("drawFriends");
 }
@@ -769,7 +769,7 @@ PlayerConnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5, b6
             }
         }
 
-        if(IsDefined(self.isbanned)) { // used in PlayerDisconnect
+        if(isDefined(self.isbanned)) { // used in PlayerDisconnect
             sendCommandToClient(self getEntityNumber(), "w \"Player Banned: ^1" + bannedreason + "\"");
             self waittill("begin");
             wait 0.05; // server/script crashes without it
@@ -789,7 +789,7 @@ PlayerConnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5, b6
         self.pers["mm_chattimer"] = 0;
     }
 
-    if(!IsDefined(self.pers["dumbbot"]))
+    if(!isDefined(self.pers["dumbbot"]))
         self waittill("begin");
 
     rename = codam\utils::getVar("scr_mm", "rename", "string", 0, "");
@@ -824,7 +824,7 @@ PlayerConnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5, b6
         /*NOTREACHED*/
     }
 
-    if (!IsDefined(self.pers["connected"])) {
+    if (!isDefined(self.pers["connected"])) {
         if(!codam\utils::getVar("scr", "noserverinfo", "bool", 0, false))
             menu = game["menu_serverinfo"];
 
@@ -858,15 +858,15 @@ PlayerConnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5, b6
         self.god = false;
         self.respawnwait = false;
         self codam\GameTypes\_bel::removeBlackScreen();
-    } else if(!IsDefined(team)) {
+    } else if(!isDefined(team)) {
         _playerInfo = self [[ level.gtd_call ]]("isSavedPlayer");
-        if(IsDefined(_playerInfo) && IsDefined(_playerInfo["name"]) && (_playerInfo["name"] == self [[ level.gtd_call ]]("monotoneName"))) {
+        if(isDefined(_playerInfo) && isDefined(_playerInfo["name"]) && (_playerInfo["name"] == self [[ level.gtd_call ]]("monotoneName"))) {
             codam\utils::debug(0, "FOUND PREVIOUS PLAYER: ", self.name);
 
-            if(IsDefined(_playerInfo["bot"]))
+            if(isDefined(_playerInfo["bot"]))
                 self.pers["dumbbot"] = true;
 
-            if(IsDefined(_playerInfo["locked"])) {
+            if(isDefined(_playerInfo["locked"])) {
                 self lockPlayer("previously kicked");
                 /*NOTREACHED*/
             } else if([[ level.gtd_call ]]("isTeam", _playerInfo["team"])) {
@@ -883,7 +883,7 @@ PlayerConnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5, b6
     } else
         level [[ level.gtd_call ]]("resetPlayer", self);
 
-    if(IsDefined(team) && (team != "spectator")) {
+    if(isDefined(team) && (team != "spectator")) {
         if(level.ham_g_gametype == "bel"/* || codam\utils::getVar("scr_mm", "bel_menu", "bool", 0, false)*/)
             self SetClientCvar("g_scriptMainMenu", game["menu_weapon_all"]);
         else
@@ -891,7 +891,7 @@ PlayerConnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5, b6
 
         self SetClientCvar(level.ui_weapontab, "1");
 
-        if(IsDefined(self.pers["weapon"]))
+        if(isDefined(self.pers["weapon"]))
             self [[ level.gtd_call ]]("gt_spawnPlayer");
         else { // BEL menu
             if(level.ham_g_gametype == "bel")
@@ -904,13 +904,13 @@ PlayerConnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5, b6
             self [[ level.gtd_call ]]("gt_spawnSpectator");
         }
     } else {
-        if(!IsDefined(menu))
+        if(!isDefined(menu))
             menu = game["menu_team"];
 
         self [[ level.gtd_call ]]("goSpectate");
     }
 
-    if(IsDefined(self.pers["dumbbot"]))
+    if(isDefined(self.pers["dumbbot"]))
         self thread [[ level.gtd_call ]]("randomBotMove");
 
     self thread [[ level.gtd_call ]]("gt_menuHandler", menu);
@@ -944,21 +944,21 @@ PlayerDisconnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5,
 {
     self notify("disconnect");
 
-    if(IsDefined(self.isbanned)) {
+    if(isDefined(self.isbanned)) {
         iPrintLn(codam\_mm_mmm::namefix(self.name) + " ^7Banned");
         return;
     }
 
     iPrintLn(codam\_mm_mmm::namefix(self.name) + " ^7Disconnected");
 
-    if(IsDefined(self.connecting)) {
+    if(isDefined(self.connecting)) {
         self.connecting = undefined;
         level.connectingPlayers--;
     }
 
     [[ level.gtd_call ]]("logPrint", "disconnect", self);
 
-    if(IsDefined(self.objs_held) && (self.objs_held > 0))
+    if(isDefined(self.objs_held) && (self.objs_held > 0))
         self thread [[ level.gtd_call ]]("gt_dropObjective");
 
     self notify("death");
@@ -979,7 +979,7 @@ PlayerDisconnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5,
 
 printJoinedTeam(team, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9)
 {
-    if(!IsDefined(team) || (team == ""))
+    if(!isDefined(team) || (team == ""))
         return;
 
     switch(level.ham_g_gametype) {
@@ -1018,7 +1018,7 @@ antiFF(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
     if(fastfire == 0)
         return;
 
-    if(!IsDefined(level.fastfireaction)) {
+    if(!isDefined(level.fastfireaction)) {
         level.fastfireaction = "suicide";
         if(GetCvar("scr_mm_fastfireaction") != "" && GetCvar("scr_mm_fastfireaction") != "suicide")
             level.fastfireaction = GetCvar("scr_mm_fastfireaction");
@@ -1035,7 +1035,7 @@ antiFF(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
     weaponTimes["enfield_mp"] = 1450;
     weaponTimes["default"] = 1300;
 
-    if(!IsDefined(self.pers["fastfire"]))
+    if(!isDefined(self.pers["fastfire"]))
         self.pers["fastfire"] = 0;
 
     while(self.sessionstate == "playing") {
@@ -1053,7 +1053,7 @@ antiFF(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
             continue;
 
         weaponAmmo = self getWeaponSlotClipAmmo(weaponSlot);
-        if(!IsDefined(weaponAmmo)) continue;
+        if(!isDefined(weaponAmmo)) continue;
 
         while(self getWeaponSlotClipAmmo(weaponSlot) == weaponAmmo && currentWeapon == self getCurrentWeapon())
             wait 0.05;
@@ -1062,11 +1062,11 @@ antiFF(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
             continue;
 
         weaponAmmo = self getWeaponSlotClipAmmo(weaponSlot);
-        if(!IsDefined(weaponAmmo)) continue;
+        if(!isDefined(weaponAmmo)) continue;
 
         if(currentWeapon == self getCurrentWeapon()) {
             weaponTime = weaponTimes["default"];
-            if(IsDefined(weaponTimes[currentWeapon]))
+            if(isDefined(weaponTimes[currentWeapon]))
                 weaponTime = weaponTimes[currentWeapon];
 
             startTime = getTime() + (weaponTime - 50);
@@ -1086,12 +1086,12 @@ antiFF(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
                         break;
 
                     weaponAmmo = self getWeaponSlotClipAmmo(weaponSlot);
-                    if(!IsDefined(weaponAmmo)) break;
+                    if(!isDefined(weaponAmmo)) break;
                 }
 
                 if(self getWeaponSlotClipAmmo(weaponSlot) < weaponAmmo) { // TODO: code became messy here, recode sometime
                     weaponTime = weaponTimes["default"];
-                    if(IsDefined(weaponTimes[currentWeapon]))
+                    if(isDefined(weaponTimes[currentWeapon]))
                         weaponTime = weaponTimes[currentWeapon];
 
                     startTime = getTime() + (weaponTime - 50);
@@ -1115,13 +1115,13 @@ antiFF(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
                                     primary = self getWeaponSlotWeapon("primary");
                                     primaryb = self getWeaponSlotWeapon("primaryb");
 
-                                    if(!IsDefined(grenade))
+                                    if(!isDefined(grenade))
                                         grenade = "none";
-                                    if(!IsDefined(pistol))
+                                    if(!isDefined(pistol))
                                         pistol = "none";
-                                    if(!IsDefined(primary))
+                                    if(!isDefined(primary))
                                         primary = "none";
-                                    if(!IsDefined(primaryb))
+                                    if(!isDefined(primaryb))
                                         primary = "none";
 
                                     self dropItem(grenade);
@@ -1140,7 +1140,7 @@ antiFF(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
                         self iPrintLn("^3Warning! ^7Fast fire detected.");
 
                     weaponAmmo = self getWeaponSlotClipAmmo(weaponSlot);
-                    if(!IsDefined(weaponAmmo)) break;
+                    if(!isDefined(weaponAmmo)) break;
                 }
 
                 wait 0.05;
@@ -1179,14 +1179,14 @@ mmKeys(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b
     bombzone_B = getent("bombzone_B", "targetname");
 
     for(;;) {
-        if(IsDefined(self.pers["dumbbot"]))
+        if(isDefined(self.pers["dumbbot"]))
             return;
 
         wait 0.05;
 
         if(self.sessionstate != "playing"
-            || (IsDefined(bombzone_A) && IsDefined(bombzone_A.planting))
-            || (IsDefined(bombzone_B) && IsDefined(bombzone_B.planting)))
+            || (isDefined(bombzone_A) && isDefined(bombzone_A.planting))
+            || (isDefined(bombzone_B) && isDefined(bombzone_B.planting)))
             continue;
 
         if(self useButtonPressed()) {
@@ -1259,20 +1259,20 @@ assignWeaponSlot(slot, weapon, limit, noMap, a4, a5, a6, a7, a8, a9, b0, b1, b2,
 {
     codam\utils::debug( 90, "assignWeaponSlot:: |", slot, "|", weapon, "|", limit, "|" );
 
-    if(!IsDefined(slot) || (slot == "") || !IsDefined(weapon) || (weapon == ""))
+    if(!isDefined(slot) || (slot == "") || !isDefined(weapon) || (weapon == ""))
         return undefined;
 
-    forceMap = (bool)(IsDefined(noMap) && codam\utils::getVar("scr_mm", "wmap_force", "bool", 1|2, false));
+    forceMap = (bool)(isDefined(noMap) && codam\utils::getVar("scr_mm", "wmap_force", "bool", 1|2, false));
     if(forceMap)
         noMap = undefined; // really dirty workaround but I can't be bothered to fix CoDaM
 
     clip = codam\weapon::_weaponAmmo(weapon, "clip");
     ammo = codam\weapon::_weaponAmmo(weapon, "ammo");
 
-    if(IsDefined(limit) && (ammo > limit))
+    if(isDefined(limit) && (ammo > limit))
         ammo = limit;
 
-    if(!IsDefined(noMap) && IsDefined(level.weaponMap[weapon]))
+    if(!isDefined(noMap) && isDefined(level.weaponMap[weapon]))
         weapon = level.weaponMap[weapon];
 
     self setWeaponSlotWeapon(slot, weapon);
@@ -1289,7 +1289,7 @@ assignWeaponSlot(slot, weapon, limit, noMap, a4, a5, a6, a7, a8, a9, b0, b1, b2,
 assignWeapon(weapon, useDefault, forceTeam, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9)
 {
     if(codam\utils::getVar("scr_mm", "bel_menu", "bool", 0, false)) { // extra if statement to break long line
-        if((!IsDefined(forceTeam) || forceTeam == "") && codam\_mm_mmm::isPrimaryWeapon(weapon)) {
+        if((!isDefined(forceTeam) || forceTeam == "") && codam\_mm_mmm::isPrimaryWeapon(weapon)) {
             forceTeam = "allies";
             switch(weapon) {
                 case "kar98k_mp": case "mp40_mp": case "mp44_mp": case "kar98k_sniper_mp":
@@ -1302,11 +1302,11 @@ assignWeapon(weapon, useDefault, forceTeam, a3, a4, a5, a6, a7, a8, a9, b0, b1, 
     if(!isPlayer(self))
         return undefined;
 
-    if(IsDefined(forceTeam) && (forceTeam != ""))
+    if(isDefined(forceTeam) && (forceTeam != ""))
         _team = forceTeam;
     else {
         _team = self.pers["team"];
-        if(!IsDefined(_team))
+        if(!isDefined(_team))
             return undefined;
     }
 
@@ -1314,17 +1314,17 @@ assignWeapon(weapon, useDefault, forceTeam, a3, a4, a5, a6, a7, a8, a9, b0, b1, 
 
     codam\utils::debug(90, "assignWeapon:: |", team, "|", weapon, "|", useDefault, "|", forceTeam, "|");
 
-    if(!IsDefined(team) || (team == "") || !IsDefined(level.teamWeaponByType[team]))
+    if(!isDefined(team) || (team == "") || !isDefined(level.teamWeaponByType[team]))
         return undefined;
 
     // First determine the weapon's class ...
-    if(IsDefined(weapon))
+    if(isDefined(weapon))
         weapClass = level.weaponClass[weapon];
     else
         weapClass = undefined;
 
-    if(!IsDefined(weapClass)) {
-        if(!IsDefined(useDefault))
+    if(!isDefined(weapClass)) {
+        if(!isDefined(useDefault))
             return undefined;
 
         weapClass = "default";
@@ -1332,10 +1332,10 @@ assignWeapon(weapon, useDefault, forceTeam, a3, a4, a5, a6, a7, a8, a9, b0, b1, 
 
     // If the weapon does not belong to the team, use team default
     _weap = level.teamWeaponByType[team][weapClass];
-    if(!IsDefined(_weap))
+    if(!isDefined(_weap))
         _weap = level.teamWeaponByType[team]["default"];
 
-    if(!IsDefined(_weap)) // code to fix crashes if bots join
+    if(!isDefined(_weap)) // code to fix crashes if bots join
         return; // code to fix crashes if bots join
 
     weapon = _weap["weapon"];
@@ -1353,13 +1353,13 @@ assignWeapon(weapon, useDefault, forceTeam, a3, a4, a5, a6, a7, a8, a9, b0, b1, 
             continue; // My weapon has already been counted!
 
         pteam = player.sessionteam;
-        if(!IsDefined(pteam) || (pteam == "none"))
+        if(!isDefined(pteam) || (pteam == "none"))
             pteam = player.pers["team"];
 
-        if(IsDefined(pteam) && (pteam == _team)) {
+        if(isDefined(pteam) && (pteam == _team)) {
             teamCount++;
 
-            if(IsDefined(player.pers["weapon"]) && (player.pers["weapon"] == weapon))
+            if(isDefined(player.pers["weapon"]) && (player.pers["weapon"] == weapon))
                 weapCount++;
         }
     }
@@ -1399,14 +1399,14 @@ assignWeapon(weapon, useDefault, forceTeam, a3, a4, a5, a6, a7, a8, a9, b0, b1, 
 // ########## meleefight - roundclock timer
 roundClock(timer, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9)
 {
-    if(!IsDefined(timer)) {
+    if(!isDefined(timer)) {
         timer = (int)(level.roundlength * 60);
         def = true;
     }
 
     [[ level.gtd_call ]]("mapClock", timer);
 
-    if(IsDefined(game["matchstarted"]) && game["matchstarted"]) {
+    if(isDefined(game["matchstarted"]) && game["matchstarted"]) {
         level.clock.color = (0, 1, 0);
 
         if(timer > level.graceperiod) {
@@ -1424,7 +1424,7 @@ roundClock(timer, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6
     // stupid CoDaM clock -- trick to make meleetimer work
     roundlength = level.roundlength;
 
-    if(IsDefined(def)) {
+    if(isDefined(def)) {
         while(timer > 0) {
             timer--;
 
@@ -1457,7 +1457,7 @@ startRound(_winner, _text, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b
         case "re":
             if(!level.exist[game["re_attackers"]] || !level.exist[game["re_defenders"]])
                 _winner = "draw";
-            else if(IsDefined(level.showdownactive))
+            else if(isDefined(level.showdownactive))
                 _winner = "draw";
             else
                 _winner = game["re_defenders"];
@@ -1470,7 +1470,7 @@ startRound(_winner, _text, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b
 
             if(!level.exist[game["attackers"]] || !level.exist[game["defenders"]])
                 _winner = "draw";
-            else if(IsDefined(level.showdownactive))
+            else if(isDefined(level.showdownactive))
                 _winner = "draw";
             else
                 _winner = game["defenders"];
@@ -1482,7 +1482,7 @@ startRound(_winner, _text, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b
         break;
     }
 
-    if(IsDefined(_text))
+    if(isDefined(_text))
         level notify("end_round", _text, _winner, undefined, true);
 
     return;
@@ -1499,7 +1499,7 @@ givePistol(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b
 
     // Assign correct pistol based on team
     pistol = self [[ level.gtd_call ]]("assignWeapon", "colt_mp");
-    if (!IsDefined(pistol))
+    if (!isDefined(pistol))
         return;
 
     if((bool)(GetCvar("scr_mm_allow_pistols") != "")) {
@@ -1535,7 +1535,7 @@ giveGrenade(weapon, a1, a2, a3, a4, a5, a6, a7, a8, a9,	b0, b1, b2, b3, b4, b5, 
 
     // Assign correct grenade based on team
     grenade	= self [[ level.gtd_call ]]("assignWeapon", "fraggrenade_mp");
-    if(!IsDefined(grenade))
+    if(!isDefined(grenade))
         return;
 
     nadelimit = [[ level.gtd_call ]]("grenadeLimit", weapon);
@@ -1553,18 +1553,18 @@ giveGrenade(weapon, a1, a2, a3, a4, a5, a6, a7, a8, a9,	b0, b1, b2, b3, b4, b5, 
 // ########## quickcommands antispam
 quick(type, response, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9)
 {
-    if(!level.allowquick || !isPlayer(self) || !IsDefined(type) || (type == "") || !IsDefined(response) || (response == ""))
+    if(!level.allowquick || !isPlayer(self) || !isDefined(type) || (type == "") || !isDefined(response) || (response == ""))
         return;
 
 
-    if(IsDefined(self.pers["mm_mute"])) {
+    if(isDefined(self.pers["mm_mute"])) {
         self iPrintLn("You are currently muted.");
         return;
     }
     
     quicklimit = codam\utils::getVar("scr_mm", "quickcommandlimit", "int", 1|2, 5);
     if(quicklimit > 0) {
-        if(!IsDefined(self.quicklimit))
+        if(!isDefined(self.quicklimit))
             self.quicklimit = 0;
 
         self.quicklimit++;
@@ -1652,7 +1652,7 @@ badnames(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7,
 {
     level waittill("badwords_check");
 
-    if(!IsDefined(level.badwords))
+    if(!isDefined(level.badwords))
         return;
 
     wait 1;
@@ -1664,18 +1664,18 @@ badnames(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7,
             playername = codam\_mm_mmm::monotone(tolower(players[i].name));
             checkname = false;
 
-            if(!IsDefined(players[i].pers["oldname"]) || playername != players[i].pers["oldname"]) {
+            if(!isDefined(players[i].pers["oldname"]) || playername != players[i].pers["oldname"]) {
                 checkname = true;
                 players[i].pers["oldname"] = playername;
-                if(IsDefined(players[i].pers["badname"]))
+                if(isDefined(players[i].pers["badname"]))
                     players[i].pers["badname"] = undefined;
             }
 
-            if(!IsDefined(players[i].pers["badnameticks"]))
+            if(!isDefined(players[i].pers["badnameticks"]))
                 players[i].pers["badnameticks"] = 0;
 
-            if(IsDefined(players[i].pers["badname"]) || players[i].pers["badnameticks"] >= 2) {
-                if(IsDefined(players[i].pers["badname"]))
+            if(isDefined(players[i].pers["badname"]) || players[i].pers["badnameticks"] >= 2) {
+                if(isDefined(players[i].pers["badname"]))
                     kickmsg = "Bad name: " + players[i].pers["badname"];
                 else
                     kickmsg = "Bad name.";
@@ -1686,7 +1686,7 @@ badnames(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7,
                 for(b = 0; b < level.badwords.size; b++) {
                     // it's expected all badwords are lower case for better performance
                     if(codam\_mm_mmm::pmatch(playername, level.badwords[b])) {
-                        if(!IsDefined(players[i].pers["badname"])) {
+                        if(!isDefined(players[i].pers["badname"])) {
                             badmessage = "^3WARNING: ^7Change your name to something more appropriate.";
                             badmessage += " The offensive word in question is: " + level.badwords[b] + ".";
                             players[i] codam\_mm_commands::message_player(badmessage); // lazycode, move to _mm_mmm
@@ -1723,7 +1723,7 @@ spawnIntermission(spClass, method, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b
             spClass = "mp_teamdeathmatch_intermission";
         break;
         default:
-            if(!IsDefined(spClass))
+            if(!isDefined(spClass))
                 spClass = "mp_deathmatch_intermission";
         break;
     }

@@ -92,7 +92,7 @@ prepareMaps()
     }
 
     mapRotation = strTok(mapRotation, " ");
-    if(!IsDefined(mapRotation))
+    if(!isDefined(mapRotation))
         return;
 
     _tmp = [];
@@ -103,7 +103,7 @@ prepareMaps()
     }
 
     mapRotation = _tmp;
-    if(!IsDefined(mapRotation))
+    if(!isDefined(mapRotation))
         return;
     
     if(codam\_mm_mmm::in_array(mapRotation, level.mmmapname))
@@ -153,35 +153,35 @@ setupHud()
 {
     // Destroy some unneeded hud elements since quantity is limited (max 62)
 
-    if(IsDefined(level.clock))
-        level.clock Destroy();
+    if(isDefined(level.clock))
+        level.clock destroy();
 
     players = GetEntArray("player", "classname");
     for(i = 0; i < players.size; i++)
-        if(IsDefined(players[i]._stopwatch))
-            players[i]._stopwatch Destroy();
+        if(isDefined(players[i]._stopwatch))
+            players[i]._stopwatch destroy();
 
-    if(IsDefined(level.ham_hudscores)) {
-        if( IsDefined( level.gtd_call ) )
+    if(isDefined(level.ham_hudscores)) {
+        if( isDefined( level.gtd_call ) )
             teams = [[ level.gtd_call ]]( "teamsPlaying" );
-        if( !IsDefined( teams ) || ( teams.size < 1 ) ) {
+        if( !isDefined( teams ) || ( teams.size < 1 ) ) {
             teams = [];
             teams[ teams.size ] = "allies";
             teams[ teams.size ] = "axis";
         }
         for( i = 0; i < teams.size + 2; i++) {
-            if( IsDefined( level.ham_score[ "actual" ] ) &&
-                 IsDefined( level.ham_score[ "actual" ][ i ] ) )
-                level.ham_score[ "actual" ][ i ] Destroy();
-            if( IsDefined( level.ham_score[ "numteam" ] ) &&
-                 IsDefined( level.ham_score[ "numteam" ][ i ] ) )
-                level.ham_score[ "numteam" ][ i ] Destroy();
-            if( IsDefined( level.ham_score[ "alive" ] ) &&
-                 IsDefined( level.ham_score[ "alive" ][ i ] ) )
-                level.ham_score[ "alive" ][ i ] Destroy();
-            if( IsDefined( level.ham_score[ "icon" ] ) &&
-                 IsDefined( level.ham_score[ "icon" ][ i ] ) )
-                level.ham_score[ "icon" ][ i ] Destroy();
+            if( isDefined( level.ham_score[ "actual" ] ) &&
+                 isDefined( level.ham_score[ "actual" ][ i ] ) )
+                level.ham_score[ "actual" ][ i ] destroy();
+            if( isDefined( level.ham_score[ "numteam" ] ) &&
+                 isDefined( level.ham_score[ "numteam" ][ i ] ) )
+                level.ham_score[ "numteam" ][ i ] destroy();
+            if( isDefined( level.ham_score[ "alive" ] ) &&
+                 isDefined( level.ham_score[ "alive" ][ i ] ) )
+                level.ham_score[ "alive" ][ i ] destroy();
+            if( isDefined( level.ham_score[ "icon" ] ) &&
+                 isDefined( level.ham_score[ "icon" ][ i ] ) )
+                level.ham_score[ "icon" ][ i ] destroy();
         }
     }
 
@@ -205,7 +205,7 @@ setupHud()
     level.backgroundWidth = 139;
 
     // Countdown
-    level.voteTimer = NewHudElem();
+    level.voteTimer = newHudElem();
     level.voteTimer.x = 320;
     level.voteTimer.y = 464;
     level.voteTimer.alignX = "center";
@@ -216,7 +216,7 @@ setupHud()
     level.voteTimer setTimer(level.mapvotetime + additionalDelays);
     
     // Instructions
-    level.vote_instruction = NewHudElem();
+    level.vote_instruction = newHudElem();
     level.vote_instruction.x = level.xMapName - 2;
     level.vote_instruction.y = yTitles;
     level.vote_instruction.fontscale = .8;
@@ -224,7 +224,7 @@ setupHud()
     level.vote_instruction.sort = 2;
 
     // Title of the vote count
-    level.vote_votes = NewHudElem();
+    level.vote_votes = newHudElem();
     level.vote_votes.x = xMapVotes - 7;
     level.vote_votes.y = yTitles;
     level.vote_votes.fontscale = .8;
@@ -232,7 +232,7 @@ setupHud()
     level.vote_votes.sort = 2;
 
     // Header background
-    level.vote_header = NewHudElem();
+    level.vote_header = newHudElem();
     level.vote_header.alpha = .9;
     level.vote_header.x = level.xMapName - 9;
     level.vote_header.y = yTitles - 4;
@@ -241,7 +241,7 @@ setupHud()
     level.vote_header.sort = 1;
 
     // Main background
-    level.vote_hud_bgnd = NewHudElem();
+    level.vote_hud_bgnd = newHudElem();
     level.vote_hud_bgnd.alpha = .9;
     level.vote_hud_bgnd.x = level.xMapName - 9;
     level.vote_hud_bgnd.y = level.vote_header.y + 17.5;
@@ -250,7 +250,7 @@ setupHud()
     level.vote_hud_bgnd.sort = 1;
 
     // Choices
-    level.vote_mapList = NewHudElem();
+    level.vote_mapList = newHudElem();
     level.vote_mapList.x = level.xMapName;
     level.vote_mapList.y = level.yMapName;
     mapvote_list_localized = makeLocalizedString(level.mapvote_list);
@@ -260,7 +260,7 @@ setupHud()
 
     // Votes counts
     for(i = 0; i < level.mapvote_currentchoices; i++) {
-        level.mapvote_hud_counts[i] = NewHudElem();
+        level.mapvote_hud_counts[i] = newHudElem();
         level.mapvote_hud_counts[i].x = xMapVotes;
         if(i == 0)
             level.mapvote_hud_counts[i].y = level.yMapName;
@@ -274,19 +274,19 @@ setupHud()
 
 destroyHud()
 {
-    level.voteTimer Destroy();
-    level.vote_instruction Destroy();
-    level.vote_votes Destroy();
-    level.vote_header Destroy();
-    level.vote_hud_bgnd Destroy();
-    level.vote_mapList Destroy();
+    level.voteTimer destroy();
+    level.vote_instruction destroy();
+    level.vote_votes destroy();
+    level.vote_header destroy();
+    level.vote_hud_bgnd destroy();
+    level.vote_mapList destroy();
     for(i = 0; i < level.mapvote_currentchoices; i++)
-        level.mapvote_hud_counts[i] Destroy();
+        level.mapvote_hud_counts[i] destroy();
     
     players = GetEntArray("player", "classname");
     for(i = 0; i < players.size; i++)
-        if(IsDefined(players[i].vote_indicator))
-            players[i].vote_indicator Destroy();
+        if(isDefined(players[i].vote_indicator))
+            players[i].vote_indicator destroy();
 }
 
 runMapVote()
@@ -304,7 +304,7 @@ runMapVote()
     }
     
     for(i = 0; i < level.mapvote_randomMapRotation.size; i++) {
-        if(!IsDefined(level.mapvote_randomMapRotation[i])) {
+        if(!isDefined(level.mapvote_randomMapRotation[i])) {
             PrintLn("WARNING: Error detected in map rotation (runMapVote()). i = " + i);
             break;
         }
@@ -343,7 +343,7 @@ voteLogic()
 
             players = GetEntArray("player", "classname");
             for(i = 0; i < players.size; i++)
-                if(IsDefined(players[i].votechoice))
+                if(isDefined(players[i].votechoice))
                     level.mapcandidate[players[i].votechoice]["votes"]++;
             
             // Display updated count
@@ -390,14 +390,14 @@ setMapWinner(val)
     else
         iPrintLnBold(" ");
 
-    level.voteTimer FadeOverTime(1);
-    level.vote_instruction FadeOverTime(1);
-    level.vote_votes FadeOverTime(1);
-    level.vote_header FadeOverTime(1);
-    level.vote_hud_bgnd FadeOverTime(1);
-    level.vote_mapList FadeOverTime(1);
+    level.voteTimer fadeOverTime(1);
+    level.vote_instruction fadeOverTime(1);
+    level.vote_votes fadeOverTime(1);
+    level.vote_header fadeOverTime(1);
+    level.vote_hud_bgnd fadeOverTime(1);
+    level.vote_mapList fadeOverTime(1);
     for(i = 0; i < level.mapvote_currentchoices; i++)
-        level.mapvote_hud_counts[i] FadeOverTime(1);
+        level.mapvote_hud_counts[i] fadeOverTime(1);
 
     level.voteTimer.alpha = 0;
     level.vote_instruction.alpha = 0;
@@ -410,8 +410,8 @@ setMapWinner(val)
 
     players = GetEntArray("player", "classname");
     for(i = 0; i < players.size; i++) {
-        if(IsDefined(players[i].vote_indicator)) {
-            players[i].vote_indicator FadeOverTime(1);
+        if(isDefined(players[i].vote_indicator)) {
+            players[i].vote_indicator fadeOverTime(1);
             players[i].vote_indicator.alpha = 0;
         }
     }
@@ -424,7 +424,7 @@ playerVote()
     level endon("voting_done");
     self endon("disconnect");
 
-    self.vote_indicator = NewClientHudElem(self);
+    self.vote_indicator = newClientHudElem(self);
     self.vote_indicator.archived = false;
     self.vote_indicator.x = level.xMapName - 5;
     self.vote_indicator.alpha = 0;

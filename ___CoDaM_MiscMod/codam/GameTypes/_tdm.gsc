@@ -24,7 +24,7 @@ gtRegister( register, post )
 	// ... "default" call, must ensure that gametype-specific functions
 	// ... are registered first during Init.
 
-	if ( IsDefined( post ) )
+	if ( isdefined( post ) )
 		return;
 
 	// Script-level	callbacks
@@ -62,7 +62,7 @@ StartGameType( a0, a1, a2, a3, a4, a5, a6, a7, a8, a9,
 	// continue with framework/custom mods initialization.
 	codam\init::main();
 
-	if( !IsDefined( game[ "gamestarted" ] ) )
+	if( !isdefined( game[ "gamestarted" ] ) )
 	{
 		if ( level.ham_shortversion != "1.1" )
 		{
@@ -94,12 +94,12 @@ menuHandler( menu, a1, a2, a3, a4, a5, a6, a7, a8, a9,
 {
 	self endon( "end_player" );
 
-	for(;;)
+	for (;;)
 	{
 		resp = self [[ level.gtd_call ]]( "menuHandler", menu );
 
-		if ( !IsDefined( resp ) || ( resp.size < 2 ) ||
-		     !IsDefined( resp[ 0 ] ) || !IsDefined( resp[ 1 ] ) )
+		if ( !isdefined( resp ) || ( resp.size < 2 ) ||
+		     !isdefined( resp[ 0 ] ) || !isdefined( resp[ 1 ] ) )
 		{
 			// Shouldn't happen ... but just in case
 			wait( 1 );
@@ -127,7 +127,7 @@ menuHandler( menu, a1, a2, a3, a4, a5, a6, a7, a8, a9,
 					break;
 				}
 
-				if ( IsDefined( self.pers[ "team" ] ) &&
+				if ( isdefined( self.pers[ "team" ] ) &&
 				     ( val == self.pers[ "team" ] ) )
 				{
 					// Same team selected!
@@ -147,8 +147,8 @@ menuHandler( menu, a1, a2, a3, a4, a5, a6, a7, a8, a9,
 				self.pers[ "savedmodel" ] = undefined;
 
 				menu = game[ "menu_weapon_" + val ];
-				self SetClientCvar( "g_scriptMainMenu", menu );
-				self SetClientCvar( level.ui_weapontab, "1" );
+				self setClientCvar( "g_scriptMainMenu", menu );
+				self setClientCvar( level.ui_weapontab, "1" );
 				break;
 		  	}
 		  	break;
@@ -164,14 +164,14 @@ menuHandler( menu, a1, a2, a3, a4, a5, a6, a7, a8, a9,
 			if ( !self [[ level.gtd_call ]]( "isWeaponAllowed",
 									val ) )
 			{
-				self iPrintLn(
+				self iprintln(
 					"^3*** Weapon has been disabled." );
 				break;
 			}
 
 			weapon = val;
 
-			if ( IsDefined( self.pers[ "weapon" ] ) &&
+			if ( isdefined( self.pers[ "weapon" ] ) &&
 			     ( self.pers[ "weapon" ] == weapon ) )
 			{
 				menu = undefined;
@@ -181,15 +181,15 @@ menuHandler( menu, a1, a2, a3, a4, a5, a6, a7, a8, a9,
 			// Is the weapon available?
 			weapon = self [[ level.gtd_call ]]( "assignWeapon",
 									weapon );
-			if ( !IsDefined( weapon ) )
+			if ( !isdefined( weapon ) )
 			{
-				self iPrintLn( "^3*** Weapon is unavailable." );
+				self iprintln( "^3*** Weapon is unavailable." );
 				break;
 			}
 
 			menu = undefined;
 
-			if ( !IsDefined( self.pers[ "weapon" ] ) )
+			if ( !isdefined( self.pers[ "weapon" ] ) )
 			{
 				// First selected weapon ...
 				self.pers[ "weapon" ] = weapon;
@@ -225,12 +225,12 @@ menuHandler( menu, a1, a2, a3, a4, a5, a6, a7, a8, a9,
 					text = &"MPSCRIPT_YOU_WILL_RESPAWN_WITH_A";
 
 				weaponname = maps\mp\gametypes\_teams::getWeaponName( weapon );
-				self iPrintLn( text, weaponname );
+				self iprintln( text, weaponname );
 			}
 		  	break;
 		  case "menu":
 			if ( ( val == "weapon" ) &&
-		  	     IsDefined( self.pers[ "team" ] ) )
+		  	     isdefined( self.pers[ "team" ] ) )
 			  	menu = game[ "menu_weapon_" +
 			  				self.pers[ "team" ] ];
 		  	break;
@@ -257,7 +257,7 @@ spawnPlayer( text, a1, method, a3, a4, a5, a6, a7, a8, a9,
 	self [[ level.gtd_call ]]( "savePlayer" );
 
 	// Previously spawned ...
-	if ( IsDefined( self.spawned ) )
+	if ( isdefined( self.spawned ) )
 		return;
 
 	// Make it so ...
@@ -265,8 +265,8 @@ spawnPlayer( text, a1, method, a3, a4, a5, a6, a7, a8, a9,
 
 	level thread [[ level.gtd_call ]]( "gt_updateTeamStatus" );
 
-	if ( IsDefined( self.pers[ "weapon1" ] ) &&
-	     IsDefined( self.pers[ "weapon2" ] ) )
+	if ( isdefined( self.pers[ "weapon1" ] ) &&
+	     isdefined( self.pers[ "weapon2" ] ) )
 	{
 		/*self [[ level.gtd_call ]]( "assignWeaponSlot", "primary",
 							self.pers[ "weapon1" ],
@@ -279,7 +279,7 @@ spawnPlayer( text, a1, method, a3, a4, a5, a6, a7, a8, a9,
 		self [[ level.gtd_call ]]( "assignWeaponSlot", "primaryb",
 							self.pers[ "weapon2" ], undefined );
 		_weap = self.pers[ "spawnweapon" ];
-		if ( !IsDefined( _weap ) || ( _weap == "none" ) )
+		if ( !isdefined( _weap ) || ( _weap == "none" ) )
 			_weap = self.pers[ "weapon1" ];
 		self setSpawnWeapon( _weap );
 		self switchToWeapon( _weap );
@@ -333,12 +333,12 @@ spawnPlayer( text, a1, method, a3, a4, a5, a6, a7, a8, a9,
 	  	break;
 	}
 
-	if ( IsDefined( text ) )
+	if ( isdefined( text ) )
 	{
-		if ( IsDefined( a1 ) )
-			self SetClientCvar( "cg_objectiveText", text, a1 );
+		if ( isdefined( a1 ) )
+			self setClientCvar( "cg_objectiveText", text, a1 );
 		else
-			self SetClientCvar( "cg_objectiveText", text );
+			self setClientCvar( "cg_objectiveText", text );
 	}
 
 	return;
@@ -377,16 +377,16 @@ spawnSpectator( origin, angles, spClass, method, text, a5, a6, a7, a8, a9,
 	  	break;
 	}
 
-	if ( IsDefined( spClass ) )
+	if ( isdefined( spClass ) )
 		self [[ level.gtd_call ]]( "spawnSpectator", spClass,
 								origin, angles,
 								method );
-	if ( IsDefined( text ) )
+	if ( isdefined( text ) )
 	{
-		if ( IsDefined( a5 ) )
-			self SetClientCvar( "cg_objectiveText", text, a5 );
+		if ( isdefined( a5 ) )
+			self setClientCvar( "cg_objectiveText", text, a5 );
 		else
-			self SetClientCvar( "cg_objectiveText", text );
+			self setClientCvar( "cg_objectiveText", text );
 	}
 
 	self thread [[ level.gtd_call ]]( "manageSpectate", "spec" );
@@ -409,7 +409,7 @@ spawnIntermission( spClass, method, a2, a3, a4, a5, a6, a7, a8, a9,
 	  	spClass = "mp_retrieval_intermission";
 	  	break;
 	  default:
-	  	if ( !IsDefined( spClass ) )
+	  	if ( !isdefined( spClass ) )
 		  	spClass = "mp_teamdeathmatch_intermission";
 	  	break;
 	}
@@ -426,7 +426,7 @@ respawn( a0, a1, a2, a3, a4, a5, a6, a7, a8, a9,
 	self endon( "end_respawn" );
 	self endon( "spawned" );
 
-	if( !IsDefined( self.pers[ "weapon" ] ) )
+	if( !isdefined( self.pers[ "weapon" ] ) )
 		return;		// No weapon?
 
 	self [[ level.gtd_call ]]( "respawn" );
@@ -459,7 +459,7 @@ startGame( a0, a1, a2, a3, a4, a5, a6, a7, a8, a9,
 
 	level notify( "start_map" );
 
-	for(;;)
+	for (;;)
 	{
 		[[ level.gtd_call ]]( "checkTimeLimit", "gt_timeLimitReached" );
 		wait( 1 );
@@ -473,7 +473,7 @@ autoBalance( a0, a1, a2, a3, a4, a5, a6, a7, a8, a9,
 {
 	level endon( "end_map" );
 
-	for(;;)
+	for (;;)
 	{
 		wait( 10 );
 
@@ -491,7 +491,7 @@ checkUpdate( var, a1, a2, a3, a4, a5, a6, a7, a8, a9,
 {
 	level endon( "end_map" );
 
-	for(;;)
+	for (;;)
 	{
 		level waittill( "update_" + var );
 
@@ -533,7 +533,7 @@ scoreLimitReached( limit, a1, a2, a3, a4, a5, a6, a7, a8, a9,
 	  case "dm":
 	  case "bel":
 		players = getentarray( "player", "classname" );
-		for( i = 0; i < players.size; i++)
+		for ( i = 0; i < players.size; i++ )
 			if ( players[ i ].score >= limit )
 				return ( true );
 
@@ -607,7 +607,7 @@ _endMap( type )
 		highscore = 0;
 		tied = true;
 		players = getentarray( "player", "classname" );
-		for( i = 0; i < players.size; i++)
+		for ( i = 0; i < players.size; i++ )
 		{
 			player = players[ i ];
 			if ( player.score > highscore )
@@ -621,16 +621,16 @@ _endMap( type )
 				tied = true;
 		}
 
-		for( i = 0; i < players.size; i++)
+		for ( i = 0; i < players.size; i++ )
 		{
 			player = players[ i ];
-			player CloseMenu();
-			player SetClientCvar( "g_scriptMainMenu", "main" );
+			player closeMenu();
+			player setClientCvar( "g_scriptMainMenu", "main" );
 			if ( tied )
-				player SetClientCvar( "cg_objectiveText",
+				player setClientCvar( "cg_objectiveText",
 						&"MPSCRIPT_THE_GAME_IS_A_TIE" );
-			else if ( IsDefined( name ) )
-				player SetClientCvar( "cg_objectiveText",
+			else if ( isdefined( name ) )
+				player setClientCvar( "cg_objectiveText",
 							&"MPSCRIPT_WINS", name );
 			player [[ level.gtd_call ]]( "gt_spawnIntermission" );
 		}
@@ -669,14 +669,14 @@ _endMap( type )
 		losers = [];
 
 		players = getentarray( "player", "classname" );
-		for( i = 0; i < players.size; i++)
+		for ( i = 0; i < players.size; i++ )
 		{
 			player = players[ i ];
 
-			if ( IsDefined( winningteam ) )
+			if ( isdefined( winningteam ) )
 			{
 				_team = player.pers[ "team" ];
-				if ( IsDefined( _team ) )
+				if ( isdefined( _team ) )
 				{
 					if ( _team == winningteam )
 						winners[ winners.size ] = player;
@@ -685,13 +685,13 @@ _endMap( type )
 				}
 			}
 
-			player CloseMenu();
-			player SetClientCvar( "g_scriptMainMenu", "main" );
-			player SetClientCvar( "cg_objectiveText", text );
+			player closeMenu();
+			player setClientCvar( "g_scriptMainMenu", "main" );
+			player setClientCvar( "cg_objectiveText", text );
 			player [[ level.gtd_call ]]( "gt_spawnIntermission" );
 		}
 
-		if ( IsDefined( winningteam ) )
+		if ( isdefined( winningteam ) )
 		{
 			[[ level.gtd_call ]]( "logPrint", "winner",
 							winningteam, winners );
