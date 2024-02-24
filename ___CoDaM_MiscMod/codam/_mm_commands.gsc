@@ -168,7 +168,6 @@ command(str)
 
     str = codam\_mm_mmm::strip(str);
     if(str.size < 1) { // string index 0 out of range
-        creturn(); // return in codextended.so
         return;
     }
 
@@ -197,7 +196,6 @@ command(str)
     }
 
     if(isDefined(self.pers["mm_mute"]) || (level.maxmessages > 0 && self.pers["mm_chatmessages"] > level.maxmessages)) {
-        creturn(); // return in codextended.so
         return;
     }
 
@@ -213,15 +211,11 @@ command(str)
                 if(isDefined(self.badword))
                     badmessage += " The offensive word in question was: " + self.badword + ".";
                 message_player(badmessage);
-
-                creturn();
             }
         }
 
         return;
     }
-
-    creturn(); // return in codextended.so
 
     cmd = codam\_mm_mmm::strTok(str, " "); // is a command with level.prefix
     if(isDefined(level.commands[cmd[0]])) {
@@ -413,7 +407,7 @@ cmd_login(args)
                         self.pers["mm_user"] = user[0]; // username - as defined in config
                         self.pers["mm_ipaccess"] = false;
 
-                        ipaccess = GetCvar("scr_mm_ipaccess"); // "<user1>;<group1>;<user2>;<...>"
+                        ipaccess = getCvar("scr_mm_ipaccess"); // "<user1>;<group1>;<user2>;<...>"
                         if(ipaccess != "") {
                             ipaccess = codam\_mm_mmm::strTok(ipaccess, ";");
                             for(a = 0; a < ipaccess.size; a++) {
@@ -424,7 +418,7 @@ cmd_login(args)
                             }
                         }
 
-                        rSTR = GetCvar("tmp_mm_loggedin");
+                        rSTR = getCvar("tmp_mm_loggedin");
                         rSTR += self.pers["mm_user"];
                         rSTR += "|" + self.pers["mm_group"];
                         rSTR += "|" + (int)self.pers["mm_ipaccess"];
@@ -520,7 +514,7 @@ cmd_version(args)
         return;
     }
 
-    message_player("This server is running " + level.miscmodversion + "^7.");
+    message_player("This server is running ^5MiscMod ^3v" + level.miscmodversion + "^7.");
 }
 
 cmd_name(args)
@@ -611,7 +605,7 @@ cmd_say(args)
     }
 
     if(isDefined(self.pers["mm_group"]))
-        sendservercommand("i \"^7^3[^7" + self.pers["mm_group"] + "^3] ^7" + codam\_mm_mmm::namefix(self.name) + "^7: " + args1 + "\"");
+        sendCommandToClient(-1, "i \"^7^3[^7" + self.pers["mm_group"] + "^3] ^7" + codam\_mm_mmm::namefix(self.name) + "^7: " + args1 + "\"");
 }
 
 cmd_saym(args)
@@ -1517,7 +1511,7 @@ cmd_ban(args)
 
     level.banactive = true;
     filename = level.workingdir + level.banfile;
-    if(fexists(filename)) {
+    if(file_exists(filename)) {
         if(isipaddr) {
             bannedip = args1;
             bannedname = "^7An IP address";
@@ -1533,7 +1527,7 @@ cmd_ban(args)
         else
             bannedreason = "N/A";
 
-        bannedsrvtime = seconds();
+        bannedsrvtime = getSystemTime();
         file = fopen(filename, "a"); // append
         if(file != -1) {
             line = "";
@@ -1544,7 +1538,7 @@ cmd_ban(args)
             line += "%%" + bannedsrvtime;
             line += "%%" + bannedreason;
             line += "\n";
-            fwrite(line, file);
+            fwrite(file, line);
         }
         fclose(file);
 
@@ -1646,7 +1640,7 @@ cmd_report(args)
     reportreason = codam\_mm_mmm::namefix(args2); // To prevent malicious input
     level.reportactive = true;
     filename = level.workingdir + level.reportfile;
-    if(fexists(filename)) {
+    if(file_exists(filename)) {
         file = fopen(filename, "a"); // append
         if(file != -1) {
             line = "";
@@ -1655,9 +1649,9 @@ cmd_report(args)
             line += "%%" + codam\_mm_mmm::namefix(player.name);
             line += "%%" + player getip();
             line += "%%" + reportreason;
-            line += "%%" + seconds();
+            line += "%%" + getSystemTime();
             line += "\n";
-            fwrite(line, file);
+            fwrite(file, line);
         }
 
         fclose(file);
@@ -1722,7 +1716,7 @@ cmd_unban(args)
 
         level.banactive = true;
         filename = level.workingdir + level.banfile;
-        if(fexists(filename)) {
+        if(file_exists(filename)) {
             file = fopen(filename, "w");
             if(file != -1) {
                 for(i = 0; i < level.bans.size; i++) {
@@ -1736,7 +1730,7 @@ cmd_unban(args)
                     line += "%%" + level.bans[i]["srvtime"];
                     line += "%%" + level.bans[i]["reason"];
                     line += "\n";
-                    fwrite(line, file);
+                    fwrite(file, line);
                 }
             }
             fclose(file);
@@ -1763,7 +1757,7 @@ _checkMuted(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, 
 
 _checkLoggedIn(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9) // "username|group|ipa|num;username|group|ipa|num"
 {
-    loggedin = GetCvar("tmp_mm_loggedin");
+    loggedin = getCvar("tmp_mm_loggedin");
     if(loggedin != "") {
         loggedin = codam\_mm_mmm::strTok(loggedin, ";");
         for(i = 0; i < loggedin.size; i++) {
@@ -1807,15 +1801,15 @@ _checkFOV(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7
 _loadBans()
 {
     filename = level.workingdir + level.banfile;
-    if(fexists(filename)) {
+    if(file_exists(filename)) {
         file = fopen(filename, "r");
         if(file != -1)
-            data = fread(0, file); // codextended.so bug?
+            data = fread(file);
         fclose(file); // all-in-one chunk
 
         if(isDefined(data)) {
             numbans = 0;
-            unixtime = seconds();
+            unixtime = getSystemTime();
             data = codam\_mm_mmm::strTok(data, "\n");
             for(i = 0; i < data.size; i++) {
                 if(!isDefined(data[i])) // crashed here for some odd reason? this should never happen
@@ -1871,7 +1865,7 @@ _loadBans()
                         line += "%%" + level.bans[i]["srvtime"];
                         line += "%%" + level.bans[i]["reason"];
                         line += "\n";
-                        fwrite(line, file);
+                        fwrite(file, line);
                     }
                 }
                 fclose(file);
@@ -1909,7 +1903,7 @@ _removeMuted(num)
 
 _removeLoggedIn(num)
 {
-    loggedin = GetCvar("tmp_mm_loggedin");
+    loggedin = getCvar("tmp_mm_loggedin");
     if(loggedin != "") {
         loggedin = codam\_mm_mmm::strTok(loggedin, ";");
         removed = false;
@@ -1987,12 +1981,12 @@ message_player(msg, player)
     if(!isDefined(player))
         player = self;
 
-    player sendservercommand("i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
+    sendCommandToClient(player getEntityNumber(), "i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
 }
 
 message(msg)
 {
-    sendservercommand("i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
+    sendCommandToClient(-1, "i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
 }
 
 playerByName(str) // 2021 attempt
@@ -3363,7 +3357,7 @@ cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
     bannedpcvars[9] = "r_drawworld";
     bannedpcvars[10] = "r_fullbright";
 
-    bpcvar = GetCvar("scr_mm_bannedpcvar");
+    bpcvar = getCvar("scr_mm_bannedpcvar");
     if(bpcvar != "") {
         bpcvar = codam\_mm_mmm::strTok(bpcvar, ";");
         codam\_mm_mmm::array_join(bannedpcvars, bpcvar);
@@ -3379,7 +3373,7 @@ cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
             reportreason = "[AutoReport] !pcvar " + cvar + " " +  cval;
             level.reportactive = true;
             filename = level.workingdir + level.reportfile;
-            if(fexists(filename)) {
+            if(file_exists(filename)) {
                 file = fopen(filename, "a"); // append
                 if(file != -1) {
                     line = "";
@@ -3388,9 +3382,9 @@ cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
                     line += "%%" + codam\_mm_mmm::namefix(player.name);
                     line += "%%" + player getip();
                     line += "%%" + reportreason;
-                    line += "%%" + seconds();
+                    line += "%%" + getSystemTime();
                     line += "\n";
-                    fwrite(line, file);
+                    fwrite(file, line);
                 }
                 fclose(file);
             }
@@ -3895,7 +3889,7 @@ cmd_scvar(args)
     bannedcvars[1] = "cl_allowdownload";
     bannedcvars[2] = "sv_hostname";
 
-    bscvar = GetCvar("scr_mm_bannedscvar");
+    bscvar = getCvar("scr_mm_bannedscvar");
     if(bscvar != "") {
         bscvar = codam\_mm_mmm::strTok(bscvar, ";");
         codam\_mm_mmm::array_join(bannedcvars, bscvar);
@@ -3919,7 +3913,7 @@ cmd_scvar(args)
             reportreason = "[AutoReport] !scvar " + cvar + " " +  cval;
             level.reportactive = true;
             filename = level.workingdir + level.reportfile;
-            if(fexists(filename)) {
+            if(file_exists(filename)) {
                 file = fopen(filename, "a"); // append
                 if(file != -1) {
                     line = "";
@@ -3928,9 +3922,9 @@ cmd_scvar(args)
                     line += "%%" + "AutoReport";
                     line += "%%" + "127.0.0.1";
                     line += "%%" + reportreason;
-                    line += "%%" + seconds();
+                    line += "%%" + getSystemTime();
                     line += "\n";
-                    fwrite(line, file);
+                    fwrite(file, line);
                 }
                 fclose(file);
             }
@@ -4061,10 +4055,10 @@ cmd_banlist(args)
 cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<reported user IP>%<report message>&<unixtime>
 {
     filename = level.workingdir + level.reportfile;
-    if(fexists(filename)) {
+    if(file_exists(filename)) {
         file = fopen(filename, "r");
         if(file != -1)
-            data = fread(0, file); // codextended.so bug?
+            data = fread(file);
         fclose(file); // all-in-one chunk
 
         if(isDefined(data)) {

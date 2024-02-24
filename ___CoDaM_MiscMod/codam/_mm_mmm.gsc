@@ -539,7 +539,7 @@ isGrenade(sWeapon)
 
 mmlog(msg)
 {
-    printconsole(msg + "\n");
+    logPrintConsole(msg + "\n");
     logPrint(msg + "\n");
 }
 
@@ -548,12 +548,12 @@ message_player(msg, player)
     if(!isDefined(player))
         player = self;
 
-    player sendservercommand("i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
+    sendCommandToClient(player getEntityNumber(), "i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
 }
 
 message(msg)
 {
-    sendservercommand("i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
+    sendCommandToClient(-1, "i \"^7^7" + level.nameprefix + ": ^7" + msg + "\""); // ^7^7 fixes spaces problem
 }
 
 playerByNum(num)

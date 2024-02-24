@@ -34,6 +34,8 @@ _init(register)
 
     level.modbycato1 = true;
 
+    level.miscmodversion = "3.1.4" + "L";
+
     // reset welcome messages / mapvote
     [[ register ]]("gt_endMap", ::endMap, "takeover");
 
@@ -117,22 +119,12 @@ _load()
     level.modbycato2 = true;
 
     // MiscMod huds
-    // Used to concatenate localized strings, but show error or freeze server
-    // e.g &"string one" + level.stringTwo
-    // pair has unmatching types 'localized string' and 'localized string'
-    // Reported by ImNoob
-    if(!isDefined(level.topText))
-        level.topText = &"^1MiscMod ^3v3.1.4";
-
-    level.originalBottomText = &"^1+ ^5MiscMod ^3v3.1.4";
-
-    if(!isDefined(game["gamestarted"])) {
-        precacheString(level.topText);
-        precacheString(level.originalBottomText);
-
-        if(isDefined(level.bottomText))
-            precacheString(level.bottomText);
+    if(!isDefined(level.topText)) {
+        topTextConcat = "^1MiscMod ^3v" + level.miscmodversion;
+        level.topText = makeLocalizedString(topTextConcat);
     }
+    originalBottomTextConcat = "^1+ ^5MiscMod ^3v" + level.miscmodversion;
+    level.originalBottomText = makeLocalizedString(originalBottomTextConcat);
 
     // hitmarker
     precacheShader("gfx/hud/hud@fire_ready.tga");
@@ -160,23 +152,14 @@ _load()
         codam\_mm_commands::init();
     }
 
-    // _tmpHudsForFunEvent
-    precacheString(&"Please wait...");
-
     // spawnProtection
-    precacheString(&"SPAWN PROTECTION");
     precacheHeadIcon("gfx/hud/hud@health_cross.tga");
     level.spawnprotected = codam\utils::getVar("scr_mm", "spawnprotection", "int", 1|2, 0);
 
     // damagemarker
     level.damagemarker_minus = codam\utils::getVar("scr_mm", "damagemarker_minus", "bool", 1|2, false);
-    if(level.damagemarker_minus)
-        precacheString(&"-");
-    else
-        precacheString(&"+");
 
-    // meleefight / melee hud / melee headicon
-    precacheString(&"FIGHT");
+    // melee hud / melee headicon
     precacheStatusIcon("gfx/hud/headicon@re_objcarrier.tga");
 
     // BEL menu
@@ -290,8 +273,6 @@ _showMiscModHuds()
         bottomText.archived = true;
         bottomText setText(level.bottomText);
     }
-
-    level.miscmodversion = "^5MiscMod ^3v3.1.4";
 }
 // ##########
 
@@ -758,7 +739,7 @@ PlayerConnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5, b6
             bannedtime = level.bans[banindex]["time"];
             if(bannedtime > 0) {
                 bannedsrvtime = level.bans[banindex]["srvtime"];
-                remaining = bannedtime - (seconds() - bannedsrvtime);
+                remaining = bannedtime - (getSystemTime() - bannedsrvtime);
                 if(remaining > 0) {
                     self.isbanned = true;
                     bannedreason = "tempban remaining ";
@@ -786,7 +767,7 @@ PlayerConnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5, b6
         }
 
         if(isDefined(self.isbanned)) { // used in PlayerDisconnect
-            self sendservercommand("w \"Player Banned: ^1" + bannedreason + "\"");
+            sendCommandToClient(self getEntityNumber(), "w \"Player Banned: ^1" + bannedreason + "\"");
             self waittill("begin");
             wait 0.05; // server/script crashes without it
             kickmsg = "Player Banned: ^1" + bannedreason;
@@ -857,7 +838,7 @@ PlayerConnect(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b2, b4, b5, b6
         oldhostname = "sv_hostname\\" + level.mmhostname + "\\"; // Code by Defected
         newhostname = "sv_hostname\\" + scoreboard_text + "\\"; // Code by Defected
         newconfstr = replace(curconfstr, oldhostname, newhostname); // (input, replace_from, replace_with) - Code by Defected
-        self sendservercommand("d 0 " + newconfstr); // Code by Defected
+        sendCommandToClient(self getEntityNumber(), "d 0 " + newconfstr); // Code by Defected
     }
 
     [[ level.gtd_call ]]("logPrint", "connect", self);
@@ -1640,7 +1621,7 @@ msgBroadcast(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6,
             break;
 
             default:
-                sendservercommand("i \"" + message[2] + "\"");
+                sendCommandToClient(-1, "i \"" + message[2] + "\"");
             break;
         }
 
