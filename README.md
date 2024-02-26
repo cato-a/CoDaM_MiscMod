@@ -20,7 +20,7 @@ Files `miscmod_bans.dat` and `miscmod_reports.dat` must be created in the main f
 The ban capabilities is low level and intended only for small servers or single standalone servers.
 
 **NOTE:** Must be loaded before CoDaM_HamGoodies due to conflicting takeover (or any other mod for that matter).
-This mod is not made compatible with other mods and only compatible with the latest [CoDExtended](https://github.com/xtnded/codextended).
+This mod is not made compatible with other mods and only compatible with the latest [libcod1](https://github.com/codbridge/libcod1).
 
 A full guide on how to configure and setup MiscMod can be found on [cod.pm](https://cod.pm/guide/d0da8d/installing-and-configuring-codam-miscmod).
 
