@@ -152,10 +152,6 @@ prepareMaps()
 setupHud()
 {
     // Destroy some unneeded hud elements since quantity is limited (max 62)
-
-    if(isDefined(level.clock))
-        level.clock destroy();
-
     players = getEntArray("player", "classname");
     for(i = 0; i < players.size; i++)
         if(isDefined(players[i]._stopwatch))
@@ -183,89 +179,97 @@ setupHud()
         }
     }
 
-    // Will close scoreboard
     players = getEntArray("player", "classname");
     for(i = 0; i < players.size; i++) {
         player = players[i];
         player.sessionstate = "spectator";
         player.spectatorclient = -1;
-        resettimeout(); // I don't know what this is for
+        resettimeout();
         player setClientCvar("g_scriptMainMenu", "main");
         player closeMenu();
     }
 
-    // Offsets
-    level.xMapName = 260;
-    level.yMapName = 160;
-    xMapVotes = level.xMapName + 100;
-    yTitles = level.yMapName - 23;
-    level.distanceBetween = 20;
-    level.backgroundWidth = 139;
-
     // Countdown
+    if(isDefined(level.clock))
+        level.clock destroy();
     level.voteTimer = newHudElem();
     level.voteTimer.x = 320;
     level.voteTimer.y = 464;
     level.voteTimer.alignX = "center";
     level.voteTimer.alignY = "middle";
     level.voteTimer.font = "bigfixed";
-    level.voteTimer.color = (0, 1, 0);
+    level.voteTimer.color = (1, 0.65, 0);
     additionalDelays = (0.2 + 0.1 + 0.05 + 1);
     level.voteTimer setTimer(level.mapvotetime + additionalDelays);
-    
-    // Instructions
-    level.vote_instruction = newHudElem();
-    level.vote_instruction.x = level.xMapName - 2;
-    level.vote_instruction.y = yTitles;
-    level.vote_instruction.fontscale = .8;
-    level.vote_instruction.label = level.mapvote_instruction;
-    level.vote_instruction.sort = 2;
 
-    // Title of the vote count
-    level.vote_votes = newHudElem();
-    level.vote_votes.x = xMapVotes - 7;
-    level.vote_votes.y = yTitles;
-    level.vote_votes.fontscale = .8;
-    level.vote_votes.label = level.mapvote_titleVotes;
-    level.vote_votes.sort = 2;
+    // Offsets
+    // id Tech 3 base resolution = 640*480
+    level.screen_middle_x = 640/2; //320
+    screen_middle_y = 480/2; //240
+    level.background_width = 220;
+    level.distance_between_mapnames = 21;
+    level.mapNames_y = screen_middle_y - 83;
 
     // Header background
     level.vote_header = newHudElem();
     level.vote_header.alpha = .9;
-    level.vote_header.x = level.xMapName - 9;
-    level.vote_header.y = yTitles - 4;
+    level.vote_header.alignX = "center";
+    level.vote_header.x = level.screen_middle_x;
+    level.vote_header.y = level.mapNames_y - 25;
     level.vote_header.color = (0.37, 0.37, 0.16);
-    level.vote_header setShader("white", level.backgroundWidth, 17);
+    level.vote_header setShader("white", level.background_width, 19);
     level.vote_header.sort = 1;
 
+    // Instructions title
+    level.vote_instruction = newHudElem();
+    level.vote_instruction.x = level.vote_header.x - 99;
+    level.vote_instruction.y = level.vote_header.y + 3;
+    level.vote_instruction.fontscale = 1.1;
+    level.vote_instruction.label = level.mapvote_instruction;
+    level.vote_instruction.sort = 2;
+
+    // Vote count title
+    level.vote_votes = newHudElem();
+    level.vote_votes.x = level.vote_instruction.x + 163;
+    level.vote_votes.y = level.vote_instruction.y;
+    level.vote_votes.fontscale = level.vote_instruction.fontscale;
+    level.vote_votes.label = level.mapvote_titleVotes;
+    level.vote_votes.sort = level.vote_instruction.sort;
+    
     // Main background
     level.vote_hud_bgnd = newHudElem();
     level.vote_hud_bgnd.alpha = .9;
-    level.vote_hud_bgnd.x = level.xMapName - 9;
-    level.vote_hud_bgnd.y = level.vote_header.y + 17.5;
-    backgroundHeight = level.mapvote_currentchoices * 22;
-    level.vote_hud_bgnd setShader("black", level.backgroundWidth, backgroundHeight);
+    level.vote_hud_bgnd.alignX = "center";
+    level.vote_hud_bgnd.x = level.vote_header.x;
+    level.vote_hud_bgnd.y = level.vote_header.y + 19;
+    background_height = level.mapvote_currentchoices * 22;
+    level.vote_hud_bgnd setShader("black", level.background_width, background_height);
     level.vote_hud_bgnd.sort = 1;
 
-    // Choices
+    mapNames_x = level.vote_hud_bgnd.x - 93;
+    votes_x = mapNames_x + 171;
+
+    // Map names
     level.vote_mapList = newHudElem();
-    level.vote_mapList.x = level.xMapName;
-    level.vote_mapList.y = level.yMapName;
+    level.vote_mapList.x = mapNames_x;
+    level.vote_mapList.y = level.mapNames_y;
     mapvote_list_localized = makeLocalizedString(level.mapvote_list);
+    level.vote_mapList.font = "smallfixed"; // Use fixed font to prevent alignment issue when changing resolution
+    level.vote_mapList.fontscale = 0.65;
     level.vote_mapList setText(mapvote_list_localized);
-    level.vote_mapList.fontscale = .9;
     level.vote_mapList.sort = 4;
 
     // Votes counts
     for(i = 0; i < level.mapvote_currentchoices; i++) {
         level.mapvote_hud_counts[i] = newHudElem();
-        level.mapvote_hud_counts[i].x = xMapVotes;
+        level.mapvote_hud_counts[i].alignX = "center";
+        level.mapvote_hud_counts[i].alignY = "middle";
+        level.mapvote_hud_counts[i].x = votes_x;
         if(i == 0)
-            level.mapvote_hud_counts[i].y = level.yMapName;
+            level.mapvote_hud_counts[i].y = level.mapNames_y + 8;
         else
-            level.mapvote_hud_counts[i].y = level.mapvote_hud_counts[i-1].y + level.distanceBetween;
+            level.mapvote_hud_counts[i].y = level.mapvote_hud_counts[i-1].y + level.distance_between_mapnames;
         level.mapvote_hud_counts[i] setValue(0);
-        level.mapvote_hud_counts[i].fontscale = .9;
         level.mapvote_hud_counts[i].sort = 4;
     }
 }
@@ -425,10 +429,12 @@ playerVote()
 
     self.vote_indicator = newClientHudElem(self);
     self.vote_indicator.archived = false;
-    self.vote_indicator.x = level.xMapName - 5;
+    self.vote_indicator.alignX = "center";
+    self.vote_indicator.alignY = "middle";
+    self.vote_indicator.x = level.screen_middle_x;
     self.vote_indicator.alpha = 0;
     self.vote_indicator.color = (0.20, 1, 0.76);
-    self.vote_indicator setShader("white", level.backgroundWidth - 8, 16);
+    self.vote_indicator setShader("white", level.background_width - 8, 17);
     self.vote_indicator.sort = 3;
 
     hasVoted = false;
@@ -454,10 +460,10 @@ playerVote()
             else
                 self iPrintLn("You have voted for ^2" + codam\_mm_mmm::strTru(level.mapcandidate[self.votechoice]["mapname"], 13));
 
-            self.vote_indicator.y = (level.yMapName - 2) + (self.votechoice * level.distanceBetween);
+            self.vote_indicator.y = (level.mapNames_y + 10) + (self.votechoice * level.distance_between_mapnames);
 
             if(level.mapvotesound)
-                self PlayLocalSound("hq_score"); // training_good_grenade_throw // Not working
+                self PlayLocalSound("hq_score"); // training_good_grenade_throw // Doesn't work
         }
 
         while(self attackButtonPressed())
