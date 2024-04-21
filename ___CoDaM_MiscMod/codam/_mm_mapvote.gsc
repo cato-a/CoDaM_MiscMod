@@ -135,8 +135,7 @@ prepareMaps()
     }
     
     level.mapvote_randomMapRotation = codam\_mm_mmm::array_shuffle(_tmp);
-    for(i = 0; i < level.mapvote_randomMapRotation.size; i++)
-    {
+    for(i = 0; i < level.mapvote_randomMapRotation.size; i++) {
         if(level.mapvote_currentchoices == level.mapvote_maxchoices)
             break;
         
