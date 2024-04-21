@@ -43,7 +43,8 @@ init()
     level.mapvote_maxchoices = 10;
     level.mapvote_currentchoices = 0;
     level.mapvote_randomMapRotation = [];
-    level.mapvote_list = "";
+    level.mapvote_list = [];
+    level.mapvote_hud_mapnames = [];
     level.mapvote_hud_counts = [];
 }
 
@@ -59,7 +60,7 @@ mapvote()
         level notify("voting_complete");
         return;
     }
-    if(level.mapvote_list == "")
+    if(level.mapvote_list.size == 0)
         return;
 
     setupHud();
@@ -71,14 +72,14 @@ mapvote()
 
 prepareMaps()
 {
+    if(level.mapvoterandom) {
+        level.mapvote_currentchoices++;
+        level.mapvote_list[level.mapvote_list.size] = "mystery map";
+    }
+
     if(level.mapvotereplay)
         level.mapvote_currentchoices++;
 
-    if(level.mapvoterandom) {
-        level.mapvote_currentchoices++;
-        level.mapvote_list = "mystery map" + "\n\n";
-    }
-        
     if(getCvar("sv_mapRotation") == "")
         return;
         
@@ -112,9 +113,6 @@ prepareMaps()
     _tmp = [];
     lastgt = level.mmgametype;
     for(i = 0; i < mapRotation.size;/* /!\ */) {
-        if(level.mapvote_currentchoices == level.mapvote_maxchoices)
-            break;
-        
         switch(mapRotation[i]) {
             case "gametype":
                 if((i + 1) < mapRotation.size)
@@ -125,8 +123,6 @@ prepareMaps()
                 if((i + 1) < mapRotation.size) {
                     _tmp[_tmp.size]["gametype"] = lastgt;
                     _tmp[_tmp.size - 1]["map"]  = mapRotation[i + 1];
-                    
-                    level.mapvote_currentchoices++;
                 }
                 i += 2;
             break;
@@ -140,13 +136,33 @@ prepareMaps()
     
     level.mapvote_randomMapRotation = codam\_mm_mmm::array_shuffle(_tmp);
     for(i = 0; i < level.mapvote_randomMapRotation.size; i++) {
-        level.mapvote_list += level.mapvote_randomMapRotation[i]["map"] + " (" + level.mapvote_randomMapRotation[i]["gametype"] + ")";
+        if(level.mapvote_currentchoices == level.mapvote_maxchoices)
+            break;
         
-        if(i != level.mapvote_randomMapRotation.size - 1)
-            level.mapvote_list += "\n\n";
+        switch(level.mapvote_randomMapRotation[i]["gametype"]) {
+            case "sd":
+                gametypeColor = "^2";
+            break;
+            case "dm":
+                gametypeColor = "^1";
+            break;
+            case "tdm":
+                gametypeColor = "^4";
+            break;
+            case "bel":
+                gametypeColor = "^3";
+            break;
+            default:
+                gametypeColor = "^7";
+            break;
+        }
+        gametypeDisplay = "(" + gametypeColor + level.mapvote_randomMapRotation[i]["gametype"] + "^7)";
+        
+        level.mapvote_list[level.mapvote_list.size] = level.mapvote_randomMapRotation[i]["map"] + " " + gametypeDisplay;
+        level.mapvote_currentchoices++;
     }
     if(level.mapvotereplay)
-        level.mapvote_list += "\n\n" + "replay this map";
+        level.mapvote_list[level.mapvote_list.size] = "replay this map";
 }
 
 setupHud()
@@ -208,14 +224,14 @@ setupHud()
     screen_middle_y = 480/2; //240
     level.background_width = 220;
     level.distance_between_mapnames = 21;
-    level.mapNames_y = screen_middle_y - 83;
+    level.mapNames_y = screen_middle_y - 75;
 
     // Header background
     level.vote_header = newHudElem();
     level.vote_header.alpha = .9;
     level.vote_header.alignX = "center";
     level.vote_header.x = level.screen_middle_x;
-    level.vote_header.y = level.mapNames_y - 25;
+    level.vote_header.y = level.mapNames_y - 33;
     level.vote_header.color = (0.37, 0.37, 0.16);
     level.vote_header setShader("white", level.background_width, 19);
     level.vote_header.sort = 1;
@@ -247,18 +263,32 @@ setupHud()
     level.vote_hud_bgnd.sort = 1;
 
     mapNames_x = level.vote_hud_bgnd.x - 93;
-    votes_x = mapNames_x + 171;
+    votes_x = mapNames_x + 172;
 
     // Map names
-    level.vote_mapList = newHudElem();
-    level.vote_mapList.x = mapNames_x;
-    level.vote_mapList.y = level.mapNames_y;
-    mapvote_list_localized = makeLocalizedString(level.mapvote_list);
-    level.vote_mapList.font = "smallfixed"; // Use fixed font to prevent alignment issue when changing resolution
-    level.vote_mapList.fontscale = 0.65;
-    level.vote_mapList setText(mapvote_list_localized);
-    level.vote_mapList.sort = 4;
+    mapNames_x = level.vote_hud_bgnd.x - 24;
+    for(i = 0; i < level.mapvote_currentchoices; i++) {
+        level.mapvote_hud_mapnames[i] = newHudElem();
+        level.mapvote_hud_mapnames[i].alignX = "center";
+        level.mapvote_hud_mapnames[i].alignY = "middle";
+        level.mapvote_hud_mapnames[i].x = mapNames_x;
+        if(i == 0)
+            level.mapvote_hud_mapnames[i].y = level.mapNames_y;
+        else
+            level.mapvote_hud_mapnames[i].y = level.mapvote_hud_mapnames[i-1].y + level.distance_between_mapnames;
 
+        mapname = level.mapvote_list[i];
+        mapname_localized = makeLocalizedString(mapname);
+        level.mapvote_hud_mapnames[i] setText(mapname_localized);
+
+        level.mapvote_hud_mapnames[i].sort = 4;
+
+        if(mapname == "mystery map")
+            level.mapvote_hud_mapnames[i].color = (1, 0, 1);
+        else if(mapname == "replay this map")
+            level.mapvote_hud_mapnames[i].color = (0, 1, 1); 
+    }
+    
     // Votes counts
     for(i = 0; i < level.mapvote_currentchoices; i++) {
         level.mapvote_hud_counts[i] = newHudElem();
@@ -266,7 +296,7 @@ setupHud()
         level.mapvote_hud_counts[i].alignY = "middle";
         level.mapvote_hud_counts[i].x = votes_x;
         if(i == 0)
-            level.mapvote_hud_counts[i].y = level.mapNames_y + 8;
+            level.mapvote_hud_counts[i].y = level.mapNames_y;
         else
             level.mapvote_hud_counts[i].y = level.mapvote_hud_counts[i-1].y + level.distance_between_mapnames;
         level.mapvote_hud_counts[i] setValue(0);
@@ -281,7 +311,9 @@ destroyHud()
     level.vote_votes destroy();
     level.vote_header destroy();
     level.vote_hud_bgnd destroy();
-    level.vote_mapList destroy();
+
+    for(i = 0; i < level.mapvote_currentchoices; i++)
+        level.mapvote_hud_mapnames[i] destroy();
     for(i = 0; i < level.mapvote_currentchoices; i++)
         level.mapvote_hud_counts[i] destroy();
     
@@ -307,7 +339,7 @@ runMapVote()
     
     for(i = 0; i < level.mapvote_randomMapRotation.size; i++) {
         if(!isDefined(level.mapvote_randomMapRotation[i])) {
-            PrintLn("WARNING: Error detected in map rotation (runMapVote()). i = " + i);
+            printLn("WARNING: Error detected in map rotation (runMapVote()). i = " + i);
             break;
         }
 
@@ -382,22 +414,13 @@ setMapWinner(val)
     level notify("voting_done");
     wait 0.05;
 
-    iPrintLnBold(" ");
-    iPrintLnBold(" ");
-    iPrintLnBold(" ");
-    iPrintLnBold("The winner is");
-    iPrintLnBold("^2" + mapname);
-    if(level.mapvotegametype && (mapname != "replay this map" && mapname != "mystery map"))
-        iPrintLnBold("^2" + getGametypeName(gametype));
-    else
-        iPrintLnBold(" ");
-
     level.voteTimer fadeOverTime(1);
     level.vote_instruction fadeOverTime(1);
     level.vote_votes fadeOverTime(1);
     level.vote_header fadeOverTime(1);
     level.vote_hud_bgnd fadeOverTime(1);
-    level.vote_mapList fadeOverTime(1);
+    for(i = 0; i < level.mapvote_currentchoices; i++)
+        level.mapvote_hud_mapnames[i] fadeOverTime(1);
     for(i = 0; i < level.mapvote_currentchoices; i++)
         level.mapvote_hud_counts[i] fadeOverTime(1);
 
@@ -406,7 +429,8 @@ setMapWinner(val)
     level.vote_votes.alpha = 0;
     level.vote_header.alpha = 0;
     level.vote_hud_bgnd.alpha = 0;
-    level.vote_mapList.alpha = 0;
+    for(i = 0; i < level.mapvote_currentchoices; i++)
+        level.mapvote_hud_mapnames[i].alpha = 0;
     for(i = 0; i < level.mapvote_currentchoices; i++)
         level.mapvote_hud_counts[i].alpha = 0;
 
@@ -417,6 +441,17 @@ setMapWinner(val)
             players[i].vote_indicator.alpha = 0;
         }
     }
+
+    wait 1.25;
+    iPrintLnBold(" ");
+    iPrintLnBold(" ");
+    iPrintLnBold(" ");
+    iPrintLnBold("The winner is");
+    iPrintLnBold("^2" + mapname);
+    if(level.mapvotegametype && (mapname != "replay this map" && mapname != "mystery map"))
+        iPrintLnBold("^2" + getGametypeName(gametype));
+    else
+        iPrintLnBold(" ");
 
     wait 4;
     level notify("voting_complete");
@@ -460,10 +495,10 @@ playerVote()
             else
                 self iPrintLn("You have voted for ^2" + codam\_mm_mmm::strTru(level.mapcandidate[self.votechoice]["mapname"], 13));
 
-            self.vote_indicator.y = (level.mapNames_y + 10) + (self.votechoice * level.distance_between_mapnames);
+            self.vote_indicator.y = (level.mapNames_y + 2) + (self.votechoice * level.distance_between_mapnames);
 
             if(level.mapvotesound)
-                self PlayLocalSound("hq_score"); // training_good_grenade_throw // Doesn't work
+                self playLocalSound("hq_score"); // training_good_grenade_throw // Doesn't work
         }
 
         while(self attackButtonPressed())
@@ -476,8 +511,9 @@ getGametypeName(gt)
     switch(gt) {
         case "dm": gtname = "Deathmatch"; break;
         case "tdm": gtname = "Team Deathmatch"; break;
-        case "sd": gtname = "Search & Destroy"; break;
+        case "sd": gtname = "Search and Destroy"; break;
         case "re": gtname = "Retrieval"; break;
+        case "bel": gtname = "Behind Enemy Lines"; break;
         default: gtname = gt; break;
     }
 
