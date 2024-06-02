@@ -163,60 +163,9 @@ commands(id, cmd, func, desc)
 
 command(str)
 {
-    if(!isDefined(str)) // string index 0 out of range
-        return;
-
-    str = codam\_mm_mmm::strip(str);
-    if(str.size < 1) { // string index 0 out of range
-        return;
-    }
+    if(str.size == 1) return; // just 1 letter, ignore
 
     isloggedin = (bool)isDefined(self.pers["mm_group"]);
-    if(level.maxmessages > 0 && !isloggedin) {
-        penaltytime = level.penaltytime;
-        if(self.pers["mm_chatmessages"] > level.maxmessages)
-            penaltytime += self.pers["mm_chatmessages"] - level.maxmessages;
-        penaltytime *= 1000;
-
-        if(getTime() - self.pers["mm_chattimer"] >= penaltytime) {
-            self.pers["mm_chattimer"] = getTime();
-            self.pers["mm_chatmessages"] = 1;
-        } else {
-            self.pers["mm_chatmessages"]++;
-            if(self.pers["mm_chatmessages"] > level.maxmessages) {
-                if(self.pers["mm_chatmessages"] > 19) // 20 seconds max wait
-                    self.pers["mm_chatmessages"] = 19; // 20 seconds max wait
-                
-                unit = "seconds";
-                if(penaltytime == 1000) // 1 second
-                    unit = "second";
-                message_player("You are currently muted for " + (penaltytime / 1000.0) + " " + unit + ".");
-            }
-        }
-    }
-
-    if(isDefined(self.pers["mm_mute"]) || (level.maxmessages > 0 && self.pers["mm_chatmessages"] > level.maxmessages)) {
-        return;
-    }
-
-    if(str.size == 1) return; // just 1 letter, ignore
-    if(str[0] != level.prefix) { // string index 0 out of range (fixed above)
-        if(isDefined(level.badwords)) {
-            //print message to console with cleaned string say or sayt
-            //requires modification to codextended, or sendservercommand with say/sayt
-            //str = badwords_clean(str, badwords);
-
-            if(badwords_mute(str)) {
-                badmessage = "^5INFO: ^7You were silenced due to inappropriate language.";
-                if(isDefined(self.badword))
-                    badmessage += " The offensive word in question was: " + self.badword + ".";
-                message_player(badmessage);
-            }
-        }
-
-        return;
-    }
-
     cmd = codam\_mm_mmm::strTok(str, " "); // is a command with level.prefix
     if(isDefined(level.commands[cmd[0]])) {
         perms = level.perms["default"];
@@ -266,6 +215,51 @@ command(str)
         } else
             message_player("^1ERROR: ^7No such command. Check your spelling.");
     }
+}
+
+command_mute(str)
+{
+    if((bool)isDefined(self.pers["mm_group"])) {
+        return false;
+    }
+
+    if(level.maxmessages > 0) {
+        penaltytime = level.penaltytime;
+        if(self.pers["mm_chatmessages"] > level.maxmessages)
+            penaltytime += self.pers["mm_chatmessages"] - level.maxmessages;
+        penaltytime *= 1000;
+
+        if(getTime() - self.pers["mm_chattimer"] >= penaltytime) {
+            self.pers["mm_chattimer"] = getTime();
+            self.pers["mm_chatmessages"] = 1;
+        } else {
+            self.pers["mm_chatmessages"]++;
+            if(self.pers["mm_chatmessages"] > level.maxmessages) {
+                if(self.pers["mm_chatmessages"] > 19) // 20 seconds max wait
+                    self.pers["mm_chatmessages"] = 19; // 20 seconds max wait
+                
+                unit = "seconds";
+                if(penaltytime == 1000) // 1 second
+                    unit = "second";
+                message_player("You are currently muted for " + (penaltytime / 1000.0) + " " + unit + ".");
+            }
+        }
+    }
+
+    if(isDefined(self.pers["mm_mute"]) || (level.maxmessages > 0 && self.pers["mm_chatmessages"] > level.maxmessages)) {
+        return true;
+    }
+
+    if(badwords_mute(str)) {
+        badmessage = "^5INFO: ^7You were silenced due to inappropriate language.";
+        if(isDefined(self.badword))
+            badmessage += " The offensive word in question was: " + self.badword + ".";
+        message_player(badmessage);
+
+        return true;
+    }
+
+    return false;
 }
 
 badwords_mute(str) // str - mute
