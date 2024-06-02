@@ -16,7 +16,7 @@ CodeCallback_PlayerCommand(args)
             
             cmd = codam\_mm_mmm::strip(args[1]);
             if(cmd[0] == level.prefix) {
-                [ level.command ];
+                [[ level.command ]](command);
 
                 return;
             }
