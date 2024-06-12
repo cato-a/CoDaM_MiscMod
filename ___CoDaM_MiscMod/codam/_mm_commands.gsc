@@ -1797,9 +1797,19 @@ _loadBans()
     filename = level.workingdir + level.banfile;
     if(file_exists(filename)) {
         file = fopen(filename, "r");
-        if(file != -1)
+        if(file != -1) {
             data = fread(file);
-        fclose(file); // all-in-one chunk
+            if(isDefined(data)) {
+                for(;;) {
+                    nextContent = fread(file);
+                    if(isDefined(nextContent))
+                        data += nextContent;
+                    else
+                        break;
+                }
+            }
+        }
+        fclose(file);
 
         if(isDefined(data)) {
             numbans = 0;
@@ -4051,9 +4061,19 @@ cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<
     filename = level.workingdir + level.reportfile;
     if(file_exists(filename)) {
         file = fopen(filename, "r");
-        if(file != -1)
+        if(file != -1) {
             data = fread(file);
-        fclose(file); // all-in-one chunk
+            if(isDefined(data)) {
+                for(;;) {
+                    nextContent = fread(file);
+                    if(isDefined(nextContent))
+                        data += nextContent;
+                    else
+                        break;
+                }
+            }
+        }
+        fclose(file);
 
         if(isDefined(data)) {
             reports = [];
