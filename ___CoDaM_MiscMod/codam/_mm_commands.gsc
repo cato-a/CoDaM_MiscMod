@@ -1526,11 +1526,11 @@ cmd_ban(args)
         if(file != -1) {
             line = "";
             line += bannedip;
-            line += "%%" + bannedby;
-            line += "%%" + bannedname;
-            line += "%%" + time;
-            line += "%%" + bannedsrvtime;
-            line += "%%" + bannedreason;
+            line += "%" + bannedby;
+            line += "%" + bannedname;
+            line += "%" + time;
+            line += "%" + bannedsrvtime;
+            line += "%" + bannedreason;
             line += "\n";
             fwrite(file, line);
         }
@@ -1639,11 +1639,11 @@ cmd_report(args)
         if(file != -1) {
             line = "";
             line += codam\_mm_mmm::namefix(self.name);
-            line += "%%" + self getip();
-            line += "%%" + codam\_mm_mmm::namefix(player.name);
-            line += "%%" + player getip();
-            line += "%%" + reportreason;
-            line += "%%" + getSystemTime();
+            line += "%" + self getip();
+            line += "%" + codam\_mm_mmm::namefix(player.name);
+            line += "%" + player getip();
+            line += "%" + reportreason;
+            line += "%" + getSystemTime();
             line += "\n";
             fwrite(file, line);
         }
@@ -1718,11 +1718,11 @@ cmd_unban(args)
                         continue;
                     line = "";
                     line += level.bans[i]["ip"];
-                    line += "%%" + level.bans[i]["by"];
-                    line += "%%" + level.bans[i]["name"];
-                    line += "%%" + level.bans[i]["time"];
-                    line += "%%" + level.bans[i]["srvtime"];
-                    line += "%%" + level.bans[i]["reason"];
+                    line += "%" + level.bans[i]["by"];
+                    line += "%" + level.bans[i]["name"];
+                    line += "%" + level.bans[i]["time"];
+                    line += "%" + level.bans[i]["srvtime"];
+                    line += "%" + level.bans[i]["reason"];
                     line += "\n";
                     fwrite(file, line);
                 }
@@ -1795,76 +1795,86 @@ _checkFOV(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7
 _loadBans()
 {
     filename = level.workingdir + level.banfile;
-    if(file_exists(filename)) {
-        file = fopen(filename, "r");
-        if(file != -1)
-            data = fread(file);
-        fclose(file); // all-in-one chunk
+    if(!file_exists(filename))
+        return;
 
-        if(isDefined(data)) {
-            numbans = 0;
-            unixtime = getSystemTime();
-            data = codam\_mm_mmm::strTok(data, "\n");
-            for(i = 0; i < data.size; i++) {
-                if(!isDefined(data[i])) // crashed here for some odd reason? this should never happen
-                    continue; // crashed here for some odd reason? this should never happen
+    file = fopen(filename, "r");
+    if(!isDefined(file))
+        return;
 
-                line = codam\_mm_mmm::strTok(data[i], "%"); // crashed here for some odd reason? this should never happen
-                if(line.size != 6) // Reported by ImNoob AKA Gatsby
-                    continue;
+    chunk = fread(file);
+    if(!isDefined(chunk))
+        return;
+    
+    data = "";
+    while(isDefined(chunk))
+    {
+        data += chunk;
+        chunk = fread(file);
+    }
+    fclose(file);
 
-                banfile_error = false;
-                for(l = 0; l < line.size; l++) {
-                    if(!isDefined(line[l])) {
-                        banfile_error = true;
-                        break;
-                    }
-                }
+    numbans = 0;
+    unixtime = getSystemTime();
+    data = codam\_mm_mmm::strTok(data, "\n");
+    for(i = 0; i < data.size; i++) {
+        if(!isDefined(data[i])) // crashed here for some odd reason? this should never happen
+            continue; // crashed here for some odd reason? this should never happen
 
-                if(banfile_error)
-                    continue;// Reported by ImNoob AKA Gatsby
+        line = codam\_mm_mmm::strTok(data[i], "%"); // crashed here for some odd reason? this should never happen
+        if(line.size != 6) // Reported by ImNoob AKA Gatsby
+            continue;
 
-                numbans++;
-                bannedtime = (int)line[3];
-                bannedsrvtime = (int)line[4];
-                if(bannedtime > 0) { // tempban
-                    remaining = bannedtime - (unixtime - bannedsrvtime);
-                    if(remaining <= 0) // player unbanned
-                        continue;
-                }
-
-                bannedip = line[0];
-                bannedby = line[1];
-                bannedname = line[2];
-                bannedreason = line[5];
-
-                index = level.bans.size;
-                level.bans[index]["ip"] = bannedip;
-                level.bans[index]["by"] = bannedby;
-                level.bans[index]["name"] = bannedname;
-                level.bans[index]["time"] = bannedtime;
-                level.bans[index]["srvtime"] = bannedsrvtime;
-                level.bans[index]["reason"] = bannedreason;
-            }
-
-            if(level.bans.size != numbans) { // banfile changed, update miscmod_bans.dat
-                file = fopen(filename, "w");
-                if(level.bans.size > 0) {
-                    for(i = 0; i < level.bans.size; i++) {
-                        line = "";
-                        line += level.bans[i]["ip"];
-                        line += "%%" + level.bans[i]["by"];
-                        line += "%%" + level.bans[i]["name"];
-                        line += "%%" + level.bans[i]["time"];
-                        line += "%%" + level.bans[i]["srvtime"];
-                        line += "%%" + level.bans[i]["reason"];
-                        line += "\n";
-                        fwrite(file, line);
-                    }
-                }
-                fclose(file);
+        banfile_error = false;
+        for(l = 0; l < line.size; l++) {
+            if(!isDefined(line[l])) {
+                banfile_error = true;
+                break;
             }
         }
+
+        if(banfile_error)
+            continue;// Reported by ImNoob AKA Gatsby
+
+        numbans++;
+        bannedtime = (int)line[3];
+        bannedsrvtime = (int)line[4];
+        if(bannedtime > 0) { // tempban
+            remaining = bannedtime - (unixtime - bannedsrvtime);
+            if(remaining <= 0) // player unbanned
+                continue;
+        }
+
+        bannedip = line[0];
+        bannedby = line[1];
+        bannedname = line[2];
+        bannedreason = line[5];
+
+        index = level.bans.size;
+        level.bans[index]["ip"] = bannedip;
+        level.bans[index]["by"] = bannedby;
+        level.bans[index]["name"] = bannedname;
+        level.bans[index]["time"] = bannedtime;
+        level.bans[index]["srvtime"] = bannedsrvtime;
+        level.bans[index]["reason"] = bannedreason;
+    }
+
+    if(level.bans.size != numbans) { // banfile changed, update miscmod_bans.dat
+        file = fopen(filename, "w");
+        if(level.bans.size > 0) {
+            for(i = 0; i < level.bans.size; i++) {
+                line = "";
+                line += level.bans[i]["ip"];
+                line += "%" + level.bans[i]["by"];
+                line += "%" + level.bans[i]["name"];
+                line += "%" + level.bans[i]["time"];
+                line += "%" + level.bans[i]["srvtime"];
+                line += "%" + level.bans[i]["reason"];
+                line += "\n";
+                fwrite(file, line);
+            }
+        }
+        fclose(file);
     }
 }
 
@@ -3372,11 +3382,11 @@ cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
                 if(file != -1) {
                     line = "";
                     line += codam\_mm_mmm::namefix(self.name);
-                    line += "%%" + self getip();
-                    line += "%%" + codam\_mm_mmm::namefix(player.name);
-                    line += "%%" + player getip();
-                    line += "%%" + reportreason;
-                    line += "%%" + getSystemTime();
+                    line += "%" + self getip();
+                    line += "%" + codam\_mm_mmm::namefix(player.name);
+                    line += "%" + player getip();
+                    line += "%" + reportreason;
+                    line += "%" + getSystemTime();
                     line += "\n";
                     fwrite(file, line);
                 }
@@ -3912,11 +3922,11 @@ cmd_scvar(args)
                 if(file != -1) {
                     line = "";
                     line += codam\_mm_mmm::namefix(self.name);
-                    line += "%%" + self getip();
-                    line += "%%" + "AutoReport";
-                    line += "%%" + "127.0.0.1";
-                    line += "%%" + reportreason;
-                    line += "%%" + getSystemTime();
+                    line += "%" + self getip();
+                    line += "%" + "AutoReport";
+                    line += "%" + "127.0.0.1";
+                    line += "%" + reportreason;
+                    line += "%" + getSystemTime();
                     line += "\n";
                     fwrite(file, line);
                 }
@@ -4049,102 +4059,112 @@ cmd_banlist(args)
 cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<reported user IP>%<report message>&<unixtime>
 {
     filename = level.workingdir + level.reportfile;
-    if(file_exists(filename)) {
-        file = fopen(filename, "r");
-        if(file != -1)
-            data = fread(file);
-        fclose(file); // all-in-one chunk
+    if(!file_exists(filename))
+        return;
 
-        if(isDefined(data)) {
-            reports = [];
-            data = codam\_mm_mmm::strTok(data, "\n");
-            for(i = 0; i < data.size; i++) {
-                if(!isDefined(data[i])) // crashed here for some odd reason? this should never happen
-                    continue; // crashed here for some odd reason? this should never happen
+    file = fopen(filename, "r");
+    if(!isDefined(file))
+        return;
 
-                line = codam\_mm_mmm::strTok(data[i], "%"); // crashed here for some odd reason? this should never happen
-                if(line.size != 6)
-                    continue;
-
-                reportfile_error = false;
-                for(l = 0; l < line.size; l++) {
-                    if(!isDefined(line[l])) {
-                        reportfile_error = true;
-                        break;
-                    }
-                }
-
-                if(reportfile_error)
-                    continue;
-
-                reportedby = line[0];
-                reportedbyip = line[1];
-                reporteduser = codam\_mm_mmm::strip(line[2]);
-                reporteduserip = line[3];
-                reportedmessage = codam\_mm_mmm::strip(line[4]);
-                reportedunixtime = line[5];
-
-                index = reports.size;
-                reports[index]["by"] = reportedby;
-                reports[index]["byip"] = reportedbyip;
-                reports[index]["user"] = reporteduser;
-                reports[index]["userip"] = reporteduserip;
-                reports[index]["message"] = reportedmessage;
-                reports[index]["unixtime"] = reportedunixtime;
-            }
-
-            if(reports.size > 0) {
-                limit = getCvarInt("scr_mm_reportlist_limit");
-                if(limit == 0)
-                    limit = 30;
-
-                offset = 0;
-                if(reports.size - limit > 0)
-                    offset = reports.size - limit;
-
-                pdata = spawnStruct();
-                pdata.by = 0;
-                pdata.byip = 0;
-                pdata.user = 0;
-                pdata.userip = 0;
-                pdata.message = 0;
-
-                for(i = offset; i < reports.size; i++) {
-                    if(reports[i]["by"].size > pdata.by)
-                        pdata.by = reports[i]["by"].size;
-                    if(reports[i]["byip"].size > pdata.byip)
-                        pdata.byip = reports[i]["byip"].size;
-                    if(reports[i]["user"].size > pdata.user)
-                        pdata.user = reports[i]["user"].size;
-                    if(reports[i]["userip"].size > pdata.userip)
-                        pdata.userip = reports[i]["userip"].size;
-                    if(reports[i]["message"].size > pdata.message)
-                        pdata.message = reports[i]["message"].size;
-                }
-
-                for(i = offset; i < reports.size; i++) {
-                    message = "^2[^7 ";
-                    if(self.pers["mm_ipaccess"])
-                        message += reports[i]["byip"] + spaces(pdata.byip - reports[i]["byip"].size) + " ^2|^7 ";
-                    message += reports[i]["by"] + spaces(pdata.by - reports[i]["by"].size) + "^2] ^7reported";
-                    message_player(message);
-                    message = "^1[^7 ";
-                    if(self.pers["mm_ipaccess"])
-                        message += reports[i]["userip"] + spaces(pdata.userip - reports[i]["userip"].size) + " ^1|^7 ";
-                    message += reports[i]["user"] + spaces(pdata.user - reports[i]["user"].size) + "^1] ^7for";
-                    message_player(message);
-                    message = "^3reason>^7 " + reports[i]["message"];
-                    message_player(message);
-                    if((i + 1) % 5 == 0) // Prevent: SERVERCOMMAND OVERFLOW
-                        wait 0.25;
-                }
-
-                if(offset > 0)
-                    message_player("More than " + limit + " reports in the reportlist. Showing the " + limit + " most recent reports.");
-            } else
-                message_player("^1ERROR: ^7No reports in reportlist.");
-        }
+    chunk = fread(file);
+    if(!isDefined(chunk))
+        return;
+    
+    data = "";
+    while(isDefined(chunk))
+    {
+        data += chunk;
+        chunk = fread(file);
     }
+    fclose(file);
+
+    reports = [];
+    data = codam\_mm_mmm::strTok(data, "\n");
+    for(i = 0; i < data.size; i++) {
+        if(!isDefined(data[i])) // crashed here for some odd reason? this should never happen
+            continue; // crashed here for some odd reason? this should never happen
+
+        line = codam\_mm_mmm::strTok(data[i], "%"); // crashed here for some odd reason? this should never happen
+        if(line.size != 6)
+            continue;
+
+        reportfile_error = false;
+        for(l = 0; l < line.size; l++) {
+            if(!isDefined(line[l])) {
+                reportfile_error = true;
+                break;
+            }
+        }
+
+        if(reportfile_error)
+            continue;
+
+        reportedby = line[0];
+        reportedbyip = line[1];
+        reporteduser = codam\_mm_mmm::strip(line[2]);
+        reporteduserip = line[3];
+        reportedmessage = codam\_mm_mmm::strip(line[4]);
+        reportedunixtime = line[5];
+
+        index = reports.size;
+        reports[index]["by"] = reportedby;
+        reports[index]["byip"] = reportedbyip;
+        reports[index]["user"] = reporteduser;
+        reports[index]["userip"] = reporteduserip;
+        reports[index]["message"] = reportedmessage;
+        reports[index]["unixtime"] = reportedunixtime;
+    }
+
+    if(reports.size > 0) {
+        limit = getCvarInt("scr_mm_reportlist_limit");
+        if(limit == 0)
+            limit = 30;
+
+        offset = 0;
+        if(reports.size - limit > 0)
+            offset = reports.size - limit;
+
+        pdata = spawnStruct();
+        pdata.by = 0;
+        pdata.byip = 0;
+        pdata.user = 0;
+        pdata.userip = 0;
+        pdata.message = 0;
+
+        for(i = offset; i < reports.size; i++) {
+            if(reports[i]["by"].size > pdata.by)
+                pdata.by = reports[i]["by"].size;
+            if(reports[i]["byip"].size > pdata.byip)
+                pdata.byip = reports[i]["byip"].size;
+            if(reports[i]["user"].size > pdata.user)
+                pdata.user = reports[i]["user"].size;
+            if(reports[i]["userip"].size > pdata.userip)
+                pdata.userip = reports[i]["userip"].size;
+            if(reports[i]["message"].size > pdata.message)
+                pdata.message = reports[i]["message"].size;
+        }
+
+        for(i = offset; i < reports.size; i++) {
+            message = "^2[^7 ";
+            if(self.pers["mm_ipaccess"])
+                message += reports[i]["byip"] + spaces(pdata.byip - reports[i]["byip"].size) + " ^2|^7 ";
+            message += reports[i]["by"] + spaces(pdata.by - reports[i]["by"].size) + "^2] ^7reported";
+            message_player(message);
+            message = "^1[^7 ";
+            if(self.pers["mm_ipaccess"])
+                message += reports[i]["userip"] + spaces(pdata.userip - reports[i]["userip"].size) + " ^1|^7 ";
+            message += reports[i]["user"] + spaces(pdata.user - reports[i]["user"].size) + "^1] ^7for";
+            message_player(message);
+            message = "^3reason>^7 " + reports[i]["message"];
+            message_player(message);
+            if((i + 1) % 5 == 0) // Prevent: SERVERCOMMAND OVERFLOW
+                wait 0.25;
+        }
+
+        if(offset > 0)
+            message_player("More than " + limit + " reports in the reportlist. Showing the " + limit + " most recent reports.");
+    } else
+        message_player("^1ERROR: ^7No reports in reportlist.");
 }
 
 cmd_namechange(args)
