@@ -1798,21 +1798,19 @@ _loadBans()
     if(!file_exists(filename))
         return;
 
-    file = fopen(filename, "r");
-    if(!isDefined(file))
-        return;
-
-    chunk = fread(file);
-    if(!isDefined(chunk))
-        return;
-    
     data = "";
-    while(isDefined(chunk))
-    {
-        data += chunk;
+    file = fopen(filename, "r");
+    if(isDefined(file)) {
         chunk = fread(file);
+        while(isDefined(chunk)) {
+            data += chunk;
+            chunk = fread(file);
+        }
     }
     fclose(file);
+
+    if(data == "")
+        return;
 
     numbans = 0;
     unixtime = getSystemTime();
@@ -4062,21 +4060,19 @@ cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<
     if(!file_exists(filename))
         return;
 
-    file = fopen(filename, "r");
-    if(!isDefined(file))
-        return;
-
-    chunk = fread(file);
-    if(!isDefined(chunk))
-        return;
-    
     data = "";
-    while(isDefined(chunk))
-    {
-        data += chunk;
+    file = fopen(filename, "r");
+    if(isDefined(file)) {
         chunk = fread(file);
+        while(isDefined(chunk)) {
+            data += chunk;
+            chunk = fread(file);
+        }
     }
     fclose(file);
+
+    if(data == "")
+        return;
 
     reports = [];
     data = codam\_mm_mmm::strTok(data, "\n");
