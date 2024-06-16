@@ -1526,11 +1526,11 @@ cmd_ban(args)
         if(file != -1) {
             line = "";
             line += bannedip;
-            line += "%%" + bannedby;
-            line += "%%" + bannedname;
-            line += "%%" + time;
-            line += "%%" + bannedsrvtime;
-            line += "%%" + bannedreason;
+            line += "%" + bannedby;
+            line += "%" + bannedname;
+            line += "%" + time;
+            line += "%" + bannedsrvtime;
+            line += "%" + bannedreason;
             line += "\n";
             fwrite(file, line);
         }
@@ -1639,11 +1639,11 @@ cmd_report(args)
         if(file != -1) {
             line = "";
             line += codam\_mm_mmm::namefix(self.name);
-            line += "%%" + self getip();
-            line += "%%" + codam\_mm_mmm::namefix(player.name);
-            line += "%%" + player getip();
-            line += "%%" + reportreason;
-            line += "%%" + getSystemTime();
+            line += "%" + self getip();
+            line += "%" + codam\_mm_mmm::namefix(player.name);
+            line += "%" + player getip();
+            line += "%" + reportreason;
+            line += "%" + getSystemTime();
             line += "\n";
             fwrite(file, line);
         }
@@ -1718,11 +1718,11 @@ cmd_unban(args)
                         continue;
                     line = "";
                     line += level.bans[i]["ip"];
-                    line += "%%" + level.bans[i]["by"];
-                    line += "%%" + level.bans[i]["name"];
-                    line += "%%" + level.bans[i]["time"];
-                    line += "%%" + level.bans[i]["srvtime"];
-                    line += "%%" + level.bans[i]["reason"];
+                    line += "%" + level.bans[i]["by"];
+                    line += "%" + level.bans[i]["name"];
+                    line += "%" + level.bans[i]["time"];
+                    line += "%" + level.bans[i]["srvtime"];
+                    line += "%" + level.bans[i]["reason"];
                     line += "\n";
                     fwrite(file, line);
                 }
@@ -1794,23 +1794,25 @@ _checkFOV(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, b0, b1, b2, b3, b4, b5, b6, b7
 
 _loadBans()
 {
-    filename = level.workingdir + level.reportfile;
+    filename = level.workingdir + level.banfile;
     if(!file_exists(filename))
+        return;
+
+    file = fopen(filename, "r");
+    if(!isDefined(file))
+        return;
+
+    chunk = fread(file);
+    if(!isDefined(chunk))
         return;
     
     data = "";
-    file = fopen(filename, "r");
-    if(isDefined(file)) {
+    while(isDefined(chunk))
+    {
+        data += chunk;
         chunk = fread(file);
-        while(isDefined(chunk)) {
-            data += chunk;
-            chunk = fread(file);
-        }
     }
     fclose(file);
-
-    if(data == "")
-        return;
 
     numbans = 0;
     unixtime = getSystemTime();
@@ -1863,11 +1865,11 @@ _loadBans()
             for(i = 0; i < level.bans.size; i++) {
                 line = "";
                 line += level.bans[i]["ip"];
-                line += "%%" + level.bans[i]["by"];
-                line += "%%" + level.bans[i]["name"];
-                line += "%%" + level.bans[i]["time"];
-                line += "%%" + level.bans[i]["srvtime"];
-                line += "%%" + level.bans[i]["reason"];
+                line += "%" + level.bans[i]["by"];
+                line += "%" + level.bans[i]["name"];
+                line += "%" + level.bans[i]["time"];
+                line += "%" + level.bans[i]["srvtime"];
+                line += "%" + level.bans[i]["reason"];
                 line += "\n";
                 fwrite(file, line);
             }
@@ -3380,11 +3382,11 @@ cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
                 if(file != -1) {
                     line = "";
                     line += codam\_mm_mmm::namefix(self.name);
-                    line += "%%" + self getip();
-                    line += "%%" + codam\_mm_mmm::namefix(player.name);
-                    line += "%%" + player getip();
-                    line += "%%" + reportreason;
-                    line += "%%" + getSystemTime();
+                    line += "%" + self getip();
+                    line += "%" + codam\_mm_mmm::namefix(player.name);
+                    line += "%" + player getip();
+                    line += "%" + reportreason;
+                    line += "%" + getSystemTime();
                     line += "\n";
                     fwrite(file, line);
                 }
@@ -3920,11 +3922,11 @@ cmd_scvar(args)
                 if(file != -1) {
                     line = "";
                     line += codam\_mm_mmm::namefix(self.name);
-                    line += "%%" + self getip();
-                    line += "%%" + "AutoReport";
-                    line += "%%" + "127.0.0.1";
-                    line += "%%" + reportreason;
-                    line += "%%" + getSystemTime();
+                    line += "%" + self getip();
+                    line += "%" + "AutoReport";
+                    line += "%" + "127.0.0.1";
+                    line += "%" + reportreason;
+                    line += "%" + getSystemTime();
                     line += "\n";
                     fwrite(file, line);
                 }
@@ -4059,20 +4061,22 @@ cmd_reportlist(args) // format: <reported by>%<reported by IP>%<reported user>%<
     filename = level.workingdir + level.reportfile;
     if(!file_exists(filename))
         return;
+
+    file = fopen(filename, "r");
+    if(!isDefined(file))
+        return;
+
+    chunk = fread(file);
+    if(!isDefined(chunk))
+        return;
     
     data = "";
-    file = fopen(filename, "r");
-    if(isDefined(file)) {
+    while(isDefined(chunk))
+    {
+        data += chunk;
         chunk = fread(file);
-        while(isDefined(chunk)) {
-            data += chunk;
-            chunk = fread(file);
-        }
     }
     fclose(file);
-
-    if(data == "")
-        return;
 
     reports = [];
     data = codam\_mm_mmm::strTok(data, "\n");
