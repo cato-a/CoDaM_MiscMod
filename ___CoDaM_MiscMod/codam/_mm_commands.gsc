@@ -1523,7 +1523,7 @@ cmd_ban(args)
 
         bannedsrvtime = getSystemTime();
         file = fopen(filename, "a"); // append
-        if(file != -1) {
+        if(isDefined(file)) {
             line = "";
             line += bannedip;
             line += "%" + bannedby;
@@ -1636,7 +1636,7 @@ cmd_report(args)
     filename = level.workingdir + level.reportfile;
     if(file_exists(filename)) {
         file = fopen(filename, "a"); // append
-        if(file != -1) {
+        if(isDefined(file)) {
             line = "";
             line += codam\_mm_mmm::namefix(self.name);
             line += "%" + self getip();
@@ -1712,7 +1712,7 @@ cmd_unban(args)
         filename = level.workingdir + level.banfile;
         if(file_exists(filename)) {
             file = fopen(filename, "w");
-            if(file != -1) {
+            if(isDefined(file)) {
                 for(i = 0; i < level.bans.size; i++) {
                     if(level.bans[i]["ip"] == "unbanned")
                         continue;
@@ -3377,7 +3377,7 @@ cmd_pcvar(args) // Reworked some commands from AJ into a global !pcvar command
             filename = level.workingdir + level.reportfile;
             if(file_exists(filename)) {
                 file = fopen(filename, "a"); // append
-                if(file != -1) {
+                if(isDefined(file)) {
                     line = "";
                     line += codam\_mm_mmm::namefix(self.name);
                     line += "%" + self getip();
@@ -3917,7 +3917,7 @@ cmd_scvar(args)
             filename = level.workingdir + level.reportfile;
             if(file_exists(filename)) {
                 file = fopen(filename, "a"); // append
-                if(file != -1) {
+                if(isDefined(file)) {
                     line = "";
                     line += codam\_mm_mmm::namefix(self.name);
                     line += "%" + self getip();
