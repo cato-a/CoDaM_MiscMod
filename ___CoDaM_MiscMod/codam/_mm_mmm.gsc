@@ -592,3 +592,23 @@ numdigits(num)
 {
     return (num + "").size;
 }
+
+pow(base, exponent) { // https://github.com/thecheeseman/1.1libraries/blob/db526226c3ec3a4dd2112ff0e937b73e3c606a56/code/math.gsc#L110-L124
+    _res = 1;
+
+    if(exponent == 0)
+        return _res;
+
+    _neg = exponent < 0;
+
+    if(_neg)
+        exponent *= -1;
+
+    for(i = 0; i < exponent; i++)
+        _res *= base;
+
+    if(_neg)
+        return 1 / _res;
+
+    return _res;
+}

@@ -1,9 +1,10 @@
 init()
 {
     level.groups = []; // "group1;group2;group3"
-    if(getCvar("scr_mm_groups") != "")
-        level.groups = codam\_mm_mmm::strTok(getCvar("scr_mm_groups"), ";");
-    level.groupsprecedence = (bool)GetCvarInt("scr_mm_groups_precedence");
+    groups = GetCvar("scr_mm_groups");
+    if(groups != "")
+        level.groups = codam\_mm_mmm::strTok(groups, ";");
+    level.groupsprecedence = GetCvarInt("scr_mm_groups_precedence") > 0;
 
     level.users = []; // "user1:password user2:password"
     level.perms = []; // "*:<id>:<id1>-<id2>:!<id>"
@@ -364,12 +365,12 @@ checkgroup_precedence(target)
     if(!level.groupsprecedence || !isDefined(self.pers["mm_group"]) || !isDefined(target.pers["mm_group"]))
         return false;
 
-    for(i = 0; i < level.group.size; i++)
-        if(level.group[i] == self.pers["mm_group"])
+    for(i = 0; i < level.groups.size; i++)
+        if(level.groups[i] == self.pers["mm_group"])
             break;
 
-    for(y = 0; y < level.group.size; y++)
-        if(level.group[y] == target.pers["mm_group"])
+    for(y = 0; y < level.groups.size; y++)
+        if(level.groups[y] == target.pers["mm_group"])
             break;
 
     return i >= y;
@@ -2244,6 +2245,8 @@ cmd_slap(args)
         psOffsetTime = 0;
 
         player playSound("melee_hit");
+        if(level.healthregen)
+            self [[ level.healthTimeData ]](iDamage);
         player finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
     } else
         message_player("^1ERROR: ^7Player must be alive.");
@@ -2445,6 +2448,8 @@ cmd_rape(args)
         player endon("spawned");
         player endon("disconnect");
 
+        iDamage = 20;
+
         while(isAlive(player)) {
             tracedir = anglestoforward(player getPlayerAngles());
             traceend = player.origin;
@@ -2461,7 +2466,9 @@ cmd_rape(args)
             wait 0.3;
             dumas moveto(pos, 0.25);
             wait 0.25;
-            player finishplayerdamage(player, player, 20, 0, "MOD_PROJECTILE", "panzerfaust_mp", dumas.origin, vectornormalize(dumas.origin - player.origin), "none");
+            if(level.healthregen)
+                self [[ level.healthTimeData ]](iDamage);
+            player finishplayerdamage(player, player, iDamage, 0, "MOD_PROJECTILE", "panzerfaust_mp", dumas.origin, vectornormalize(dumas.origin - player.origin), "none");
         }
 
         dumas delete();
