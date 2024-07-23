@@ -1276,6 +1276,11 @@ cmd_kill(args)
         if(!isDefined(player)) return;
     }
 
+    if(self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
+    }
+
     if(isAlive(player)) {
         player suicide();
         message_player("^5INFO: ^7You killed " + codam\_mm_mmm::namefix(player.name) + "^7.");
