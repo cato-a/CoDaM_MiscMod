@@ -447,7 +447,7 @@ _finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWea
 
         self shellshock(shellshock["name"], shellshock["duration"]);
     } else if(isDefined(eAttacker) && isPlayer(eAttacker) && isAlive(eAttacker)) {
-        if(sMeansOfDeath != "MOD_FALL" && sMeansOfDeath != "MOD_MELEE") {
+        if(sMeansOfDeath != "MOD_FALLING" && sMeansOfDeath != "MOD_MELEE") {
             if((level.mminstantkill && codam\_mm_mmm::isBoltWeapon(sWeapon))
                 || (level.mmpistolkill && codam\_mm_mmm::isSecondaryWeapon(sWeapon))) {
                 iDamage = iDamage + 100;
