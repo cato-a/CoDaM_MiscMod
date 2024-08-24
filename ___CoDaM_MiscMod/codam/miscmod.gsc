@@ -472,7 +472,7 @@ _finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWea
         }
     }
 
-    if(level.weapdropsetting[i] != "current" && self.health - iDamage <= 0) {
+    if(level.weapdropsetting[0] != "current" && self.health - iDamage <= 0) {
         for(i = 0; i < level.weapdropsetting.size; i++) {
             weapslot = level.weapdropsetting[i];
             if(weapslot == "grenade" || weapslot == "pistol"
