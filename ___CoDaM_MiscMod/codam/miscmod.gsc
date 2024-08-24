@@ -177,6 +177,24 @@ _load()
     precacheMenu(game["menu_weapon_allies"]);
     precacheMenu(game["menu_weapon_axis"]);
 
+    level.healthregen = codam\utils::getVar("scr_mm", "healthregen", "bool", 1|2, false);
+    if(level.healthregen) {
+        level.healthregentime = codam\utils::getVar("scr_mm", "healthregentime", "int", 1|2, 5);
+        level.healthregentype = codam\utils::getVar("scr_mm", "healthregentype", "str", 1|2, "dynamic");
+        level.healthregenduration = codam\utils::getVar("scr_mm", "healthregenduration", "float", 1|2, 5);
+        level.healthTimeData = ::_healthTimeData;
+        thread _healthRegen();
+    }
+
+    level.mmshellshock = codam\utils::getVar("scr_mm", "shellshock", "bool", 1|2, false);
+    level.mminstantkill = codam\utils::getVar("scr_mm", "instantkill", "bool", 1|2, false);
+    level.mmpistolkill = codam\utils::getVar("scr_mm", "pistolkill", "bool", 1|2, false);
+    level.mmmeleekill = codam\utils::getVar("scr_mm", "meleekill", "str", 1|2, "");
+    level.mmmeleekill = codam\_mm_mmm::strTok(level.mmmeleekill, ";");
+    level.mmdmgmarker = codam\utils::getVar("scr_mm", "damagemarker", "bool", 1|2, false);
+    level.mmhitmarker = codam\utils::getVar("scr_mm", "hitmarker", "int", 1|2, 0);
+    level.mmhitmarker_noscale = codam\utils::getVar("scr_mm", "hitmarker_noscale", "bool", 1|2, false);
+
     // Enable weapon settings per map or gametype
     if(codam\utils::getVar("scr_mm", "weaponsmapgt", "bool", 0, false))
         weaponsPerMapGt();
@@ -378,7 +396,7 @@ _finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWea
     if(iDamage < 1) // Make sure at least one point of damage is done
         iDamage = 1;
 
-    if(codam\utils::getVar("scr_mm", "shellshock", "bool", 1|2, false) && (self.health - iDamage > 0)) {
+    if(level.mmshellshock && self.health - iDamage > 0) {
         shellshock = [];
         shellshock["duration"] = 0.3;
         if((float)(iDamage / 100) > shellshock["duration"])
@@ -409,65 +427,46 @@ _finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWea
         }
 
         self shellshock(shellshock["name"], shellshock["duration"]);
-    } else {
-        if(isDefined(eAttacker) && isPlayer(eAttacker) && isAlive(eAttacker)) {
-            if(sMeansOfDeath != "MOD_FALL" && sMeansOfDeath != "MOD_MELEE") {
-                instantkill = codam\utils::getVar("scr_mm", "instantkill", "bool", 1|2, false);
-                if(instantkill && codam\_mm_mmm::isBoltWeapon(sWeapon)) {
-                    iDamage = iDamage + 100;
-                    instantdamage = true;
-                }
-
-                pistolkill = codam\utils::getVar("scr_mm", "pistolkill", "bool", 1|2, false);
-                if(pistolkill && codam\_mm_mmm::isSecondaryWeapon(sWeapon)) {
-                    iDamage = iDamage + 100;
-                    instantdamage = true;
-                }
+    } else if(isDefined(eAttacker) && isPlayer(eAttacker) && isAlive(eAttacker)) {
+        if(sMeansOfDeath != "MOD_FALLING" && sMeansOfDeath != "MOD_MELEE") {
+            if((level.mminstantkill && codam\_mm_mmm::isBoltWeapon(sWeapon))
+                || (level.mmpistolkill && codam\_mm_mmm::isSecondaryWeapon(sWeapon))) {
+                iDamage = iDamage + 100;
+                instantdamage = true;
             }
-
-            if(sMeansOfDeath == "MOD_MELEE") {
-                if(codam\utils::getVar("scr_mm", "meleekill", "bool", 1|2, false)) { // meleekill
-                    meleekill_ignore = codam\utils::getVar("scr_mm", "meleekill_ignore", "string", 1|2, "");
-                    if(meleekill_ignore != "") {
-                        meleekill_ignore = codam\_mm_mmm::strTok(meleekill_ignore, ";");
-                        if(codam\_mm_mmm::in_array(meleekill_ignore, "bolt") && codam\_mm_mmm::isBoltWeapon(sWeapon)
-                            || codam\_mm_mmm::in_array(meleekill_ignore, "secondary") && codam\_mm_mmm::isSecondaryWeapon(sWeapon)
-                            || codam\_mm_mmm::in_array(meleekill_ignore, "grenade") && codam\_mm_mmm::isGrenade(sWeapon)
-                            || codam\_mm_mmm::in_array(meleekill_ignore, "primary") && codam\_mm_mmm::isPrimaryWeapon(sWeapon))
-                            tmpvar_ignore = true;
-                    }
-
-                    if(!isDefined(tmpvar_ignore)) {
-                        iDamage = iDamage + 100;
-                        instantdamage = true;
-                    }
-                }
-            }
-
-            if(codam\utils::getVar("scr_mm", "damagemarker", "bool", 1|2, false)) {
-                iMarker = iDamage;
-                if(isDefined(instantdamage))
-                    iMarker = iMarker - 100;
-
-                if(eAttacker != self)
-                    eAttacker thread _showDamagemarker(iMarker);
-            }
-
-            hitmarker = codam\utils::getVar("scr_mm", "hitmarker", "int", 1|2, 0);
-            if(hitmarker > 0 && eAttacker != self) {
-                if(hitmarker == 2)
-                    eAttacker thread _showHitmarker();
-                else if(hitmarker == 3)
-                    eAttacker thread _showHitmarker(iDamage, self.health);
-                else if(hitmarker > 3)
-                    if(codam\_mm_mmm::isBoltWeapon(sWeapon))
-                        eAttacker thread _showHitmarker(iDamage, self.health);
-                else
-                    if(codam\_mm_mmm::isBoltWeapon(sWeapon))
-                        eAttacker thread _showHitmarker();
+        } else if(sMeansOfDeath == "MOD_MELEE" && level.mmmeleekill.size > 0) {
+            if((codam\_mm_mmm::isBoltWeapon(sWeapon) && codam\_mm_mmm::in_array(level.mmmeleekill, "bolt"))
+                || (codam\_mm_mmm::isSecondaryWeapon(sWeapon) && codam\_mm_mmm::in_array(level.mmmeleekill, "secondary"))
+                || (codam\_mm_mmm::isGrenade(sWeapon) && codam\_mm_mmm::in_array(level.mmmeleekill, "grenade"))
+                || (codam\_mm_mmm::isPrimaryWeapon(sWeapon) && codam\_mm_mmm::in_array(level.mmmeleekill, "primary"))) {
+                iDamage = iDamage + 100;
+                instantdamage = true;
             }
         }
+
+        if(level.mmdmgmarker) {
+            iMarker = iDamage;
+            if(isDefined(instantdamage))
+                iMarker = iMarker - 100;
+
+            if(eAttacker != self)
+                eAttacker thread _showDamagemarker(iMarker);
+        }
+
+        if(level.mmhitmarker > 0 && eAttacker != self) {
+            if(level.mmhitmarker == 2)
+                eAttacker thread _showHitmarker();
+            else if(level.mmhitmarker == 3)
+                eAttacker thread _showHitmarker(iDamage, self.health);
+            else if(level.mmhitmarker > 3 && codam\_mm_mmm::isBoltWeapon(sWeapon))
+                eAttacker thread _showHitmarker(iDamage, self.health);
+            else if(codam\_mm_mmm::isBoltWeapon(sWeapon))
+                eAttacker thread _showHitmarker();
+        }
     }
+
+    if(level.healthregen)
+        self _healthTimeData(iDamage);
 
     return (self finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc));
 }
@@ -495,7 +494,7 @@ _showHitmarker(iDamage, iHealth)
             self.hitBlip.color = (1, 0, 0);
     }
 
-    if(!codam\utils::getVar("scr_mm", "hitmarker_noscale", "bool", 1|2, false)) {
+    if(!level.mmhitmarker_noscale) {
         self.hitBlip setShader("gfx/hud/hud@fire_ready.tga", 2, 2);
         self.hitBlip scaleOverTime(0.30, 48, 48);
     } else
@@ -553,6 +552,58 @@ _showDamagemarker(iDamage)
     if(isDefined(self.damageBlip[damageBlipSize]) && self.damageBlip[damageBlipSize].blipId == time)
         self.damageBlip[damageBlipSize] destroy();
 
+}
+
+_healthRegen()
+{
+    level endon("intermission");
+
+    waitval = 0.25;
+    while(true) {
+        if(!level.healthregen) break;
+        players = getEntArray("player", "classname");
+        for(i = 0; i < players.size; i++) {
+            player = players[i];
+            if(isAlive(player) && player.sessionstate == "playing" && isDefined(player.healthregen)
+                && player.health < player.maxhealth) {
+                time_elapsed = getTime() - player.healthregen["time"];
+                if(time_elapsed <= level.healthregentime * 1000.0)
+                    continue;
+
+                if(level.healthregentype == "dynamic") {
+                    time_elapsed = _healthRoundNumber(time_elapsed / 1000.0 - level.healthregentime, waitval);
+                    health = player.healthregen["health"] + (player.maxhealth - player.healthregen["health"]) * codam\_mm_mmm::pow(time_elapsed / level.healthregenduration, 3);
+                } else
+                    health = player.health + (player.maxhealth - player.healthregen["health"]) / (1 + level.healthregenduration / waitval);
+
+                if(health >= player.maxhealth)
+                    player.healthregen = undefined;
+
+                player.health = health;
+            }
+        }
+
+        wait waitval;
+    }
+}
+
+_healthTimeData(iDamage)
+{
+    if(self.health - iDamage > 0) {
+        self.healthregen["time"] = getTime();
+        self.healthregen["health"] = self.health - iDamage;
+    }
+}
+
+_healthRoundNumber(v, n) {
+    q = (int)(v / n);
+    l = q * n;
+    u = (q + 1) * n;
+
+    if(v - l < u - v)
+        return l;
+
+    return u;
 }
 // ##########
 
