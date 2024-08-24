@@ -3,6 +3,7 @@ init()
     level.groups = []; // "group1;group2;group3"
     if(getCvar("scr_mm_groups") != "")
         level.groups = codam\_mm_mmm::strTok(getCvar("scr_mm_groups"), ";");
+    level.groupsprecedence = GetCvarInt("scr_mm_groups_precedence") > 0;
 
     level.users = []; // "user1:password user2:password"
     level.perms = []; // "*:<id>:<id1>-<id2>:!<id>"
@@ -346,6 +347,22 @@ permissions(perms, id) // "*:<id>:<id1>-<id2>:!<id>" :P
     return wildcard;
 }
 
+checkgroup_precedence(target)
+{
+    if(!level.groupsprecedence || !isDefined(self.pers["mm_group"]) || !isDefined(target.pers["mm_group"]))
+        return false;
+
+    for(i = 0; i < level.groups.size; i++)
+        if(level.groups[i] == self.pers["mm_group"])
+            break;
+
+    for(y = 0; y < level.groups.size; y++)
+        if(level.groups[y] == target.pers["mm_group"])
+            break;
+
+    return i >= y;
+}
+
 cmd_login(args)
 {
     if(args.size != 3) {
@@ -572,8 +589,8 @@ cmd_logout(args)
     }
 
     if(isDefined(self.pers["mm_group"])) {
-        self.pers["mm_group"]	= undefined;
-        self.pers["mm_user"]	= undefined;
+        self.pers["mm_group"] = undefined;
+        self.pers["mm_user"] = undefined;
         message_player("You are logged out.");
         _removeLoggedIn(self getEntityNumber()); // cvar
     }
@@ -679,6 +696,11 @@ cmd_rename(args)
             message_player("^1ERROR: ^7You can't use this command on yourself.");
             return;
         }
+    }
+
+    if(self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
     }
 
     if(args.size > 3) {
@@ -794,6 +816,11 @@ cmd_kick(args)
             message_player("^1ERROR: ^7You can't use this command on yourself.");
             return;
         }
+    }
+
+    if(self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
     }
 
     args2 = args[2];
@@ -1096,6 +1123,11 @@ cmd_mute(args)
         }
     }
 
+    if(self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
+    }
+
     muted = codam\_mm_mmm::strTok(getCvar("tmp_mm_muted"), ";");
     playernum = player getEntityNumber();
     if(!codam\_mm_mmm::in_array(muted, playernum)) {
@@ -1192,6 +1224,11 @@ cmd_warn(args)
         }
     }
 
+    if(self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
+    }
+
     if(args.size > 3) {
         for(a = 3; a < args.size; a++)
             if(isDefined(args[a]))
@@ -1224,6 +1261,11 @@ cmd_kill(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
+    }
+
+    if(self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
     }
 
     if(isAlive(player)) {
@@ -1463,6 +1505,11 @@ cmd_ban(args)
                 message_player("^1ERROR: ^7You can't use this command on yourself.");
                 return;
             }
+        }
+
+        if(self checkgroup_precedence(player)) {
+            message_player("^1ERROR: ^7You can't use this command on this player.");
+            return;
         }
     }
 
@@ -2070,6 +2117,11 @@ cmd_drop(args)
         if(!isDefined(player)) return;
     }
 
+    if(self != player && self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
+    }
+
     height = 512;
     if(args.size == 3)
         if(codam\_mm_mmm::validate_number(args[2]))
@@ -2112,6 +2164,11 @@ cmd_spank(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
+    }
+
+    if(self != player && self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
     }
 
     time = 15;
@@ -2159,6 +2216,11 @@ cmd_slap(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
+    }
+
+    if(self != player && self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
     }
 
     dmg = 10;
@@ -2212,6 +2274,11 @@ cmd_blind(args)
         if(!isDefined(player)) return;
     }
 
+    if(self != player && self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
+    }
+
     time = 15;
     if(args.size == 3)
         if(codam\_mm_mmm::validate_number(args[2]))
@@ -2257,6 +2324,11 @@ cmd_runover(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
+    }
+
+    if(self != player && self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
     }
 
     if(isAlive(player)) {
@@ -2310,6 +2382,12 @@ cmd_squash(args)
         if(!isDefined(player)) return;
     }
 
+
+    if(self != player && self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
+    }
+
     if(isAlive(player)) {
         player endon("disconnect");
 
@@ -2351,6 +2429,11 @@ cmd_rape(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
+    }
+
+    if(self != player && self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
     }
 
     if(isAlive(player)) {
@@ -2423,6 +2506,11 @@ cmd_toilet(args)
         if(!isDefined(player)) return;
     }
 
+    if(self != player && self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
+    }
+
     time = 15;
     if(args.size == 3)
         if(codam\_mm_mmm::validate_number(args[2]))
@@ -2471,6 +2559,11 @@ cmd_explode(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
+    }
+
+    if(self != player && self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
     }
 
     if(isAlive(player)) {
@@ -2545,6 +2638,11 @@ cmd_mortar(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
+    }
+
+    if(self != player && self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
     }
 
     if(isAlive(player)) {
@@ -2635,6 +2733,12 @@ cmd_burn(args)
         if(!isDefined(player)) return;
     }
 
+
+    if(self != player && self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
+    }
+
     if(isAlive(player)) {
         message_player("^5INFO: ^7Player " + codam\_mm_mmm::namefix(player.name) + " ^7set on fire.");
         player endon("disconnect");
@@ -2680,6 +2784,11 @@ cmd_cow(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
+    }
+
+    if(self != player && self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
     }
 
     if(isAlive(player)) {
@@ -2762,6 +2871,11 @@ cmd_disarm(args)
     } else {
         player = playerByName(args1);
         if(!isDefined(player)) return;
+    }
+
+    if(self != player && self checkgroup_precedence(player)) {
+        message_player("^1ERROR: ^7You can't use this command on this player.");
+        return;
     }
 
     if(isAlive(player)) {
