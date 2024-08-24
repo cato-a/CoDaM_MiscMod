@@ -104,6 +104,10 @@ _init(register)
     if(level.maxmessages > 0)
         level.penaltytime = codam\utils::getVar("scr_mm", "chat_penaltytime", "int", 0, 2);
 
+    // Weapon drop all or current weapon
+    level.weapdropsetting = codam\utils::getVar("scr_mm", "dropweapon", "str", 1|2, "current");
+    level.weapdropsetting = codam\_mm_mmm::strTok(level.weapdropsetting, ";");
+
     return;
 }
 
@@ -122,9 +126,9 @@ _load()
     // pair has unmatching types 'localized string' and 'localized string'
     // Reported by ImNoob
     if(!isDefined(level.topText))
-        level.topText = &"^1MiscMod ^3v3.1.4";
+        level.topText = &"^1MiscMod ^3v3.1.5";
 
-    level.originalBottomText = &"^1+ ^5MiscMod ^3v3.1.4";
+    level.originalBottomText = &"^1+ ^5MiscMod ^3v3.1.5";
 
     if(!isDefined(game["gamestarted"])) {
         precacheString(level.topText);
@@ -309,7 +313,7 @@ _showMiscModHuds()
         bottomText setText(level.bottomText);
     }
 
-    level.miscmodversion = "^5MiscMod ^3v3.1.4";
+    level.miscmodversion = "^5MiscMod ^3v3.1.5";
 }
 // ##########
 
@@ -415,37 +419,39 @@ _finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWea
     if(iDamage < 1) // Make sure at least one point of damage is done
         iDamage = 1;
 
-    if(level.mmshellshock && self.health - iDamage > 0) {
-        shellshock = [];
-        shellshock["duration"] = 0.3;
-        if((float)(iDamage / 100) > shellshock["duration"])
-            shellshock["duration"] = (float)(iDamage / 100);
+    if(level.mmshellshock) {
+        if(self.health - iDamage > 0) {
+            shellshock = [];
+            shellshock["duration"] = 0.3;
+            if((float)(iDamage / 100) > shellshock["duration"])
+                shellshock["duration"] = (float)(iDamage / 100);
 
-        if(shellshock["duration"] > 0.9)
-            shellshock["duration"] = 0.9;
+            if(shellshock["duration"] > 0.9)
+                shellshock["duration"] = 0.9;
 
-        switch(sMeansOfDeath) {
-            case "MOD_MELEE": // melee
-                shellshock["name"] = "groggy";
-            break;
-            case "MOD_GRENADE_SPLASH": // grenade
-                shellshock["name"] = "default";
-            break;
-            case "MOD_FALLING": // falling
-                shellshock["name"] = "pain";
-                shellshock["duration"] = 0.3;
-            break;
-            case "MOD_PROJECTILE_SPLASH": // panzerfaust
-                shellshock["name"] = "default";
-            break;
-            default: // bullet
-                shellshock["name"] = "pain";
-                if(shellshock["duration"] < 0.6)
-                    shellshock["duration"] = 0.6;
-            break;
+            switch(sMeansOfDeath) {
+                case "MOD_MELEE": // melee
+                    shellshock["name"] = "groggy";
+                break;
+                case "MOD_GRENADE_SPLASH": // grenade
+                    shellshock["name"] = "default";
+                break;
+                case "MOD_FALLING": // falling
+                    shellshock["name"] = "pain";
+                    shellshock["duration"] = 0.3;
+                break;
+                case "MOD_PROJECTILE_SPLASH": // panzerfaust
+                    shellshock["name"] = "default";
+                break;
+                default: // bullet
+                    shellshock["name"] = "pain";
+                    if(shellshock["duration"] < 0.6)
+                        shellshock["duration"] = 0.6;
+                break;
+            }
+
+            self shellshock(shellshock["name"], shellshock["duration"]);
         }
-
-        self shellshock(shellshock["name"], shellshock["duration"]);
     } else if(isDefined(eAttacker) && isPlayer(eAttacker) && isAlive(eAttacker)) {
         if(sMeansOfDeath != "MOD_FALLING" && sMeansOfDeath != "MOD_MELEE") {
             if((level.mminstantkill && codam\_mm_mmm::isBoltWeapon(sWeapon))
@@ -481,6 +487,19 @@ _finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWea
                 eAttacker thread _showHitmarker(iDamage, self.health);
             else if(codam\_mm_mmm::isBoltWeapon(sWeapon))
                 eAttacker thread _showHitmarker();
+        }
+    }
+
+    if(level.weapdropsetting[i] != "current" && self.health - iDamage <= 0) {
+        for(i = 0; i < level.weapdropsetting.size; i++) {
+            weapslot = level.weapdropsetting[i];
+            if(weapslot == "grenade" || weapslot == "pistol"
+                || weapslot == "primary" || weapslot == "primaryb") {
+                curweap = self getWeaponSlotWeapon(weapslot);
+                if(!isDefined(curweap))
+                    curweap = "none";
+                self dropItem(curweap);
+            }
         }
     }
 
