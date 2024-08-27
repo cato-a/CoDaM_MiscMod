@@ -108,7 +108,7 @@ init()
     commands(59, level.prefix + "respawn"     , ::cmd_respawn      , "Move a player to a new spawnpoint. [" + level.prefix + "respawn <num> <sd|dm|tdm>]");
     // More commands
     commands(60, level.prefix + "wmap"        , ::cmd_wmap         , "Change CoDaM's weapon_map settings. [" + level.prefix + "wmap <weapon=map|codam|reset>]");
-    commands(61, level.prefix + "meleekill"   , ::cmd_wmeleekill   , "Instant kill on melee. [" + level.prefix + "meleekill <on|off>]");
+    commands(61, level.prefix + "meleekill"   , ::cmd_wmeleekill   , "Instant kill on melee. [" + level.prefix + "meleekill <type> (...)]");
     commands(62, level.prefix + "teleport"    , ::cmd_teleport     , "Teleport a player to a player or (x, y, z) coordinates. [" + level.prefix + "teleport <num> (<num>|<x> <y> <z>)]");
     commands(63, level.prefix + "teambalance" , ::cmd_teambalance  , "Enable/disable teambalance or rebalance teams. [" + level.prefix + "teambalance <on|off|force>]");
     commands(64, level.prefix + "swapteams"   , ::cmd_swapteams    , "Swap teams (no reset). [" + level.prefix + "swapteams (*)]");
@@ -3240,29 +3240,26 @@ cmd_w1sk(args)
 
 cmd_wmeleekill(args)
 {
-    if(args.size != 2) {
+    if(args.size <= 1 || args.size > 5) {
         message_player("^1ERROR: ^7Invalid number of arguments.");
         return;
     }
 
-    if(!isDefined(args[1])) {
-        message_player("^1ERROR: ^7Invalid argument.");
-        return;
+    meleekill = "";
+    for(i = 1; i < args.size; i++) {
+        if(args[i] == "bolt" || args[i] == "primary"
+            || args[i] == "secondary" || args[i] == "grenade") {
+            if(i == 1)
+                meleekill = args[i];
+            else
+                meleekill += ";" + args[i];
+        } else {
+            message_player("^1ERROR: ^7Invalid argument. (" + args[i] + ")");
+            return;
+        }
     }
 
-    switch(args[1]) {
-        case "on":
-            message("^5INFO: ^7Instant kill on melee enabled.");
-            setCvar("scr_mm_meleekill", "1");
-        break;
-        case "off":
-            message("^5INFO: ^7Instant kill on melee disabled.");
-            setCvar("scr_mm_meleekill", "0");
-        break;
-        default:
-            message_player("^1ERROR: ^7Invalid argument.");
-        break;
-    }
+    setCvar("scr_mm_meleekill", meleekill);
 }
 
 cmd_wpsk(args)

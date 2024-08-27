@@ -128,7 +128,7 @@ Command:                              Description:                              
 !respawn <num> <sd|dm|tdm>            Move a player to a new spawnpoint.                          59
 
 !wmap <wapon=map>                     Change CoDaM's weapon_map setting.                          60
-!meleekill <on|off>                   Enable or disable scr_mm_meleekill.                         61
+!meleekill <type> (...)               Instant kill on melee.                                      61
 !teleport <num> (<num>|<x> <y> <z>)   Teleport a player to a player or (x, y, z) coordinates.     62
 !teambalance <on|off|force>           Adjust team balance settings or force a team balance.       63
 !swapteams (*)                        Swap teams (no reset).                                      64
