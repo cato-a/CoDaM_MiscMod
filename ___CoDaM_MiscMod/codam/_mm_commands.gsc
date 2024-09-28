@@ -70,14 +70,13 @@ init()
     commands(25, level.prefix + "pm"          , ::cmd_pm           , "Private message a player. [" + level.prefix + "pm <player> <message>]");
     commands(26, level.prefix + "re"          , ::cmd_re           , "Respond to a private message. [" + level.prefix + "re <message>]");
     commands(27, level.prefix + "who"         , ::cmd_who          , "Display logged in users. [" + level.prefix + "who]");
-    // Cheese commands
+    // Cheese commands 34 !rape removed
     commands(28, level.prefix + "drop"        , ::cmd_drop         , "Drop a player. [" + level.prefix + "drop <num> <height>]");
     commands(29, level.prefix + "spank"       , ::cmd_spank        , "Spank a player. [" + level.prefix + "spank <num> <time>]");
     commands(30, level.prefix + "slap"        , ::cmd_slap         , "Slap a player. [" + level.prefix + "slap <num> <damage>]");
     commands(31, level.prefix + "blind"       , ::cmd_blind        , "Blind a player. [" + level.prefix + "blind <num> <time>]");
     commands(32, level.prefix + "runover"     , ::cmd_runover      , "Run over a player. [" + level.prefix + "runover <num>]");
     commands(33, level.prefix + "squash"      , ::cmd_squash       , "Squash a player. [" + level.prefix + "squash <num>]");
-    commands(34, level.prefix + "rape"        , ::cmd_rape         , "Rape a player. [" + level.prefix + "rape <num>]");
     commands(35, level.prefix + "toilet"      , ::cmd_toilet       , "Turn a player into a toilet. [" + level.prefix + "toilet <num>]");
     // PowerServer
     commands(36, level.prefix + "explode"     , ::cmd_explode      , "Explode a player. [" + level.prefix + "explode <num>]");
@@ -2411,85 +2410,6 @@ cmd_squash(args)
         lol delete();
     } else
         message_player("^1ERROR: ^7Player must be alive.");
-}
-
-cmd_rape(args)
-{
-    if(args.size != 2) {
-        message_player("^1ERROR: ^7Invalid number of arguments.");
-        return;
-    }
-
-    args1 = args[1]; // num | string
-    if(!isDefined(args1)) {
-        message_player("^1ERROR: ^7Invalid argument.");
-        return;
-    }
-
-    if(codam\_mm_mmm::validate_number(args1)) {
-        player = codam\_mm_mmm::playerByNum(args1);
-        if(!isDefined(player)) {
-            message_player("^1ERROR: ^7No such player.");
-            return;
-        }
-    } else {
-        player = playerByName(args1);
-        if(!isDefined(player)) return;
-    }
-
-    if(self != player && self checkgroup_precedence(player)) {
-        message_player("^1ERROR: ^7You can't use this command on this player.");
-        return;
-    }
-
-    if(isAlive(player)) {
-        dumas = spawn("script_model", (0, 0, 0));
-        dumas setmodel("xmodel/playerbody_russian_conscript");
-
-        player thread forceprone();
-
-        iPrintLnBold(codam\_mm_mmm::namefix(player.name) + "^3 is getting raped by dumas!");
-
-        player endon("spawned");
-        player endon("disconnect");
-
-        iDamage = 20;
-
-        while(isAlive(player)) {
-            tracedir = anglestoforward(player getPlayerAngles());
-            traceend = player.origin;
-            traceend += codam\_mm_mmm::vectorScale(tracedir, -56);
-            trace = bullettrace(player.origin, traceend, false, player);
-            pos = trace["position"];
-
-            dumas.origin = pos;
-            dumas.angles = (45, player.angles[1], player.angles[2]);
-
-            rapedir = dumas.origin - player.origin;
-
-            dumas moveto(player.origin, 0.5);
-            wait 0.3;
-            dumas moveto(pos, 0.25);
-            wait 0.25;
-            if(level.healthregen)
-                self [[ level.healthTimeData ]](iDamage);
-            player finishplayerdamage(player, player, iDamage, 0, "MOD_PROJECTILE", "panzerfaust_mp", dumas.origin, vectornormalize(dumas.origin - player.origin), "none");
-        }
-
-        dumas delete();
-    } else
-        message_player("^1ERROR: ^7Player must be alive.");
-}
-
-forceprone(args) {
-    self endon("death");
-    self endon("disconnect");
-    self endon("spawned");
-
-    while(isAlive(self)) {
-        self setClientCvar("cl_stance", 2);
-        wait 0.05;
-    }
 }
 
 cmd_toilet(args)
