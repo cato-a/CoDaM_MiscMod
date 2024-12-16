@@ -391,7 +391,7 @@ _finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWea
         if(level.mmhsonly && sHitLoc != "head")
             return;
 
-        if(isDefined(self.spawnprotected) && self.spawnprotected)
+        if(level.spawnprotected > 0 && self spawnProtectionCheck())
             return;
     }
 
@@ -779,25 +779,42 @@ spawnProtection()
 
     spawnpoint = self.origin;
     self.headicon = "gfx/hud/hud@health_cross.tga";
+    self.spawnprotected = getTime();
 
-    self.spawnprotected = true;
-    for(msecs = 0.0; msecs <= (float)level.spawnprotected; msecs += 0.05) {
-        if(self attackButtonPressed() || self aimButtonPressed()
-            || self meleeButtonPressed()
-            || distance(self.origin, spawnpoint) > 50
+    for(m = 0; m < (float)level.spawnprotected; m += 0.05) {
+        if(!isAlive(self) || !isDefined(self.spawnprotected)
+            || self attackButtonPressed() || self aimButtonPressed()
+            || self meleeButtonPressed() || self.origin != spawnpoint
             || self.sessionstate != "playing")
             break;
 
         wait 0.05;
     }
-    self.spawnprotected = false;
+
+    self spawnProtectionCleanup();
+}
+
+spawnProtectionCheck()
+{
+    if(isDefined(self.spawnprotected)) {
+        if(getTime() - self.spawnprotected <= level.spawnprotected * 1000)
+            return true;
+
+        self spawnProtectionCleanup();
+    }
+
+    return false;
+}
+
+spawnProtectionCleanup()
+{
+    self.spawnprotected = undefined;
 
     if(isDefined(self.spawnprotection))
         self.spawnprotection destroy();
 
     self [[ level.gtd_call ]]("drawFriends");
 }
-
 // ##########
 
 // ########## square name fix
