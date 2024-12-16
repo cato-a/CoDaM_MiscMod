@@ -378,7 +378,7 @@ deletePlacedEntity(sEntityType)
 
 _newspawn(spawnpoint, recursive)
 {
-    recursive = (bool)isDefined(recursive);
+    recursive = isDefined(recursive);
     if(!recursive)
         newspawn = [];
 
@@ -387,28 +387,33 @@ _newspawn(spawnpoint, recursive)
 
         trace = bulletTrace(spawnpoint.origin, spawnpoint.origin + maps\mp\_utility::vectorscale(anglesToForward(angle), 48), true, self);
         if(trace["fraction"] == 1 && !positionWouldTelefrag(trace["position"]) && _canspawnat(trace["position"])) {
-            _spawnpoint = spawnStruct();
-            _spawnpoint.origin = trace["position"];
-            _spawnpoint.angles = angle;
-            return _spawnpoint;
+            newspawnpoint = spawnStruct();
+            newspawnpoint.origin = trace["position"];
+            newspawnpoint.angles = angle;
+            return newspawnpoint;
         }
 
         if(!recursive) {
-            _spawnpoint = spawnStruct();
-            _spawnpoint.origin = trace["position"];
-            _spawnpoint.angles = angle;
-            newspawn[newspawn.size] = _spawnpoint;
+            newspawnpoint = spawnStruct();
+            newspawnpoint.origin = trace["position"];
+            newspawnpoint.angles = angle;
+            newspawn[newspawn.size] = newspawnpoint;
         }
 
         wait 0.05;
     }
 
     if(!recursive) {
-        for(j = 0; j < newspawn.size; j++)
-            _newspawn(newspawn[j], true);
+        for(j = 0; j < newspawn.size; j++) {
+            newspawnpoint = self _newspawn(newspawn[j], true);
+            if(isDefined(newspawnpoint))
+                return newspawnpoint;
+        }
 
         return spawnpoint; // giving up, push anyways
     }
+
+    return undefined;
 }
 
 _canspawnat(position)
