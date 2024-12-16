@@ -769,12 +769,12 @@ _spawner(spClass, method)
     spawnpoints = getEntArray(spClass, "classname");
 
     spawnpoint = [[ level.gtd_call ]](method, spawnpoints);
-    if(isDefined(spawnpoint)) {
-        if(positionWouldTelefrag(spawnpoint.origin)) {
-            self iPrintLn("^1ERROR: ^7Unable to assign spawnpoint, finding new.");
-            spawnpoint = self codam\_mm_mmm::_newspawn(spawnpoint);
-        }
+    if(isDefined(spawnpoint) && positionWouldTelefrag(spawnpoint.origin)) {
+        self iPrintLn("^1ERROR: ^7Unable to assign spawnpoint, finding new.");
+        spawnpoint = self codam\_mm_mmm::_newspawn(spawnpoint);
+    }
 
+    if(isDefined(spawnpoint)) {
         self spawn(spawnpoint.origin, spawnpoint.angles);
         self thread codam\_mm_anticamper::anticamper(spawnpoint); // anticamper
     } else
