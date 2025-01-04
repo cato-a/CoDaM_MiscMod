@@ -878,6 +878,11 @@ cmd_map(args)
         return;
     }
 
+    if(isDefined(level.mapcmdended)) {
+        message_player("^1ERROR: ^7This command can only be used once.");
+        return;
+    }
+
     gametype = level.mmgametype;
     if(isDefined(args[2]))
         gametype = args[2];
@@ -908,6 +913,7 @@ cmd_map(args)
     }
 
     if(codam\_mm_mmm::in_array(maps, map)) {
+        level.mapcmdended = true;
         setCvar("sv_mapRotationCurrent", "gametype " + gametype + " map " + map);
         message("^5INFO: ^7Map changed to " + map + " (" + gametype + ") by " + codam\_mm_mmm::namefix(self.name) + "^7.");
 
