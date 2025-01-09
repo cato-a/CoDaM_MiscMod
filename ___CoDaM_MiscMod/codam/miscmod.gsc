@@ -287,9 +287,9 @@ _showMiscModHuds()
     originalBottomText.archived = true;
     originalBottomText setText(level.originalBottomText);
 
-    if(isDefined(level.bottomText)) { // precache above for level.bottomText for this block
+    if(isDefined(level.bottomText)) {
         bottomText = newHudElem();
-        bottomText.x = 116; // 1-9
+        bottomText.x = originalBottomText.x + 64;
         bottomText.y = 471;
         bottomText.sort = 10000;
         bottomText.fontScale = 0.6;
