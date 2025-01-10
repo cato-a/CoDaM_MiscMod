@@ -218,7 +218,7 @@ _start()
 
     _showMiscModHuds();
 
-    if(!codam\utils::getVar("scr_mm", "mapobjects", "bool", 1|2, false))
+    if(codam\utils::getVar("scr_mm", "mapobjects", "bool", 1|2, false))
         codam\_mm_mmm::weaponremoval();
 
     if(codam\utils::getVar("scr_mm", "stuckmap", "bool", 1|2, true))
@@ -287,9 +287,9 @@ _showMiscModHuds()
     originalBottomText.archived = true;
     originalBottomText setText(level.originalBottomText);
 
-    if(isDefined(level.bottomText)) { // precache above for level.bottomText for this block
+    if(isDefined(level.bottomText)) {
         bottomText = newHudElem();
-        bottomText.x = 116; // 1-9
+        bottomText.x = originalBottomText.x + 64;
         bottomText.y = 471;
         bottomText.sort = 10000;
         bottomText.fontScale = 0.6;
