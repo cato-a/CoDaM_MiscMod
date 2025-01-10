@@ -218,7 +218,7 @@ _start()
 
     _showMiscModHuds();
 
-    if(!codam\utils::getVar("scr_mm", "mapobjects", "bool", 1|2, true))
+    if(!codam\utils::getVar("scr_mm", "mapobjects", "bool", 1|2, false))
         codam\_mm_mmm::weaponremoval();
 
     if(codam\utils::getVar("scr_mm", "stuckmap", "bool", 1|2, true))
