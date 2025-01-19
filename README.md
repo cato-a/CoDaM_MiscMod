@@ -96,7 +96,6 @@ Command:                              Description:                              
 !blind <num> <time>                   Blind a player.                                             31
 !runover <num>                        Run over a player.                                          32
 !squash <num>                         Squash a player.                                            33
-!rape <num>                           Rape a player.                                              34
 !toilet <num>                         Turn a player into a toilet.                                35
 
 !explode <num>                        Explode a player.                                           36
