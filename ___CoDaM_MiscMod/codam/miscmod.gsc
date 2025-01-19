@@ -34,7 +34,7 @@ _init(register)
 
     level.modbycato1 = true;
 
-    level.miscmodversion = "3.1.4" + "L";
+    level.miscmodversion = "3.1.5" + "L";
 
     // reset welcome messages / mapvote
     [[ register ]]("gt_endMap", ::endMap, "takeover");
